@@ -39,7 +39,13 @@ const RealtimeResponseCustomizer = ({ onNext, onPrev }: { onNext: VoidFunction, 
 
                                 {!uploadedFile ? (
                                     <div className="relative flex h-20 w-full items-center justify-center rounded-md border border-dashed border-slate-400">
-
+                                        <input
+                                            onClick={onFileUpload}
+                                            accept=".pdf,.docx,.doc,.DOC,.PDF,.DOCX"
+                                            type="file"
+                                            title="Upload file"
+                                            className="z-10 absolute left-0 top-0 h-full w-full cursor-pointer opacity-0"
+                                        />
                                         <div className="inline-flex items-center">
                                             <Icon icon="Upload" />
                                             <span className="ml-2 text-sm font-medium leading-6">

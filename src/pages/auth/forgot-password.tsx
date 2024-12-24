@@ -1,5 +1,6 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+import Icon from "../../components/icon";
 
 const SetPassword = () => {
 
@@ -34,14 +35,28 @@ const SetPassword = () => {
                     >
                         Reset your password
                     </button>
+                    <div className="text-sm text-center pt-3 font-semibold text-slate-500">Or, sign in with another method</div>
+                    <div className="flex gap-2 mt-10 justify-center">
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.png" className="w-6 h-6" alt="logo" /></button>
+                        </div>
+                    <div className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
+                        <Icon icon="Chain" />
+                        <div>Email link to bh066078@gmail.com</div>
+                    </div>
+                    <div className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
+                        <Icon icon="Email" />
+                        <div>Email code to bh066078@gmail.com</div>
+                    </div>
+                    <Link to={"/sign-in"} className="flex justify-center font-semibold text-slate-500">Back</Link>
+                    <div className="flex justify-center gap-4 pt-3">
+                        <span className="text-slate-500">Don't have any of these?</span>
+                        <button className="text-primary font-semibold">Get help</button>
+                    </div>
                 </div>
-                <div className="text-sm text-center py-3 font-semibold text-slate-500">Or, sign in with another method</div>
-                <div className="flex gap-2 mt-10 justify-center">
-                    <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/facebook.png" className="w-8 h-8" alt="logo" /></button>
-                    <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/google.png" className="w-8 h-8" alt="logo" /></button>
-                    <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/linkedin.png" className="w-8 h-8" alt="logo" /></button>
-                    <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/microsoft.png" className="w-8 h-8" alt="logo" /></button>
-                </div>
+
             </div>
         </div>
     )

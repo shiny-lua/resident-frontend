@@ -28,30 +28,30 @@ const SignIn = () => {
                 </Link>
 
                 {stepIndex === 0 && (
-                    <div className="">
+                    <div className="w-full sm:w-[430px] px-5">
                         <div className="pt-10">
                             <div className="text-title-md font-semibold text-center mb-2">Sign in to Final Round AI</div>
                             <div className="text-center opacity-60 text-sm">Welcome back! Please sign in to continue</div>
                         </div>
                         <div className="flex gap-2 mt-10 justify-center">
-                            <button className="bg-white rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/facebook.png" className="w-8 h-8" alt="logo" /></button>
-                            <button className="bg-white rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/google.png" className="w-8 h-8" alt="logo" /></button>
-                            <button className="bg-white rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/linkedin.png" className="w-8 h-8" alt="logo" /></button>
-                            <button className="bg-white rounded-md flex items-center justify-center px-4 py-2 md:px-7 md:py-4"><img src="/image/icons/microsoft.png" className="w-8 h-8" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.png" className="w-6 h-6" alt="logo" /></button>
                         </div>
                         <div className="flex justify-center">
                             <div className="flex justif-center items-center gap-2 my-8">
-                                <div className="w-45 h-[0.2px] bg-slate-300"></div>
+                                <div className="ml-5 w-50 h-[0.2px] bg-slate-300"></div>
                                 <div className="text-slate-400 text-md">OR</div>
-                                <div className="w-45 h-[0.2px] bg-slate-300"></div>
+                                <div className="mr-5 w-50 h-[0.2px] bg-slate-300"></div>
                             </div>
                         </div>
-                        <div className="w-full sm:w-[430px] px-5">
+                        <div className="">
                             <div className="flex flex-col gap-2 mb-4">
                                 <label htmlFor="email">Email address</label>
                                 <input className="bg-white rounded-md outline-none border focus:border-primary p-3" type="text" name="" id="email" />
                             </div>
-                            <button onClick={() => setStepIndex(1)} className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-8">Continue</button>
+                            <button onClick={() => setStepIndex(1)} className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-2">Continue</button>
                             <div className="text-sm mt-4 flex gap-2 justify-center  ">
                                 <div className="opacity-80">Don't have an account?</div>
                                 <Link to={"/sign-up"} className="text-primary font-semibold hover:text-black hover:underline" >Sign Up</Link>
@@ -60,7 +60,7 @@ const SignIn = () => {
                     </div>
                 )}
                 {stepIndex === 1 && (
-                    <div className="w-full sm:w-[430px] px-5">
+                    <div className="w-full sm:w-[430px] px-5 pt-10">
                         <div>
                             <div className="text-title-md font-semibold text-center mb-2">Let Verify you</div>
                             <div className="text-center opacity-60 text-sm">Verification code was sent to your email.</div>
@@ -76,7 +76,7 @@ const SignIn = () => {
                             </div>
                             <input className="bg-white rounded-md outline-none border focus:shadow-1 focus:border-primary p-3" type="text" name="" id="password" />
                         </div>
-                        <button className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-8">Continue</button>
+                        <button className="w-full mt-4 bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md">Continue</button>
                     </div>
                 )}
             </div>

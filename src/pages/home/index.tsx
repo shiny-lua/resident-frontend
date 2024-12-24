@@ -17,7 +17,7 @@ const Home = () => {
                 <div className="text-sm md:text-xl font-normal md:font-[600] text-center lg:text-left">1.2M + Interviews Aced</div>
               </div>
               <div className="flex justify-center lg:justify-start">
-                <button className="text-white rounded-md px-10 py-4 text-md bg-button">Activate AI Interview Mode Now</button>
+                <button className="text-white rounded-md px-10 py-4 text-md bg-primary">Activate AI Interview Mode Now</button>
               </div>
 
               <div className="flex justify-center lg:justify-start">

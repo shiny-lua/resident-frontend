@@ -3,19 +3,22 @@ import React from "react";
 import {
   Route,
   Routes,
-  Navigate,
 } from "react-router-dom";
 
-import Home from "./pages/home";
 import { GlobalContextProvider } from "./context";
+
+import Home from "./pages/home";
+import Auth from "./pages/auth";
+import AppIndex from "./pages/app";
 
 function App() {
 
   return (
     <GlobalContextProvider>
       <Routes>
-        <Route path="/" element={<Navigate to="/home" replace />} />
-        <Route path="/home" element={<Home />} />
+        <Route path="/*" element={<Auth/>} />
+        <Route path="/" element={<Home />} />
+        <Route path="/app/*" element={<AppIndex />} />
       </Routes>
     </GlobalContextProvider>
   );

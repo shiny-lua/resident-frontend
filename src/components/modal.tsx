@@ -7,11 +7,9 @@ const Modal = ({ children }: { children: React.ReactNode }) => {
         inset: "0px",
         zIndex: 9999,
       }}
+      className="bg-black bg-opacity-60"
     >
       <span
-        data-type="inside"
-        aria-hidden="true"
-        data-floating-ui-focus-guard=""
         style={{
           border: "0px",
           clip: "rect(0px, 0px, 0px, 0px)",
@@ -29,9 +27,6 @@ const Modal = ({ children }: { children: React.ReactNode }) => {
       ></span>
       {children}
       <span
-        data-type="inside"
-        aria-hidden="true"
-        data-floating-ui-focus-guard=""
         style={{
           border: "0px",
           clip: "rect(0px, 0px, 0px, 0px)",

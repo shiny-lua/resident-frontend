@@ -62,8 +62,8 @@ const SignIn = () => {
                 {stepIndex === 1 && (
                     <div className="w-full sm:w-[430px] px-5 pt-10">
                         <div>
-                            <div className="text-title-md font-semibold text-center mb-2">Let Verify you</div>
-                            <div className="text-center opacity-60 text-sm">Verification code was sent to your email.</div>
+                            <div className="text-title-md font-semibold text-center mb-2">Enter your password</div>
+                            <div className="text-center opacity-60 text-sm">Enter the password associated with your account.</div>
                         </div>
                         <div className="flex justify-center items-center mb-10 gap-2 text-sm">
                             <div className="opacity-60">bh066078@gmail.com</div>

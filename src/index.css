@@ -12,11 +12,6 @@
   background-image: linear-gradient(90deg, #ae42e9, #6852ea, #3c66ee);
 }
 
-::-webkit-scrollbar {
-  display: none;
-  /* Safari and Chrome */
-}
-
 @keyframes fadeIn {
   0% {
     opacity: 0;

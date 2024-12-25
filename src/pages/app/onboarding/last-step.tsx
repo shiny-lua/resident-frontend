@@ -2,8 +2,10 @@ import React from "react";
 
 import Icon from "../../../components/icon";
 import CompareModal from "./components/compare-modal";
+import { useNavigate } from "react-router-dom";
 
 const LastStep = ({ onNext, onPrev }: { onNext: VoidFunction, onPrev: VoidFunction }) => {
+    const navigate = useNavigate()
     const [showCompareModal, setShowCompareModal] = React.useState(false)
 
     return (
@@ -68,7 +70,7 @@ const LastStep = ({ onNext, onPrev }: { onNext: VoidFunction, onPrev: VoidFuncti
                 </div>
             </div>
             <div>
-                <button onClick={onNext} className="bg-slate-900 text-white rounded-md text-sm font-medium px-4 py-3 mb-3 w-full" >Next Step</button>
+                <button onClick={() => navigate("/app/started")} className="bg-slate-900 text-white rounded-md text-sm font-medium px-4 py-3 mb-3 w-full" >Next Step</button>
                 <button className="text-sm px-4 py-2 w-full hover:bg-slate-100 hover:text-slate-900 font-semibold text-slate-400">Skip for 5 Minute Step</button>
             </div>
             {showCompareModal && (<CompareModal onClose={() => setShowCompareModal(false)} showModal={showCompareModal} />)}

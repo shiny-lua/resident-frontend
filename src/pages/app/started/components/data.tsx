@@ -58,19 +58,19 @@ const infoCards = [
         title: "Need more interview guides?",
         desc: "Most recent interview questions and answers verified by our community",
         buttonText: "Read more at Final Round AI Blog",
-        buttonLink: "",
+        link: "",
     },
     {
         title: "Contact support",
         desc: "An issue? Our team will take care of you via our chat or support@finalroundai.com",
         buttonText: "Get in touch with our support team",
-        buttonLink: "",
+        link: "",
     },
     {
         title: "Book a onboarding session",
         desc: "Hop on a call with our Interview Copilot™ expert to set up your copilot for success!",
         buttonText: "Upgrade to schedule an appointment",
-        buttonLink: "",
+        link: "",
     },
 ];
 

@@ -10,12 +10,12 @@ import InfoCard from "./components/info-card";
 const Started = () => {
     return (
         <Layout>
-            <div className="relative flex flex-1 flex-col gap-3 overflow-auto p-4 pb-16 lg:gap-4 lg:p-6 lg:pb-6 md:max-h-screen">
+            <div className="relative flex flex-1 flex-col gap-3 overflow-auto p-4 pb-8 lg:gap-4 lg:p-6 lg:pb-6 md:max-h-screen">
                 <div className="flex items-center">
-                    <h1 className="text-left text-3xl font-semibold leading-8">Get the most out of Final Round AI</h1>
+                    <h1 className="text-left text-2xl sm:text-3xl font-semibold leading-8">Get the most out of Final Round AI</h1>
                 </div>
                 <div className="my-3 opacity-100 transition-all duration-200">
-                    <h2 className="flex text-xl pt-2 pb-4 font-semibold text-slate-900">
+                    <h2 className="flex text-lg sm:text-xl pt-2 pb-4 font-semibold text-slate-900">
                         <span className="block flex-1">Start with the basics</span>
                     </h2>
                     <div className="flex flex-col lg:flex-row items-center bg-[linear-gradient(180deg,_#54aef3_0%,_#00d9ff_100%)] text-white p-6 rounded-lg">
@@ -33,7 +33,7 @@ const Started = () => {
                     </div>
                 </div>
                 <div className="py-3">
-                    <h2 className="text-2xl font-semibold text-slate-900">Watch the Interview Copilot™ demo</h2>
+                    <h2 className="flex text-lg sm:text-xl font-semibold text-slate-900">Watch the Interview Copilot™ demo</h2>
                     <div className="mt-4 grid grid-rows-2 gap-4 md:grid-cols-2 md:grid-rows-1">
                         {tutorials.map((tutorial, index) => (
                             <TutorialCard
@@ -48,7 +48,7 @@ const Started = () => {
                     </div>
                 </div>
                 <div className="my-3">
-                    <h2 className="text-2xl font-semibold text-slate-900">
+                    <h2 className="flex text-lg sm:text-xl font-semibold text-slate-900">
                         Get a leg up on the competition
                     </h2>
                     <div className="mt-2 grid auto-rows-min gap-4 rounded-md lg:grid-cols-3 md:grid-rows-1">
@@ -58,12 +58,11 @@ const Started = () => {
                                 title={card.title}
                                 desc={card.desc}
                                 buttonText={card.buttonText}
-                                buttonLink={card.buttonLink}
+                                link={card.link}
                             />
                         ))}
                     </div>
                 </div>
-
             </div>
         </Layout>
     );

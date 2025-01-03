@@ -26,8 +26,8 @@ const Header = () => {
                 <Link to="" className="text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">Question Bank</Link>
             </div>
             <div className="flex gap-3 sm:gap-6 items-center">
-                <Link to="/sign-in" className="text-md hidden sm:block hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">Sign In</Link>
-                <Link to="/sign-up" className="text-white px-4 py-2 text-md hover:bg-sky-200 hover:text-primary p-2 rounded-md bg-primary">Sign Up</Link>
+                <Link to="/auth/sign-in" className="text-md hidden sm:block hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">Sign In</Link>
+                <Link to="/auth/sign-up" className="text-white px-4 py-2 text-md hover:bg-sky-200 hover:text-primary p-2 rounded-md bg-primary">Sign Up</Link>
                 <Hamburger />
             </div>
         </header>

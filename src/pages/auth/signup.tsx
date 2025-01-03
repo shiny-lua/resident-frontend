@@ -46,10 +46,10 @@ const SiginUp = () => {
                             <label htmlFor="email">Email address</label>
                             <input className="bg-white rounded-md outline-none border focus:border-primary p-3" type="text" name="" id="email" />
                         </div>
-                        <button onClick={() => navigate("/verify-code")} className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-2">Continue</button>
+                        <button onClick={() => navigate("/auth/verify-code")} className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-2">Continue</button>
                         <div className="text-sm mt-4 flex gap-2 justify-center  ">
                             <div className="opacity-80">Already have account?</div>
-                            <Link to={"/sign-in"} className="text-primary font-semibold hover:text-black hover:underline" >Sign In</Link>
+                            <Link to={"/auth/sign-in"} className="text-primary font-semibold hover:text-black hover:underline" >Sign In</Link>
                         </div>
                     </div>
                 </div>

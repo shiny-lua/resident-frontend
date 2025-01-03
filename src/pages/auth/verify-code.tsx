@@ -35,7 +35,7 @@ const VerifyCode = () => {
                     </div>
                     <div className="flex justify-center items-center mb-10 gap-2 text-sm">
                         <div className="opacity-60">bh066078@gmail.com</div>
-                        <button className="opacity-70" onClick={() => navigate("/sign-up")}><Icon icon="Edit" /></button>
+                        <button className="opacity-70" onClick={() => navigate("/auth/sign-up")}><Icon icon="Edit" /></button>
                     </div>
                     <div className="w-full">
                         <VerificationInput
@@ -58,7 +58,7 @@ const VerifyCode = () => {
                     </div>
                     <div className="mt-15">
                         <button
-                            onClick={() => navigate("/set-password")}
+                            onClick={() => navigate("/auth/set-password")}
                             className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md"
                         >
                             Continue

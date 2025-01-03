@@ -54,7 +54,7 @@ const SignIn = () => {
                             <button onClick={() => setStepIndex(1)} className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-2">Continue</button>
                             <div className="text-sm mt-4 flex gap-2 justify-center  ">
                                 <div className="opacity-80">Don't have an account?</div>
-                                <Link to={"/sign-up"} className="text-primary font-semibold hover:text-black hover:underline" >Sign Up</Link>
+                                <Link to={"/auth/sign-up"} className="text-primary font-semibold hover:text-black hover:underline" >Sign Up</Link>
                             </div>
                         </div>
                     </div>
@@ -72,7 +72,7 @@ const SignIn = () => {
                         <div className="flex flex-col gap-2">
                             <div className="flex justify-between items-center">
                                 <label htmlFor="password">Password</label>
-                                <button onClick={() => navigate("/forgot-password")} className="text-slate-500 font-semibold text-sm">Forgot Password?</button>
+                                <button onClick={() => navigate("/auth/forgot-password")} className="text-slate-500 font-semibold text-sm">Forgot Password?</button>
                             </div>
                             <input className="bg-white rounded-md outline-none border focus:shadow-1 focus:border-primary p-3" type="text" name="" id="password" />
                         </div>

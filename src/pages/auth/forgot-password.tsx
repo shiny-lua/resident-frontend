@@ -50,7 +50,7 @@ const SetPassword = () => {
                         <Icon icon="Email" />
                         <div>Email code to bh066078@gmail.com</div>
                     </div>
-                    <Link to={"/sign-in"} className="flex justify-center font-semibold text-slate-500">Back</Link>
+                    <Link to={"/auth/sign-in"} className="flex justify-center font-semibold text-slate-500">Back</Link>
                     <div className="flex justify-center gap-4 pt-3">
                         <span className="text-slate-500">Don't have any of these?</span>
                         <button className="text-primary font-semibold">Get help</button>

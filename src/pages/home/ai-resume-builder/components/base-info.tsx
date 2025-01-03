@@ -44,12 +44,12 @@ const BaseInfo = () => {
                 </label>
                 <div className="relative col-span-full">
                     <button className="rounded outline-none bg-[#f7f7f7] px-2 py-1 leading-3 absolute right-0 top-0">
-                        <div className="flex flex-row items-center text-[12px]">
+                        <div className="flex flex-row items-center text-[12px] gap-1">
                             <img src="/image/icons/ai_star.png" width={20} height={20} alt="stars" />
                             AI Generate
                         </div>
                     </button>
-                    <label className="text-lg font-medium text-gray-700 col-span-full relative">
+                    <label className="text-lg font-medium text-gray-700 col-span-full relative mb-1">
                         Objective
                         <textarea
                             className="mt-1 px-3 py-2 block w-full rounded-md border border-gray-300 text-gray-900 shadow-sm outline-none font-normal text-lg resize-none overflow-hidden"

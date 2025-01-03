@@ -1,3 +1,5 @@
+import Carousel from "react-multi-carousel"
+
 import Icon from "../../../components/icon"
 import Layout from "../../../components/layout"
 import BaseInfo from "./components/base-info"
@@ -7,6 +9,34 @@ import Project from "./components/project"
 import ResumeSetting from "./components/resume-setting"
 import Skills from "./components/skills"
 import WorkExperience from "./components/work-experience"
+import { companies } from "./components/data.d"
+
+const responsive = {
+    desktop: {
+        breakpoint: {
+            max: 3000,
+            min: 1024
+        },
+        items: 7,
+        partialVisibilityGutter: 40
+    },
+    mobile: {
+        breakpoint: {
+            max: 464,
+            min: 0
+        },
+        items: 1,
+        partialVisibilityGutter: 30
+    },
+    tablet: {
+        breakpoint: {
+            max: 1024,
+            min: 464
+        },
+        items: 4,
+        partialVisibilityGutter: 30
+    }
+}
 
 const AiResumeBuilder = () => {
     return (
@@ -71,7 +101,7 @@ const AiResumeBuilder = () => {
                                             style={{ maxWidth: 50, minWidth: 0 }}
                                         />
                                         <div className="relative">
-                                            <section className="h-[calc(100vh-var(--top-nav-bar-height)-var(--resume-control-bar-height))] overflow-hidden md:p-[var(--resume-padding)]">
+                                            <section className="overflow-hidden">
                                                 <div style={{ maxWidth: "375.36px", maxHeight: "485.76px" }}>
                                                     <div
                                                         className="bg-white border-black origin-top-left border-[12px] shadow-lg"
@@ -81,41 +111,7 @@ const AiResumeBuilder = () => {
                                                             transform: "scale(0.46)"
                                                         }}
                                                     >
-                                                        <iframe
-                                                            srcDoc='<!DOCTYPE html>
-<html>
-  <head>
-    <link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Roboto-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Roboto-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lato-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lato-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Montserrat-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Montserrat-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/OpenSans-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/OpenSans-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Raleway-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Raleway-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/NotoSerif-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/NotoSerif-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lora-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lora-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/RobotoSlab-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/RobotoSlab-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/PlayfairDisplay-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/PlayfairDisplay-Bold.ttf" type="font/ttf" crossorigin="anonymous"><link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Merriweather-Regular.ttf" type="font/ttf" crossorigin="anonymous">
-<link rel="preload" as="font" href="https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Merriweather-Bold.ttf" type="font/ttf" crossorigin="anonymous">
-    <style>
-@font-face {font-family: "Roboto"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Roboto-Regular.ttf");}
-@font-face {font-family: "Roboto"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Roboto-Bold.ttf"); font-weight: bold;}@font-face {font-family: "Lato"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lato-Regular.ttf");}
-@font-face {font-family: "Lato"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lato-Bold.ttf"); font-weight: bold;}@font-face {font-family: "Montserrat"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Montserrat-Regular.ttf");}
-@font-face {font-family: "Montserrat"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Montserrat-Bold.ttf"); font-weight: bold;}@font-face {font-family: "OpenSans"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/OpenSans-Regular.ttf");}
-@font-face {font-family: "OpenSans"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/OpenSans-Bold.ttf"); font-weight: bold;}@font-face {font-family: "Raleway"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Raleway-Regular.ttf");}
-@font-face {font-family: "Raleway"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Raleway-Bold.ttf"); font-weight: bold;}@font-face {font-family: "NotoSerif"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/NotoSerif-Regular.ttf");}
-@font-face {font-family: "NotoSerif"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/NotoSerif-Bold.ttf"); font-weight: bold;}@font-face {font-family: "Lora"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lora-Regular.ttf");}
-@font-face {font-family: "Lora"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Lora-Bold.ttf"); font-weight: bold;}@font-face {font-family: "RobotoSlab"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/RobotoSlab-Regular.ttf");}
-@font-face {font-family: "RobotoSlab"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/RobotoSlab-Bold.ttf"); font-weight: bold;}@font-face {font-family: "PlayfairDisplay"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/PlayfairDisplay-Regular.ttf");}
-@font-face {font-family: "PlayfairDisplay"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/PlayfairDisplay-Bold.ttf"); font-weight: bold;}@font-face {font-family: "Merriweather"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Merriweather-Regular.ttf");}
-@font-face {font-family: "Merriweather"; src: url("https://d12araoe7z5xxk.cloudfront.net/landing-page/fonts/Merriweather-Bold.ttf"); font-weight: bold;}
-    </style>
-  </head>
-  <body style=&apos;overflow-y: auto; width: 612pt; margin: 0; padding: 0; -webkit-text-size-adjust:none;&apos;>
-    <div></div>
-  </body>
-</html>'
-                                                            style={{ width: "100%", height: "100%" }}
-                                                        />
+
                                                     </div>
                                                 </div>
                                             </section>
@@ -130,7 +126,39 @@ const AiResumeBuilder = () => {
                         className="mt-12 rounded-[12px] border border-slate-200 shadow-md lg:hidden"
                     />
                 </div>
-
+                <div className="mx-auto px-4 my-20 max-w-[1700px]">
+                    <Carousel additionalTransfrom={0}
+                        arrows={false}
+                        autoPlaySpeed={2000}
+                        centerMode={true}
+                        autoPlay
+                        className=""
+                        draggable
+                        customTransition="all 2s linear"
+                        focusOnSelect={false}
+                        infinite
+                        minimumTouchDrag={80}
+                        pauseOnHover
+                        renderArrowsWhenDisabled={false}
+                        renderButtonGroupOutside={false}
+                        renderDotsOutside={false}
+                        responsive={responsive}
+                        rewind={false}
+                        rewindWithAnimation={false}
+                        rtl={false}
+                        shouldResetAutoplay
+                        showDots={false}
+                        sliderClass=""
+                        slidesToSlide={1}
+                        swipeable
+                    >
+                        {companies.map((i, k) => (
+                            <div className="flex items-center justify-center w-50 h-50" key={k} >
+                                <img src={i.src} alt={i.alt} width="100%" height="100%"/>
+                            </div>
+                        ))}
+                    </Carousel>
+                </div>
             </div>
         </Layout>
     )

@@ -16,8 +16,8 @@ function App() {
   return (
     <GlobalContextProvider>
       <Routes>
-        <Route path="/*" element={<Auth/>} />
-        <Route path="/" element={<Home />} />
+        <Route path="/auth/*" element={<Auth/>} />
+        <Route path="/*" element={<Home />} />
         <Route path="/app/*" element={<AppIndex />} />
       </Routes>
     </GlobalContextProvider>

@@ -4,7 +4,9 @@
 
 :root {
   font-family: Inter, sans-serif;
-  font-feature-settings: 'liga' 1, 'calt' 1; 
+  font-feature-settings:
+    "liga" 1,
+    "calt" 1;
   font-size: 14px;
 }
 
@@ -38,4 +40,51 @@
 
 .fade-out {
   animation: fadeOut 0.5s ease-in-out forwards;
+}
+.blur-overlay {
+  position: absolute;                      /* Overlay covers the entire viewport */
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: hsla(36, 23%, 91%, 0.1); 
+  backdrop-filter: blur(87px);
+  -webkit-backdrop-filter: blur(87px);
+  z-index: 2;
+}
+
+.bubble.is--blue {
+  position: absolute;
+  border-radius: 67.3125rem;
+  background: #0090FF;
+  width: 74.792%;
+  height: 56.353%;
+  transform: rotate(42.194deg);
+  bottom: -27.294%;
+  left: -31.181%;
+}
+
+.bubble.is--sky {
+  position: absolute;
+  border-radius: 30.375rem;
+  background: #00F6FF;
+  width: 17.431%;
+  height: 57.176%;
+  transform: rotate(30deg);
+  bottom: -28.706%;
+  left: 26.319%;
+}
+
+.bubble.is--green {
+  position: absolute;
+  border-radius: 29.4375rem;
+  background: #00FF73;
+  width: 32.708%;
+  height: 26.471%;
+  transform: rotate(-56.943deg);
+  top: 30%;
+  right: -10.295%;
+}
+.react-multi-carousel-track {
+  gap: 1em;
 }

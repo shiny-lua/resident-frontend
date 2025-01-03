@@ -1,7 +1,7 @@
-import React, { useState, ReactNode } from 'react';
+import React from 'react';
 import SideBar from './side-bar';
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
 
     return (
         <div className="flex">

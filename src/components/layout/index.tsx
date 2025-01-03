@@ -1,6 +1,6 @@
 import React, { useState, ReactNode } from 'react';
 import Header from './header';
-// import Footer from './footer';
+import Footer from './footer';
 
 const Layout = ({ children }: { children: ReactNode }) => {
 
@@ -8,7 +8,7 @@ const Layout = ({ children }: { children: ReactNode }) => {
         <div className="">
             <Header />
             {children}
-            {/* <Footer /> */}
+            <Footer />
         </div>
     );
 };

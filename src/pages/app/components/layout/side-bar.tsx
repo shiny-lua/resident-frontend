@@ -1,19 +1,24 @@
 import { Link } from "react-router-dom"
 import Icon from "../../../../components/icon"
+import React from "react"
 
 const SideBar = () => {
+
+    const [isCollapse, setIsCollapse] = React.useState(false)
+
     return (
-        <div className="sticky left-0 top-0 right-0 box-content h-full border-r border-slate-100 transition-[width] duration-300 max-h-screen w-[65px] md:w-[240px]">
-            <nav className="flex h-full w-full flex-col overflow-x-hidden py-5 transition-[width] duration-300">
+        <div className="sticky left-0 top-0 right-0 box-content h-full border-r border-slate-100 transition-[width] duration-300 max-h-screen w-[240px] sm:w-[65px] md:w-[240px]">
+            <nav className="relative flex h-full w-full flex-col overflow-x-hidden py-5 transition-[width] duration-300">
+                <button onClick={() => setIsCollapse(true)} className="absolute flex justify-center items-center top-5 right-5 rounded-lg border border-slate-400 p-1 text-slate-600"><Icon icon="ArrowLeft" /></button>
                 <Link to={"/"} className="flex gap-2 px-0 mb-4 md:mb-0 sm:px-5 cursor-pointer">
-                    <div className="hidden md:inline-block md:text-2xl text-primary">Final Round</div>
+                    <div className="inline-block sm:hidden md:inline-block md:text-2xl text-primary">Final Round</div>
                     <div className="flex justify-center md:justify-start w-full md:w-auto">
                         <img src="/image/icons/logo.png" className="w-6 h-6 md:w-8 md:h-8" alt="logo" />
                     </div>
                 </Link>
                 <div className="">
                     <div className="border-t border-slate-100 px-2 py-3">
-                        <div className="hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">
+                        <div className="hidden sm:hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">
                             Interview
                         </div>
                         <Link to="/app/v2/interview" className="flex justify-center md:justify-start min-h-10 items-center gap-3 text-nowrap rounded-md px-3 pb-3 font-medium hover:bg-sky-100">
@@ -38,7 +43,7 @@ const SideBar = () => {
                         </Link>
                     </div>
                     <div className="border-t border-slate-100 px-2 pt-3">
-                        <div className="hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>
+                        <div className="hidden sm:hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>
                         <Link to="/app/v2/ai-generator" className="flex justify-center md:justify-start min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-3 font-medium hover:bg-sky-100" >
                             <Icon icon="AiGenerator" />
                             <span className="hidden md:block">AI Material Generator</span>
@@ -57,14 +62,14 @@ const SideBar = () => {
                         </Link>
                     </div>
                     <div className="border-t border-slate-100 mx-2 px-2 py-3">
-                        <div className="hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">Education</div>
+                        <div className="hidden sm:hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">Education</div>
                         <Link className="flex justify-center min-h-10 items-center gap-3 py-3 text-nowrap rounded-md px-3 w-12 md:w-full font-medium bg-slate-900 text-white  hover:bg-primary/90" to="/app/v2/started">
                             <Icon icon="Rocket" />
                             <span className="hidden md:block">Get Started</span>
                         </Link>
                     </div>
                     <div className="border-t border-slate-100 px-2 pb-3">
-                        <div className="hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">Other</div>
+                        <div className="hidden sm:hidden md:block text-nowrap pb-3 pl-3 font-medium text-slate-400">Other</div>
                         <Link className="flex justify-center md:justify-start min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-3 font-medium hover:bg-sky-100" to="/app/v2/download">
                             <Icon icon="Download" />
                             <span className="hidden md:block">Download Center</span>
@@ -79,7 +84,7 @@ const SideBar = () => {
                         </Link>
                     </div>
                 </div>
-                <div className="hidden md:block sticky bottom-0 m-2 rounded-lg border bg-white p-3 shadow-md mt-auto px-2">
+                <div className="hidden sm:hidden md:block sticky bottom-0 m-2 rounded-lg border bg-white p-3 shadow-md mt-auto px-2">
                     <div className="flex h-12 items-center gap-3 border-b border-slate-200 pb-3 text-slate-700">
                         <img src="/image/icons/lua.avif" className="rounded-full w-8 h-8" alt="lua" />
                         <div className="font-semibold transition-colors">

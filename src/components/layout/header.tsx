@@ -18,7 +18,7 @@ const Header = () => {
                 </div>
             </Link>
             <div className="gap-2 hidden 2xl:flex items-center">
-                <Link to="" className="text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">Interview Copllot™</Link>
+                <Link to="/interview-copilot" className="text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">Interview Copllot™</Link>
                 <Link to="" className="text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">AI Resume Builder</Link>
                 <Link to="" className="text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">AI Mock Interview</Link>
                 <Link to="" className="text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-3 rounded-md">Pricing</Link>

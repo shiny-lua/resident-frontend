@@ -1,4 +1,3 @@
-import { Link } from "react-router-dom"
 import Layout from "../../../components/layout"
 import Carousel from "react-multi-carousel"
 import { companies } from "./components/data.d"
@@ -6,6 +5,8 @@ import Practice from "./components/practice"
 import Header from "./components/header"
 import JobPreparation from "./components/job-preparation"
 import JoinSeekers from "./components/join-seekers"
+import JobOfferReceive from "./components/job-offer-receive"
+import Faq from "./components/faq"
 
 const responsive = {
     desktop: {
@@ -37,7 +38,7 @@ const responsive = {
 const AiMockInterview = () => {
     return (
         <Layout>
-            <div className="relative bg-cyan-50 -z-20">
+            <div className="relative bg-cyan-50">
                 <img className="absolute left-0 top-0 w-full -z-1" src="/image/home/common-bg.png" alt="" />
                 <Header />
                 <div className="bg-white my-20">
@@ -76,6 +77,8 @@ const AiMockInterview = () => {
                 <Practice />
                 <JobPreparation />
                 <JoinSeekers />
+                <JobOfferReceive />
+                <Faq />
             </div>
         </Layout>
     )

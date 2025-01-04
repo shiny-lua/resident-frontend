@@ -888,6 +888,37 @@ const icons = {
                 d="M15 12a3 3 0 1 1-6 0 3 3 0 0 1 6 0Z"
             />
         </svg>
+    ),
+    ChevronUp: (
+        <svg
+            className="h-6 w-6 text-current"
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path stroke="none" d="M0 0h24v24H0z" /> <polyline points="6 15 12 9 18 15" />
+        </svg>
+
+    ),
+    ChevronDown: (
+        <svg
+            className="h-6 w-6 text-current"
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path stroke="none" d="M0 0h24v24H0z" /> <polyline points="6 9 12 15 18 9" />
+        </svg>
     )
 } as { [key: string]: React.SVGProps<SVGSVGElement> }
 

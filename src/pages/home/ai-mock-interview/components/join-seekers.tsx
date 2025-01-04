@@ -1,5 +1,6 @@
 import Carousel from "react-multi-carousel"
-import { testimonials } from "./data.d"
+
+import { testimonials } from "../../components/data.d"
 
 const responsive = {
     desktop: {
@@ -7,7 +8,7 @@ const responsive = {
             max: 3000,
             min: 1024
         },
-        items: 3,
+        items: 4,
         partialVisibilityGutter: 40
     },
     mobile: {
@@ -28,16 +29,16 @@ const responsive = {
     }
 }
 
-const Testimonial = ({ i }: { i: { tag: string, quote: string, person: string, role: string, companyLogo: string, tagColor: string } }) => {
+const Item = ({ i }: { i: { tag: string, quote: string, person: string, role: string, companyLogo: string, tagColor: string } }) => {
     return (
         <div className="flex flex-col shadow-1 items-start justify-between self-stretch rounded-[2rem] w-full sm:w-auto bg-sky-50 p-6 h-[400px] mx-2">
             <div className="mb-[2rem] flex flex-col items-start justify-between gap-8 text-wrap">
                 <div className={`flex items-center justify-center gap-2 rounded-[2rem] px-4 py-3 nth2`}
                     style={{ backgroundColor: i.tagColor }}
                 >
-                    <h3 className="text-md text-white">{i.tag}</h3>
+                    <h3 className="text-lg text-black">{i.tag}</h3>
                 </div>
-                <h3 className="text-2xl font-albra">{i.quote}</h3>
+                <h3 className="text-3xl font-albra">{i.quote}</h3>
                 <p className="text-xl text-gray-primary opacity-40">{i.role}</p>
             </div>
             <img
@@ -49,13 +50,12 @@ const Testimonial = ({ i }: { i: { tag: string, quote: string, person: string, r
     )
 }
 
-const Testimonials = () => {
+const JoinSeekers = () => {
     return (
-        <section className="px flex flex-col items-center gap-20 overflow-hidden pb-28 pt-24">
-            <div className="flex flex-col items-center lg:gap-16 gap-12 text-center relative z-10  max-w-[40.1rem]">
-                <p className="text-xl  text-gray-400">We Are Here to Help You Succeed</p>
-                <h2 className="text-4xl font-albra max-w-[46.9375rem]">Experience our product through real stories</h2>
-            </div>
+        <section className="px mt-[100px] flex flex-col items-center overflow-hidden lg:mt-[200px]">
+            <h2 className="relative z-10 mb-12 w-screen text-center text-3xl lg:mb-16">
+                Join Thousands of Happy Job Seekers
+            </h2>
             <div className="mx-auto px-4 my-20 w-full">
                 <Carousel additionalTransfrom={0}
                     arrows={false}
@@ -83,14 +83,13 @@ const Testimonials = () => {
                     swipeable
                 >
                     {testimonials.map((i, k) => (
-                        <Testimonial key={k} i={i} />
+                        <Item key={k} i={i} />
 
                     ))}
                 </Carousel>
             </div>
-
         </section>
     )
 }
 
-export default Testimonials
+export default JoinSeekers

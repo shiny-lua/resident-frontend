@@ -53,7 +53,7 @@ const Learn = () => {
         <section className="px flex flex-col items-center gap-20 overflow-hidden pb-28 pt-24">
 
             <div className="my-20 max-w-[100vw]">
-                <div className="px-3 flex flex-col items-center lg:gap-16 xs:gap-12 text-center relative z-10 sm:px-5">
+                <div className="px-3 flex flex-col items-center lg:gap-16 gap-12 text-center relative z-10 sm:px-5">
                     <p className="text-xl text-gray-400">
                         AI Will Not Take Your Job But Someone Using AI Will
                     </p>

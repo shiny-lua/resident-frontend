@@ -10,6 +10,8 @@ import ResumeSetting from "./components/resume-setting"
 import Skills from "./components/skills"
 import WorkExperience from "./components/work-experience"
 import { companies } from "./components/data.d"
+import RecruitingTools from "./components/recruiting-tools"
+import Experience from "./components/experience"
 
 const responsive = {
     desktop: {
@@ -41,12 +43,13 @@ const responsive = {
 const AiResumeBuilder = () => {
     return (
         <Layout>
-            <div className="bg-cyan-50">
+            <div className="relative">
+                <img className="absolute left-0 top-0 w-full -z-1" src="/image/home/common-bg.png" alt="" />
                 <div className="text-center px-3">
-                    <div className="mx-auto max-w-[983px] font-[Albra] text-[32px] leading-none tracking-tight md:text-5xl md:leading-[48px]">
+                    <div className="mx-auto max-w-[983px] font-albra text-[32px] leading-none tracking-tight md:text-5xl md:leading-[48px]">
                         The most powerful AI Resume Builder
                     </div>
-                    <div className="flex flex-col-reverse items-center justify-center text-lg leading-[24px] tracking-tight text-gray-500 xs:mt-4 md:mt-6 md:flex-row ">
+                    <div className="flex flex-col-reverse items-center justify-center text-lg leading-[24px] tracking-tight text-gray-500 mt-4 md:mt-6 md:flex-row ">
                         Over 1,200,000 resume generated in the past 30 days
                         <div className="mb-2 rounded-[32px] bg-cyan-100 px-4 py-2 text-sm tracking-tight text-gray-500 md:mb-0 md:ml-2">
                             100% Free
@@ -126,7 +129,7 @@ const AiResumeBuilder = () => {
                         className="mt-12 rounded-[12px] border border-slate-200 shadow-md lg:hidden"
                     />
                 </div>
-                <div className="mx-auto px-4 my-20 max-w-[1700px]">
+                <div className="mx-auto px-4 mt-20 max-w-[1700px]">
                     <Carousel additionalTransfrom={0}
                         arrows={false}
                         autoPlaySpeed={2000}
@@ -159,6 +162,8 @@ const AiResumeBuilder = () => {
                         ))}
                     </Carousel>
                 </div>
+                <RecruitingTools />
+                <Experience />
             </div>
         </Layout>
     )

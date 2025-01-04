@@ -27,9 +27,10 @@ const images = [
 const InterviewCopilot = () => {
     return (
         <Layout>
-            <div className="relative bg-cyan-100 bg-opacity-60">
+            <div className="relative">
+                <img className="absolute left-0 top-0 w-full -z-1" src="/image/home/common-bg.png" alt="" />
                 <div className="text-center px-3">
-                    <div className="mx-auto max-w-[983px] font-[Albra] text-[32px] leading-none tracking-tight md:text-5xl md:leading-[48px]">
+                    <div className="mx-auto max-w-[983px] font-albra text-[32px] leading-none tracking-tight md:text-5xl md:leading-[48px]">
                         <div className="text-center">
                             Struggling to answer tough questions during <br /> interviews?
                         </div>
@@ -56,7 +57,7 @@ const InterviewCopilot = () => {
                                 />
                                 <div className="ml-6">
                                     <div className="text-xl tracking-tight text-black">Interviewer</div>
-                                    <div className="text-white mt-4 flex h-[28px] items-center justify-center rounded-[14px] bg-[linear-gradient(90deg,_#54b3f3_0%,_#00c3ff_100%)] px-[1px]">
+                                    <div className="text-white mt-4 flex h-[28px] items-center justify-center rounded-[14px] bg-gradient-to-r from-[#0090FF] to-[#00F7FF] px-[1px]">
                                         <div className="flex h-[26px] w-full items-center justify-center rounded-[14px] bg-white p-2 text-[13px] leading-[26px] text-sky-500">
                                             <img alt="loader" width={16} height={16} className="mr-1 text-transparent transform rotate-[720deg]" src="/image/icons/loader-line.svg" />
                                             Transcribing
@@ -79,7 +80,7 @@ const InterviewCopilot = () => {
                                 </div>
                             </div>
                         </div>
-                        <div className="ml-6 min-h-[260px] rounded-[16px] bg-gradient-to-r from-[#54b3f3] to-[#6dc4df] p-4">
+                        <div className="ml-6 min-h-[260px] rounded-[16px] bg-gradient-to-r from-[#0090FF] to-[#00F7FF] p-4">
                             <div className="flex flex-row justify-between text-white">
                                 <div className="flex flex-row text-xl font-[500] leading-[21px]">
                                     Interview Copilot™ &amp; You
@@ -121,7 +122,7 @@ const InterviewCopilot = () => {
                         loop={true}
                     />
                 </div>
-                <div className="mt-12 min-h-[80px] w-full bg-gradient-to-r from-[#6bc2dd] to-[#547ef3] px-4 py-6 text-white">
+                <div className="mt-12 min-h-[80px] w-full bg-gradient-to-r from-[#0090FF] to-[#00F7FF] px-4 py-6 text-white">
                     <div className="mx-auto flex w-full max-w-[1200px] items-center justify-center flex-col md:flex-row md:justify-between">
                         <div className="text-center text-xl md:mr-16 md:text-left lg:w-[892px]">
                             Your final round of interview, your AI Interview Copilot!
@@ -149,7 +150,7 @@ const InterviewCopilot = () => {
                             src="/image/icons/awareness.svg"
                         />
                         <div className="mt-4 xl:mt-8 text-center">
-                            <div className="text-2xl md:text-3xl font-[Albra] text-black-text leading-[33px]">
+                            <div className="text-2xl md:text-3xl font-albra text-black-text leading-[33px]">
                                 Contextual Awareness
                             </div>
                             <div className="md:mt-6 mt-3 tracking-tight text-xl text-[#95989B] leading-[22px]">
@@ -166,7 +167,7 @@ const InterviewCopilot = () => {
                             src="/image/icons/personal.svg"
                         />
                         <div className="mt-4 xl:mt-8 text-center">
-                            <div className="text-2xl md:text-3xl font-[Albra] text-black-text leading-[33px]">
+                            <div className="text-2xl md:text-3xl font-albra text-black-text leading-[33px]">
                                 Personalized Responses
                             </div>
                             <div className="md:mt-6 mt-3 tracking-tight text-xl text-[#95989B] leading-[22px]">
@@ -184,7 +185,7 @@ const InterviewCopilot = () => {
                             src="/image/icons/preparation.svg"
                         />
                         <div className="mt-4 xl:mt-8 text-center">
-                            <div className="text-2xl md:text-3xl font-[Albra] text-black-text leading-[33px]">
+                            <div className="text-2xl md:text-3xl font-albra text-black-text leading-[33px]">
                                 Customizable Preparation
                             </div>
                             <div className="md:mt-6 mt-3 tracking-tight text-xl text-[#95989B] leading-[22px]">
@@ -194,7 +195,7 @@ const InterviewCopilot = () => {
                     </div>
                 </div>
                 <div className="mx-[16px] mt-[100px] box-border flex min-h-[118px] max-w-[1029px] flex-col items-center justify-center rounded-[24px] border border-[#E3E5EB] bg-transparent bg-white p-6 md:border-0 md:bg-cyan-100 md:pl-6 lg:mx-auto">
-                    <div className="w-full text-center font-[Albra] text-3xl text-gray-500">Support All Meeting Softwares</div>
+                    <div className="w-full text-center font-albra text-3xl text-gray-500">Support All Meeting Softwares</div>
                     <div className="mt-4 flex w-full flex-row flex-wrap justify-center md:px-4 xl:w-[1044px]">
                         {images.map((image, index) => (
                             <img
@@ -212,7 +213,7 @@ const InterviewCopilot = () => {
                 <div className="mt-[124px] md:mt-[200px]">
                     <div className="flex flex-col-reverse xl:flex-row flex-wrap max-w-[1200px] mx-auto px-4 xl:px-0 justify-between items-center">
                         <div className="xl:max-w-[560px] w-full xl:w-auto mt-12 xl:mt-0 flex flex-col justify-center">
-                            <div className="text-[32px] md:text-5xl font-[Albra] text-center xl:text-left tracking-tight leading-none">
+                            <div className="text-[32px] md:text-5xl font-albra text-center xl:text-left tracking-tight leading-none">
                                 Real-time Transcription
                             </div>
                             <div className="text-xl md:mt-6 mt-4 text-center xl:text-left text-gray-500 leading-[24px] tracking-tight">
@@ -229,7 +230,7 @@ const InterviewCopilot = () => {
                                             style={{ color: "transparent" }}
                                             src="/image/icons/latency.svg"
                                         />
-                                        <div className="text-2xl md:text-3xl ml-4 font-[Albra] leading-[36px] tracking-tight">
+                                        <div className="text-2xl md:text-3xl ml-4 font-albra leading-[36px] tracking-tight">
                                             Super-low Latency.
                                         </div>
                                     </div>
@@ -248,7 +249,7 @@ const InterviewCopilot = () => {
                                             style={{ color: "transparent" }}
                                             src="/image/icons/light-clock.svg"
                                         />
-                                        <div className="text-2xl md:text-3xl ml-4 font-[Albra] leading-[36px] tracking-tight">
+                                        <div className="text-2xl md:text-3xl ml-4 font-albra leading-[36px] tracking-tight">
                                             Exceptional Accuracy
                                         </div>
                                     </div>
@@ -267,7 +268,7 @@ const InterviewCopilot = () => {
                                             style={{ color: "transparent" }}
                                             src="/image/icons/a-text.svg"
                                         />
-                                        <div className="text-2xl md:text-3xl ml-4 font-[Albra] leading-[36px] tracking-tight">
+                                        <div className="text-2xl md:text-3xl ml-4 font-albra leading-[36px] tracking-tight">
                                             Multilingual Capability
                                         </div>
                                     </div>
@@ -300,7 +301,7 @@ const InterviewCopilot = () => {
                 <div className="my-[124px] md:my-[100px]">
                     <div className="flex flex-col-reverse xl:flex-row-reverse flex-wrap max-w-[1200px] mx-auto px-4 xl:px-0 justify-between items-center">
                         <div className="xl:max-w-[560px] w-full xl:w-auto mt-12 xl:mt-0 flex flex-col justify-center">
-                            <div className="text-[32px] md:text-5xl font-[Albra] text-center xl:text-left tracking-tight leading-none">
+                            <div className="text-[32px] md:text-5xl font-albra text-center xl:text-left tracking-tight leading-none">
                                 Real-time Feedback
                             </div>
                             <div className="text-xl md:mt-6 mt-4 text-center xl:text-left text-gray-500 leading-[24px] tracking-tight">
@@ -323,7 +324,7 @@ const InterviewCopilot = () => {
                                             style={{ color: "transparent" }}
                                             src="https://d12araoe7z5xxk.cloudfront.net/landing-page/images/interviewCopilot/analysis.svg"
                                         />
-                                        <div className="text-2xl md:text-3xl ml-4 font-[Albra] leading-[36px] tracking-tight">
+                                        <div className="text-2xl md:text-3xl ml-4 font-albra leading-[36px] tracking-tight">
                                             Insightful Analysis
                                         </div>
                                     </div>
@@ -345,7 +346,7 @@ const InterviewCopilot = () => {
                                             style={{ color: "transparent" }}
                                             src="https://d12araoe7z5xxk.cloudfront.net/landing-page/images/interviewCopilot/utility.svg"
                                         />
-                                        <div className="text-2xl md:text-3xl ml-4 font-[Albra] leading-[36px] tracking-tight">
+                                        <div className="text-2xl md:text-3xl ml-4 font-albra leading-[36px] tracking-tight">
                                             Versatile Utility
                                         </div>
                                     </div>

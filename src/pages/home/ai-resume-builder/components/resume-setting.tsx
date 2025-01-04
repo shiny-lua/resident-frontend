@@ -14,7 +14,7 @@ const ResumeSetting = () => {
                     <label className="flex gap-2 text-sm font-medium item-center text-gray-700 undefined">
                         <span className="w-28 text-sm leading-9">Theme Color</span>
                         <input
-                            placeholder="#FF4800"
+                            placeholder="#0ea5e9"
                             className="w-[6rem] border-b border-gray-300 text-center font-semibold leading-3 outline-none text-sm"
                             type="text"
                             defaultValue="#f97316"

@@ -3,7 +3,7 @@ import Icon from "../../../components/icon"
 
 const Progress = () => {
     return (
-        <div className="relative lg:flex lg:flex-col lg:gap-[100svh]">
+        <div className="relative lg:flex lg:flex-col lg:gap-[10svh]">
             <section className="lg:sticky static top-0 p-5 min-h-[100svh] flex bg-black lg:pb-5 pb-0">
                 <div className="p-8 rounded-[2rem] bg-white w-full flex flex-col items-center justify-center self-stretch relative overflow-hidden lg:p-8 px-4 sm:pb-[6.69rem] pb-[4.44rem] sm:pt-20 pt-[5.25rem]">
                     <div className="bubbles-wrapper absolute bottom-0 left-0 right-0 top-0 min-h-[100svh] z-[1] ">
@@ -93,10 +93,7 @@ const Progress = () => {
                     </div>
                 </div>
             </section>
-            <section
-                className="lg:sticky static top-0 p-5 min-h-[100svh] flex bg-black lg:pb-5 pb-0"
-                id="ai-resume-builder"
-            >
+            <section className="lg:sticky static top-0 p-5 min-h-[100svh] flex bg-black lg:pb-5 pb-0">
                 <div className="p-8 rounded-[2rem] bg-white w-full flex flex-col items-center justify-center self-stretch relative overflow-hidden lg:p-8 sm:p-12 p-4 ">
                     <div className="horizontal-tab flex items-stretch self-stretch h-full gap-50">
                         <div className="lg:max-w-[35.4rem] w-full flex flex-col justify-between">

@@ -7,7 +7,7 @@ const ListItem = ({ icon, title, description }: { icon: string, title: string, d
     <li className="flex items-center justify-between">
         <div className="flex items-center justify-center">
             <div className="flex w-6 items-center">
-                {icon === "Check" ? <div className="text-green-600"><Icon icon={icon} /></div> : <Icon icon={icon} />}
+                {icon === "Check" ? <div className="text-green-600"><Icon icon={icon} /></div> : <Icon className="text-danger" icon={icon} />}
             </div>
             <div className="ml-2 flex flex-1 flex-col">
                 <h5 className="flex items-center text-lg text-slate-700">{title}</h5>

@@ -1,5 +1,6 @@
 import React from 'react';
 import SideBar from './side-bar';
+import Header from './header';
 
 const Layout = ({ children }: { children: React.ReactNode }) => {
 
@@ -22,7 +23,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
 
     React.useEffect(() => {
         isTablet ? setSmallSideBar(true) : setSmallSideBar(false)
-        // isMobile ? setSmallSideBar(true) : setSmallSideBar(false)
     }, [isTablet, isMobile])
 
     const onSideBar = () => {
@@ -31,12 +31,15 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
     }
 
     return (
-        <div className={`${!isMobile ? "flex" : "relative"}`}>
-            <SideBar smallSideBar={smallSideBar} isMobile={isMobile} onSideBar={onSideBar} showArrowButton={showArrowButton} onShowArrowButton={() => setShowArrowButton(!showArrowButton)} onSmallSideBar={() => setSmallSideBar(!smallSideBar)} />
-            <div className={`${smallSideBar ? "ml-[55px]" : isMobile ? "ml-0" : "ml-[230px]"}`}>
-                {children}
+        <div>
+            <Header />
+            <div className={`${!isMobile ? "flex" : "relative"}`}>
+                <SideBar smallSideBar={smallSideBar} isMobile={isMobile} onSideBar={onSideBar} showArrowButton={showArrowButton} onShowArrowButton={() => setShowArrowButton(!showArrowButton)} onSmallSideBar={() => setSmallSideBar(!smallSideBar)} />
+                <div className={`${(smallSideBar || isMobile) ? "sm:ml-[55px]" : "sm:ml-[250px]"} ml-2`}>
+                    {children}
+                </div>
+                {/* <Footer /> */}
             </div>
-            {/* <Footer /> */}
         </div>
     );
 };

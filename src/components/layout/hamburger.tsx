@@ -1,13 +1,13 @@
 import React from "react";
 
-const Hamburger = ({onHandle}: {onHandle: VoidFunction}) => {
+const Hamburger = ({onHandle}: {onHandle?: VoidFunction}) => {
 
   const [isOpenedMenu, setOpenedMenu] = React.useState(false)
 
   const onMenu = (e: any) => {
     e.stopPropagation();
     setOpenedMenu(!isOpenedMenu)
-    onHandle()
+    onHandle && onHandle()
   }
 
   return (

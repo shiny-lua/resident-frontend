@@ -106,6 +106,72 @@ const icons = {
             />
         </svg>
     ),
+    User: (
+        <svg
+            className="h-7 w-7 text-current"
+            viewBox="0 0 24 24"
+            fill="none"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2" />{" "}
+            <circle cx={12} cy={7} r={4} />
+        </svg>
+    ),
+    Plan: (
+        <svg
+            width={28}
+            height={28}
+            viewBox="0 0 28 28"
+            fill="none"
+            className="h-7 w-7"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                d="M20 6.5C20.4142 6.5 20.75 6.83579 20.75 7.25V20C20.75 20.4142 20.4142 20.75 20 20.75C19.5858 20.75 19.25 20.4142 19.25 20V7.25C19.25 6.83579 19.5858 6.5 20 6.5Z"
+                fill="currentColor"
+            />
+            <path
+                d="M17.75 9.5C17.75 9.08579 17.4142 8.75 17 8.75C16.5858 8.75 16.25 9.08579 16.25 9.5V20C16.25 20.4142 16.5858 20.75 17 20.75C17.4142 20.75 17.75 20.4142 17.75 20V9.5Z"
+                fill="currentColor"
+            />
+            <path
+                d="M11.75 12.5C11.75 12.0858 11.4142 11.75 11 11.75C10.5858 11.75 10.25 12.0858 10.25 12.5V20C10.25 20.4142 10.5858 20.75 11 20.75C11.4142 20.75 11.75 20.4142 11.75 20V12.5Z"
+                fill="currentColor"
+            />
+            <path
+                d="M8.75 17C8.75 16.5858 8.41421 16.25 8 16.25C7.58579 16.25 7.25 16.5858 7.25 17V20C7.25 20.4142 7.58579 20.75 8 20.75C8.41421 20.75 8.75 20.4142 8.75 20V17Z"
+                fill="currentColor"
+            />
+            <path
+                d="M14 14C14.4142 14 14.75 14.3358 14.75 14.75V20C14.75 20.4142 14.4142 20.75 14 20.75C13.5858 20.75 13.25 20.4142 13.25 20V14.75C13.25 14.3358 13.5858 14 14 14Z"
+                fill="currentColor"
+            />
+        </svg>
+    ),
+    Diamond: (
+        <svg
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+            className="mr-3"
+        >
+            <path
+                d="M9.70712 7.29286C9.31659 6.90234 8.68343 6.90234 8.2929 7.29286C7.90238 7.68339 7.90238 8.31655 8.2929 8.70708L11.2929 11.7071C11.6834 12.0976 12.3166 12.0976 12.7071 11.7071L15.7071 8.70708C16.0976 8.31655 16.0976 7.68339 15.7071 7.29286C15.3166 6.90234 14.6834 6.90234 14.2929 7.29286L12 9.58576L9.70712 7.29286Z"
+                fill="currentColor"
+            />
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M0.947733 11.3619L10.5858 21C11.3669 21.781 12.6332 21.781 13.4143 21L23.0523 11.3619C23.7913 10.6229 23.8368 9.43959 23.1566 8.64611L18.0586 2.69842C17.6786 2.25513 17.124 2 16.5401 2H7.45997C6.87612 2 6.32142 2.25513 5.94146 2.69842L0.843433 8.64611C0.163307 9.43959 0.208755 10.6229 0.947733 11.3619ZM21.6381 9.9477L12 19.5858L2.36195 9.9477L7.45997 4H16.5401L21.6381 9.9477Z"
+                fill="currentColor"
+            />
+        </svg>
+    ),
     Notification: (
         <svg
             width={24}
@@ -225,6 +291,24 @@ const icons = {
             <path d="m6 6 12 12" />
         </svg>
     ),
+    Menu: (
+        <svg
+            className="h-6 w-6 text-current"
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            {" "}
+            <path stroke="none" d="M0 0h24v24H0z" /> <line x1={4} y1={6} x2={20} y2={6} />{" "}
+            <line x1={4} y1={12} x2={20} y2={12} />{" "}
+            <line x1={4} y1={18} x2={20} y2={18} />
+        </svg>
+    ),
     Cancel: (
         <svg
             width={24}
@@ -232,7 +316,7 @@ const icons = {
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
-            className="h-6 w-6 text-red-500"
+            className="h-6 w-6 text-current"
         >
             <path
                 d="M6.99999 7L17 17"
@@ -587,8 +671,34 @@ const icons = {
     ),
     Setting: (
         <svg
-            width={24}
-            height={24}
+            fill="currentColor"
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            className="cl-userButtonPopoverActionButtonIcon cl-userButtonPopoverActionButtonIcon__manageAccount 🔒️ cl-internal-nkp44p"
+        >
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M6.559 2.536A.667.667 0 0 1 7.212 2h1.574a.667.667 0 0 1 .653.536l.22 1.101c.466.178.9.429 1.287.744l1.065-.36a.667.667 0 0 1 .79.298l.787 1.362a.666.666 0 0 1-.136.834l-.845.742c.079.492.079.994 0 1.486l.845.742a.666.666 0 0 1 .137.833l-.787 1.363a.667.667 0 0 1-.791.298l-1.065-.36c-.386.315-.82.566-1.286.744l-.22 1.101a.666.666 0 0 1-.654.536H7.212a.666.666 0 0 1-.653-.536l-.22-1.101a4.664 4.664 0 0 1-1.287-.744l-1.065.36a.666.666 0 0 1-.79-.298L2.41 10.32a.667.667 0 0 1 .136-.834l.845-.743a4.7 4.7 0 0 1 0-1.485l-.845-.742a.667.667 0 0 1-.137-.833l.787-1.363a.667.667 0 0 1 .791-.298l1.065.36c.387-.315.821-.566 1.287-.744l.22-1.101ZM7.999 10a2 2 0 1 0 0-4 2 2 0 0 0 0 4Z"
+            />
+        </svg>
+    ),
+    Logout: (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            viewBox="0 0 16 16"
+            className="cl-userButtonPopoverActionButtonIcon cl-userButtonPopoverActionButtonIcon__signOut 🔒️ cl-internal-nkp44p"
+        >
+            <path
+                fill="currentColor"
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M2.6 2.604A2.045 2.045 0 0 1 4.052 2h3.417c.544 0 1.066.217 1.45.604.385.387.601.911.601 1.458v.69c0 .413-.334.75-.746.75a.748.748 0 0 1-.745-.75v-.69a.564.564 0 0 0-.56-.562H4.051a.558.558 0 0 0-.56.563v7.875a.564.564 0 0 0 .56.562h3.417a.558.558 0 0 0 .56-.563v-.671c0-.415.333-.75.745-.75s.746.335.746.75v.671c0 .548-.216 1.072-.6 1.459a2.045 2.045 0 0 1-1.45.604H4.05a2.045 2.045 0 0 1-1.45-.604A2.068 2.068 0 0 1 2 11.937V4.064c0-.548.216-1.072.6-1.459Zm8.386 3.116a.743.743 0 0 1 1.055 0l1.74 1.75a.753.753 0 0 1 0 1.06l-1.74 1.75a.743.743 0 0 1-1.055 0 .753.753 0 0 1 0-1.06l.467-.47H5.858A.748.748 0 0 1 5.112 8c0-.414.334-.75.746-.75h5.595l-.467-.47a.753.753 0 0 1 0-1.06Z"
+            />
+        </svg>
+    ),
+    SettingOutLine: (
+        <svg
             viewBox="0 0 24 24"
             fill="none"
             xmlns="http://www.w3.org/2000/svg"
@@ -600,13 +710,7 @@ const icons = {
                     stroke="currentColor"
                     strokeWidth={2}
                 />
-                <circle
-                    cx={12}
-                    cy={12}
-                    r={3}
-                    stroke="currentColor"
-                    strokeWidth={2}
-                />
+                <circle cx={12} cy={12} r={3} stroke="currentColor" strokeWidth={2} />
             </g>
             <defs>
                 <clipPath id="clip0_106_1229">
@@ -672,6 +776,7 @@ const icons = {
                 </clipPath>
             </defs>
         </svg>
+
     ),
     Save: (
         <svg

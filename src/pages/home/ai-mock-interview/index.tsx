@@ -6,7 +6,8 @@ import Header from "./components/header"
 import JobPreparation from "./components/job-preparation"
 import JoinSeekers from "./components/join-seekers"
 import JobOfferReceive from "./components/job-offer-receive"
-import Faq from "./components/faq"
+import { faqs } from "../components/data.d"
+import Faq from "../components/faq"
 
 const responsive = {
     desktop: {
@@ -38,7 +39,7 @@ const responsive = {
 const AiMockInterview = () => {
     return (
         <Layout>
-            <div className="relative bg-cyan-50">
+            <div className="relative bg-cyan-50 pt-30">
                 <img className="absolute left-0 top-0 w-full -z-1" src="/image/home/common-bg.png" alt="" />
                 <Header />
                 <div className="bg-white my-20">
@@ -78,7 +79,7 @@ const AiMockInterview = () => {
                 <JobPreparation />
                 <JoinSeekers />
                 <JobOfferReceive />
-                <Faq />
+                <Faq title="FAQ: Everything You Need to Know About Mock Interviews" data={faqs}/>
             </div>
         </Layout>
     )

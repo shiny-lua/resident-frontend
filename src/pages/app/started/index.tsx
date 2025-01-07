@@ -24,8 +24,8 @@ const Started = () => {
                                 <StepCard title={step.title} desc={step.desc} link={step.link} idx={step.idx} />
                                 {index < steps.length - 1 && (
                                     <div className="text-white">
-                                        <div className="hidden lg:block"><Icon icon="ArrowRight" /></div>
-                                        <div className="lg:hidden block"><Icon icon="ArrowDown" /></div>
+                                        <div className="hidden lg:block"><Icon icon="ChevronRight" /></div>
+                                        <div className="lg:hidden block"><Icon icon="ChevronRight" /></div>
                                     </div>
                                 )}
                             </React.Fragment>

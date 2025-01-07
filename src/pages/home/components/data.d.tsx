@@ -1,3 +1,5 @@
+import InterviewCopilot from "../interview-copilot"
+
 const testimonials = [
     {
         "tag": "Management Consulting",
@@ -242,4 +244,83 @@ const tutorials = [
     }
 ]
 
-export { testimonials, companies, faqs, innovation, tutorials }
+const askedQuestion = [
+    {
+        "question": "What is the Final Round AI Referral Program?",
+        "answer": "The Final Round AI Referral Program is a way for our users to earn rewards by referring friends, colleagues, or anyone interested in improving their interview skills using our AI-powered tools and land dream jobs. Each successful referral earns you exciting rewards, including discounts, free access, or gift cards."
+    },
+    {
+        "question": "How do I participate in the referral program?",
+        "answer": "To participate, simply log into your Final Round AI account and navigate to the referral section. From there, you can share your unique referral link via email, social media, or any other platform. When someone uses your link to sign up and makes a subscription, you'll receive a reward. The exact rewards may vary depending on the promotion and will be clearly outlined in the referral program details."
+    },
+    {
+        "question": "How can I track my referrals and rewards?",
+        "answer": "You can track your referrals and rewards by logging into your Final Round AI account and visiting the referral dashboard. Here, you'll see the status of each referral, including whether they've signed up and made a qualifying subscription."
+    },
+    {
+        "question": "Is there a limit to how many people I can refer?",
+        "answer": "No, there is no limit to how many people you can refer. The more people you refer, the more rewards you can earn!"
+    },
+    {
+        "question": "What qualifies as a successful referral?",
+        "answer": "A referral is considered successful when the person you referred signs up using your unique referral link and completes a purchase of one of our eligible subscription plans."
+    },
+    {
+        "question": "When will I receive my referral rewards?",
+        "answer": "Referral rewards are typically credited to your account once the referred user completes their purchase and any associated trial periods have passed. This process usually takes a few business days but can vary depending on the specific terms of the promotion."
+    },
+    {
+        "question": "Can I refer myself or someone in my household?",
+        "answer": "Self-referrals are not allowed, and referrals within the same IP address would not qualify. Please review the referral program terms and conditions for specific details."
+    },
+    {
+        "question": "What happens if my referral doesn't complete their subscription?",
+        "answer": "If your referral doesn't complete a qualifying subscription, you won't receive a reward. However, your referral link will remain active, and you can continue to encourage them to complete their subscription."
+    },
+    {
+        "question": "Who can I contact if I have questions about the referral program?",
+        "answer": "If you have any questions or need assistance with the referral program, please contact our support team through the Final Round AI website customer support chatbot or support@finalroundai.com, and we'll be happy to help."
+    }
+]
+
+const interviewCopilot = [
+    {
+        "logo": "/image/icons/google.png",
+        "position": "Associate",
+    },
+    {
+        "logo": "/image/icons/google.png",
+        "position": "Business Operations",
+    },
+    {
+        "logo": "/image/icons/salesforce.png",
+        "position": "Data Scientist",
+    },
+    {
+        "logo": "/image/icons/microsoft.png",
+        "position": "AI Engineer",
+    },
+    {
+        "logo": "/image/icons/netflix.png",
+        "position": "Platform Engineer",
+    },
+    {
+        "logo": "/image/icons/openai.png",
+        "position": "Research Engineer",
+    },
+    {
+        "logo": "/image/icons/mckinsey.png",
+        "position": "Consultant",
+    },
+    {
+        "logo": "/image/icons/pwc.png",
+        "position": "Platform Engineer",
+    },
+    {
+        "logo": "/image/icons/pg.png",
+        "position": "Social Media Associate",
+    }
+]
+
+
+export { testimonials, companies, faqs, innovation, tutorials, askedQuestion, interviewCopilot }

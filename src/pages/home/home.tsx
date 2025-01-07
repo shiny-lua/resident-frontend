@@ -8,7 +8,7 @@ import Testimonials from './components/testimonials';
 
 const HomeIndex = () => (
   <Layout>
-    <div className="relative">
+    <div className="relative pt-30">
       <img className="fixed right-0 top-0 -z-10" src="/image/effort-2.png" alt="" />
       <img className="fixed left-0 bottom-0 -z-10" src="/image/effort-1.png" alt="" />
       <Header />

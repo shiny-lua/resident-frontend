@@ -27,7 +27,7 @@ const images = [
 const InterviewCopilot = () => {
     return (
         <Layout>
-            <div className="relative">
+            <div className="relative pt-30">
                 <img className="absolute left-0 top-0 w-full -z-1" src="/image/home/common-bg.png" alt="" />
                 <div className="text-center px-3">
                     <div className="mx-auto max-w-[983px] font-albra text-[32px] leading-none tracking-tight md:text-5xl md:leading-[48px]">

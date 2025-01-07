@@ -2,13 +2,13 @@ import React, { useState, ReactNode } from 'react';
 import Header from './header';
 import Footer from './footer';
 
-const Layout = ({ children }: { children: ReactNode }) => {
+const Layout = ({ children, hiddenFooter }: { children: ReactNode, hiddenFooter?: boolean }) => {
 
     return (
         <div className="">
             <Header />
-            <div className='pt-30'>{children}</div>
-            <Footer />
+            <div>{children}</div>
+            {!hiddenFooter && <Footer />}
         </div>
     );
 };

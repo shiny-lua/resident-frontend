@@ -47,7 +47,7 @@ const InterviewRolePrompt = ({ onNext, onPrev }: { onNext: VoidFunction, onPrev:
                         <div className="group relative">
                             <input value={status.company} onChange={e => setStatus({ ...status, company: e.target.value })} onClick={() => setIsCompanyVisible(true)} onBlur={() => setIsCompanyVisible(false)} className="bg-white w-full rounded-md outline-none focus:border-primary border p-3 " type="text" name="" id="email" />
                             <span className="absolute right-2 top-1/2 -translate-y-1/2 -rotate-90 transform cursor-pointer transition-all">
-                                <Icon icon="ArrowDown" />
+                                <Icon icon="ChevronRight" />
                             </span>
                             <ul
                                 ref={companyRef}
@@ -72,7 +72,7 @@ const InterviewRolePrompt = ({ onNext, onPrev }: { onNext: VoidFunction, onPrev:
                         <div className="group relative">
                             <input value={status.role} onChange={e => setStatus({ ...status, role: e.target.value })} onClick={() => setIsRoleVisible(true)} onBlur={() => setIsRoleVisible(false)} className="bg-white w-full rounded-md outline-none focus:border-primary border p-3 " type="text" name="" id="email" />
                             <span className="absolute right-2 top-1/2 -translate-y-1/2 -rotate-90 transform cursor-pointer transition-all">
-                                <Icon icon="ArrowDown" />
+                                <Icon icon="ChevronRight" />
                             </span>
                             <ul
                                 ref={roleRef}

@@ -21,19 +21,19 @@ const RecruitingTools = () => {
                         Immersive interview simulation and practice
                     </div>
                     <Link
-                        className="dt:mt-[58px] mt-[38px] h-[40px] w-[145px] cursor-pointer rounded-[6px] text-center border border-gray-200 bg-sky-500 px-4 py-[10px] text-md text-white hover:text-sky-500 hover:bg-sky-200"
+                        className="dt:mt-[58px] mt-[38px] h-[40px] w-[145px] cursor-pointer rounded-[6px] text-center border border-gray-200 bg-sky-500 px-4 py-[10px] text-md text-white hover:text-sky-500 hover:bg-sky-100"
                         to="/app/interview"
                     >
                         Get Started Free
                     </Link>
                     <Link
-                        className="mt-4 h-[40px] w-[145px] cursor-pointer rounded-[6px] border border-gray-200 px-4 py-[10px] text-center text-md text-black hover:text-sky-500 hover:bg-sky-200"
+                        className="mt-4 h-[40px] w-[145px] cursor-pointer rounded-[6px] border border-gray-200 px-4 py-[10px] text-center text-md text-black hover:text-sky-500 hover:bg-sky-100"
                         to="/ai-mock-interview"
                     >
                         learn more
                     </Link>
                 </div>
-                <div className="flex h-[360px] w-full min-w-[260px] flex-col items-center justify-center rounded-[24px] bg-gradient-to-r from-[#0090FF] to-[#00F7FF] px-8 py-8 sm:max-w-[364px] lg:mx-6 lg:h-[450px] lg:max-w-[424px] lg:px-8 lg:py-12">
+                <div className="flex h-[360px] w-full min-w-[260px] flex-col items-center justify-center rounded-[24px] bg-gradient-to-b from-[#0090FF] to-[#00F7FF] px-8 py-8 sm:max-w-[364px] lg:mx-6 lg:h-[450px] lg:max-w-[424px] lg:px-8 lg:py-12">
                     <img
                         alt="Interview Copilot"
                         width={64}
@@ -45,13 +45,13 @@ const RecruitingTools = () => {
                         Offers actionable guidance in real-time during interviews
                     </div>
                     <Link
-                        className="dt:mt-12 mt-4 h-[56px] cursor-pointer rounded-[6px] border border-gray-200 bg-white px-6 py-[16px] text-black lg:mt-[38px] hover:text-sky-500 hover:bg-sky-200"
+                        className="dt:mt-12 mt-4 h-[56px] cursor-pointer rounded-[6px] border border-gray-200 bg-white px-6 py-[16px] text-black lg:mt-[38px] hover:text-sky-500 hover:bg-sky-100"
                         to="https://app.finalroundai.com/app/v2/interview"
                     >
                         Get Started Free
                     </Link>
                     <Link
-                        className="mt-4 h-[56px] cursor-pointer rounded-[6px] border border-gray-200 bg-transparent px-6 py-[16px] text-white lg:mt-[16px] hover:text-sky-500 hover:bg-sky-200"
+                        className="mt-4 h-[56px] cursor-pointer rounded-[6px] border border-gray-200 bg-transparent px-6 py-[16px] text-white lg:mt-[16px] hover:text-sky-500 hover:bg-sky-100"
                         to="/interview-copilot"
                     >
                         Learn More
@@ -63,8 +63,6 @@ const RecruitingTools = () => {
                         loading="lazy"
                         width={64}
                         height={64}
-                        decoding="async"
-                        data-nimg={1}
                         style={{ color: "transparent" }}
                         src="/image/icons/ai-resume.svg"
                     />
@@ -73,13 +71,13 @@ const RecruitingTools = () => {
                         Generate hire-able resume in seconds
                     </div>
                     <Link
-                        className="dt:mt-[80px] mt-[60px] h-[40px] w-[145px] cursor-pointer rounded-[6px] text-center border border-gray-200 bg-sky-500 px-4 py-[10px] text-md text-white hover:text-sky-500 hover:bg-sky-200"
+                        className="dt:mt-[80px] mt-[60px] h-[40px] w-[145px] cursor-pointer rounded-[6px] text-center border border-gray-200 bg-sky-500 px-4 py-[10px] text-md text-white hover:text-sky-500 hover:bg-sky-100"
                         to="https://app.finalroundai.com/app/v2/resume"
                     >
                         Get Started Free
                     </Link>
                     <Link
-                        className="mt-4 h-[40px] w-[145px] cursor-pointer rounded-[6px] border border-gray-200 px-4 py-[10px] text-center text-md text-black hover:text-sky-500 hover:bg-sky-200"
+                        className="mt-4 h-[40px] w-[145px] cursor-pointer rounded-[6px] border border-gray-200 px-4 py-[10px] text-center text-md text-black hover:text-sky-500 hover:bg-sky-100"
                         to="/ai-resume-builder"
                     >
                         learn more

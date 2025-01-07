@@ -11,20 +11,32 @@ const icons = {
     ArrowLeft: (
         <svg className="h-4 w-4 text-current" width="24" height="24" viewBox="0 0 24 24" strokeWidth="2" stroke="currentColor" fill="none" strokeLinecap="round" strokeLinejoin="round">  <path stroke="none" d="M0 0h24v24H0z" />  <polyline points="15 6 9 12 15 18" /></svg>
     ),
-    ArrowDown: (
+    ArrowRight: (
         <svg
-            xmlns="http://www.w3.org/2000/svg"
-            width={16}
-            height={16}
-            viewBox="0 0 16 16"
+            className="h-6 w-6 text-current"
+            viewBox="0 0 24 24"
             fill="none"
-            className="text-slate-400"
+            stroke="currentColor"
+            strokeWidth={2}
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <line x1={5} y1={12} x2={19} y2={12} /> <polyline points="12 5 19 12 12 19" />
+        </svg>
+
+    ),
+    ChevronRight: (
+        <svg
+            className="h-4 w-4 text-current"
+            fill="none"
+            viewBox="0 0 24 24"
+            stroke="currentColor"
         >
             <path
-                fillRule="evenodd"
-                clipRule="evenodd"
-                d="M5.8212 7.23987L9.15454 3.23987L10.1788 4.09345L7.20116 7.66666L10.1788 11.2399L9.15454 12.0934L5.8212 8.09345C5.61518 7.84622 5.61518 7.4871 5.8212 7.23987Z"
-                fill="currentColor"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+                strokeWidth={2}
+                d="M9 5l7 7-7 7"
             />
         </svg>
     ),
@@ -179,6 +191,23 @@ const icons = {
             <path d="M15.8333 5C15.8333 4.53976 15.4602 4.16667 15 4.16667H6.66663V5.83333H12.9882L4.41077 14.4108L5.58928 15.5893L14.1666 7.01192V13.3333H15.8333V5Z" />
         </svg>
     ),
+    ArrowUp: (
+        <svg
+            className="h-6 w-6 text-current"
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            strokeWidth={2}
+            stroke="currentColor"
+            fill="none"
+            strokeLinecap="round"
+            strokeLinejoin="round"
+        >
+            <path stroke="none" d="M0 0h24v24H0z" />{" "}
+            <line x1={12} y1={5} x2={12} y2={19} />{" "}
+            <line x1={18} y1={11} x2={12} y2={5} /> <line x1={6} y1={11} x2={12} y2={5} />
+        </svg>
+    ),
     Close: (
         <svg
             xmlns="http://www.w3.org/2000/svg"
@@ -243,23 +272,6 @@ const icons = {
                 strokeLinecap="round"
             />
             <circle cx={12} cy={16} r={1} fill="currentColor" />
-        </svg>
-    ),
-    ArrowRight: (
-        <svg
-            width={24}
-            height={24}
-            viewBox="0 0 24 24"
-            fill="none"
-            xmlns="http://www.w3.org/2000/svg"
-            className="block h-8 w-8 text-slate-700"
-        >
-            <path
-                d="M9.5 17.5L14.5 11.5L9.5 5.5"
-                stroke="currentColor"
-                strokeWidth={2}
-                strokeLinejoin="round"
-            />
         </svg>
     ),
     Star: (
@@ -918,6 +930,39 @@ const icons = {
             strokeLinejoin="round"
         >
             <path stroke="none" d="M0 0h24v24H0z" /> <polyline points="6 9 12 15 18 9" />
+        </svg>
+    ),
+    GetFreeTrialArrow: (
+        <svg
+            width={16}
+            height={16}
+            viewBox="0 0 16 16"
+            fill="none"
+            xmlns="http://www.w3.org/2000/svg"
+        >
+            <path
+                fillRule="evenodd"
+                clipRule="evenodd"
+                d="M9.17832 6.49977C8.45456 5.39 8.27848 3.96091 8.83401 2.47949L9.83276 2.85402C9.38829 4.03927 9.54554 5.11018 10.0718 5.91708C10.6022 6.73042 11.5384 7.32156 12.7329 7.47088L12.6667 8.00008L12.7329 8.52929C11.5384 8.6786 10.6022 9.26974 10.0718 10.0831C9.54554 10.89 9.38829 11.9609 9.83276 13.1461L8.83401 13.5207C8.27848 12.0393 8.45457 10.6102 9.17833 9.50039C9.41571 9.13641 9.7087 8.81173 10.0476 8.53342L3.33337 8.53342V7.46676H10.0476C9.70871 7.18845 9.41571 6.86376 9.17832 6.49977Z"
+                fill="currentColor"
+            />
+        </svg>
+    ),
+    Attachment: (
+        <svg
+            xmlns="http://www.w3.org/2000/svg"
+            width={24}
+            height={24}
+            viewBox="0 0 24 24"
+            fill="none"
+        >
+            <path
+                d="M16.809 5.8089L16.809 16.475C16.809 17.7817 16.2899 19.0349 15.3659 19.9589C14.442 20.8828 13.1888 21.4019 11.8821 21.4019C10.5754 21.4019 9.32228 20.8828 8.39832 19.9589C7.47435 19.0349 6.95527 17.7817 6.95527 16.4751L6.95527 6.52849C6.9545 5.65659 7.30012 4.82011 7.9161 4.20304C8.53208 3.58598 9.36795 3.23888 10.2398 3.23811C11.1117 3.23734 11.9482 3.58296 12.5653 4.19894C13.1824 4.81492 13.5295 5.65079 13.5302 6.52268L13.5186 16.4809C13.5186 16.9164 13.3456 17.3341 13.0376 17.6421C12.7296 17.9501 12.3119 18.1231 11.8763 18.1231C11.4408 18.1231 11.023 17.9501 10.7151 17.6421C10.4071 17.3341 10.234 16.9164 10.234 16.4809L10.2398 6.63294"
+                stroke="#475569"
+                strokeWidth="1.5"
+                strokeLinecap="round"
+                strokeLinejoin="round"
+            />
         </svg>
     )
 } as { [key: string]: React.SVGProps<SVGSVGElement> }

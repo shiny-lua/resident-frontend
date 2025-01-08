@@ -5,11 +5,10 @@ const RealtimeResponseCustomizer = ({ onNext, onPrev }: { onNext: VoidFunction; 
     const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
 
     const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-        const file = e.target.files?.[0]; // Get the selected file
+        const file = e.target.files?.[0];
         if (file) {
-            setUploadedFile(file); // Update state with the selected file
+            setUploadedFile(file); 
             console.log("Uploaded file:", file);
-            // Add your upload logic here (e.g., send to server)
         }
     };
 

@@ -46,7 +46,7 @@ const RecruitingTools = () => {
                     </div>
                     <Link
                         className="dt:mt-12 mt-4 h-[56px] cursor-pointer rounded-[6px] border border-gray-200 bg-white px-6 py-[16px] text-black lg:mt-[38px] hover:text-sky-500 hover:bg-sky-100"
-                        to="https://app.finalroundai.com/app/v2/interview"
+                        to="https://app.finalroundai.com/appinterview"
                     >
                         Get Started Free
                     </Link>
@@ -72,7 +72,7 @@ const RecruitingTools = () => {
                     </div>
                     <Link
                         className="dt:mt-[80px] mt-[60px] h-[40px] w-[145px] cursor-pointer rounded-[6px] text-center border border-gray-200 bg-sky-500 px-4 py-[10px] text-md text-white hover:text-sky-500 hover:bg-sky-100"
-                        to="https://app.finalroundai.com/app/v2/resume"
+                        to="https://app.finalroundai.com/appresume"
                     >
                         Get Started Free
                     </Link>

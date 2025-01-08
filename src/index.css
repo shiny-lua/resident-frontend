@@ -35,11 +35,11 @@
 }
 
 .fade-in {
-  animation: fadeIn 0.5s ease-in-out forwards;
+  animation: fadeIn 0.2s ease-in-out forwards;
 }
 
 .fade-out {
-  animation: fadeOut 0.5s ease-in-out forwards;
+  animation: fadeOut 0.2s ease-in-out forwards;
 }
 .blur-overlay {
   position: absolute;                      /* Overlay covers the entire viewport */
@@ -88,3 +88,4 @@
 .react-multi-carousel-track {
   gap: 1em;
 }
+

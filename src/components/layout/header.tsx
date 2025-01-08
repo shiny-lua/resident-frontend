@@ -62,7 +62,7 @@ const Header = () => {
                         className={`group flex items-center bg-opacity-80 text-black text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}
                     >
                         Resources
-                        <Icon icon={!showResource ? "ChevronDown" : "ChevronUp"} />
+                        <Icon className="h-6 w-6" icon={!showResource ? "ChevronDown" : "ChevronUp"} />
                     </button>
                     <Link to="" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Question Bank</Link>
                 </div>
@@ -78,7 +78,7 @@ const Header = () => {
                                 className={`w-full group flex justify-between items-center bg-opacity-80 text-black text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}
                             >
                                 Resources
-                                <Icon icon={!showResource ? "ChevronDown" : "ChevronUp"} />
+                                <Icon className="h-6 w-6" icon={!showResource ? "ChevronDown" : "ChevronUp"} />
                             </button>
                             {showResource && (
                                 <div className="mt-2 rounded-[6px] bg-[#F7F8F9] pl-[28px] pt-2">

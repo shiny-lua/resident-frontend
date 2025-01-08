@@ -8,7 +8,7 @@ const Item = ({ i, isOpen, toggleOpen }: { i: { question: string, answer: string
             <div className="flex flex-col p-6 text-left transition-all duration-500">
                 <div className={`flex w-full flex-row text-xl items-center justify-between ${isOpen ? "text-sky-500" : "text-black"}`} >
                     {i.question}
-                    <Icon icon={isOpen ? "ChevronUp" : "ChevronDown"} />
+                    <Icon className="h-6 w-6" icon={isOpen ? "ChevronUp" : "ChevronDown"} />
                 </div>
                 <div
                     className={`overflow-hidden text-gray-700 text-lg transition-all duration-300 ${isOpen ? 'max-h-[500px]' : 'max-h-0'}`}

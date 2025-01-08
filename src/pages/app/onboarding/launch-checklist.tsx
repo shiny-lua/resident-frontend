@@ -93,7 +93,7 @@ const LaunchChecklist = ({ onNext, onPrev }: { onNext: VoidFunction, onPrev: Voi
                                     <Icon icon="Compatibility" />
                                     Browser Compatibility
                                 </div>
-                                <div className="text-green-600"><Icon icon="Check" /></div>
+                                <div className="text-green-600"><Icon className="w-6 h-6" icon="Check" /></div>
                             </div>
                         </div>
                     </div>

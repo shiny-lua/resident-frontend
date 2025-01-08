@@ -46,9 +46,9 @@ const SideBar = (props: SideBarProps) => {
     }, []);
 
     return (
-        <div className={`${smallSideBar ? "w-[55px]" : isMobile ? "w-full z-10 bg-black bg-opacity-75" : "w-[250px]"} z-1 h-screen ${isMobile ? "absolute top-0 left-0" : "fixed"}`}>
-            <nav className="hidden sm:flex relative max-w-[250px] h-full w-full flex-col py-5 transition-[width] duration-300 bg-sky-100">
-                {!smallSideBar && <span onClick={onSideBar} className="absolute right-2 border rounded-md p-1 border-slate-300 bg-white">
+        <div className={`${smallSideBar ? "w-[55px]" : isMobile ? "w-full z-10 bg-black bg-opacity-75" : "w-[260px]"} z-1 h-screen ${isMobile ? "absolute top-0 left-0" : "fixed"}`}>
+            <nav className="hidden sm:flex relative max-w-[260px] h-full w-full flex-col py-5 transition-[width] duration-300 bg-sky-100">
+                {!smallSideBar && <span onClick={onSideBar} className="absolute right-4 border rounded-md p-1 border-slate-300 bg-white">
                     <Icon icon="ArrowLeft" />
                 </span>}
 
@@ -69,35 +69,35 @@ const SideBar = (props: SideBarProps) => {
                     <div className={`border-t border-slate-100 px-2 py-3}`}>
                         {!smallSideBar && <div className="text-nowrap pl-3 font-medium text-slate-400">Interview</div>}
                         <Link
-                            to="/app/v2/interview"
+                            to="/app/interview"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="LiveInterview" />
                             {!smallSideBar && <span>Live Interview</span>}
                         </Link>
                         <Link
-                            to="/app/v2/mock-interview"
+                            to="/app/mock-interview"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="MockInterview" />
                             {!smallSideBar && <span>Mock Interview</span>}
                         </Link>
                         <Link
-                            to="/app/v2/role"
+                            to="/app/role"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="PreparationHub" />
                             {!smallSideBar && <span>Preparation Hub</span>}
                         </Link>
                         <Link
-                            to="/app/v2/resume"
+                            to="/app/resume"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="DocumentCenter" />
                             {!smallSideBar && <span>Document Center</span>}
                         </Link>
                         <Link
-                            to="/app/v2/store"
+                            to="/app/store"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="Upgrade" />
@@ -107,28 +107,28 @@ const SideBar = (props: SideBarProps) => {
                     <div className={`border-t border-slate-100 px-2 py-3}`}>
                         {!smallSideBar && <div className="text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>}
                         <Link
-                            to="/app/v2/ai-generator"
+                            to="/app/ai-generator"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="AiGenerator" />
                             {!smallSideBar && <span>AI Material Generator</span>}
                         </Link>
                         <Link
-                            to="/app/v2/interview-coach"
+                            to="/app/interview-coach"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="AiMagic" />
                             {!smallSideBar && <span>AI Career Coach</span>}
                         </Link>
                         <Link
-                            to="/app/v2/chat-with-recruiters"
+                            to="/app/chat-with-recruiters"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="Chat" />
                             {!smallSideBar && <span>Speak with Recruiters</span>}
                         </Link>
                         <Link
-                            to="/app/v2/question"
+                            to="/app/question"
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                         >
                             <Icon icon="Question" />
@@ -140,7 +140,7 @@ const SideBar = (props: SideBarProps) => {
                         <Link
                             className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium bg-slate-900 text-white hover:bg-primary/90"
                             data-state="closed"
-                            to="/app/v2/started"
+                            to="/app/started"
                         >
                             <Icon icon="Rocket" />
                             {!smallSideBar && <span>Get Started</span>}
@@ -182,7 +182,7 @@ const SideBar = (props: SideBarProps) => {
                                 </div>
                                 {showDropRight && <DropRight />}
                             </div>
-                            <Link to="/app/v2/subscription">
+                            <Link to="/app/subscription">
                                 <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 px-4 py-2 w-full bg-gradient-to-r from-[#0090FF] to-[#00F7FF] text-white">
                                     <Icon icon="Diamond" />
                                     Upgrade Now

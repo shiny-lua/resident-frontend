@@ -25,7 +25,7 @@ const Started = () => {
                                 {index < steps.length - 1 && (
                                     <div className="text-white">
                                         <div className="hidden lg:block"><Icon icon="ChevronRight" /></div>
-                                        <div className="lg:hidden block"><Icon icon="ChevronDown" /></div>
+                                        <div className="lg:hidden block"><Icon className="h-6 w-6" icon="ChevronDown" /></div>
                                     </div>
                                 )}
                             </React.Fragment>

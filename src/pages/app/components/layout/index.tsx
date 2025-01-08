@@ -35,7 +35,7 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
             <Header />
             <div className={`${!isMobile ? "flex" : "relative"}`}>
                 <SideBar smallSideBar={smallSideBar} isMobile={isMobile} onSideBar={onSideBar} showArrowButton={showArrowButton} onShowArrowButton={() => setShowArrowButton(!showArrowButton)} onSmallSideBar={() => setSmallSideBar(!smallSideBar)} />
-                <div className={`${(smallSideBar || isMobile) ? "sm:ml-[55px]" : "sm:ml-[250px]"} ml-2`}>
+                <div className={`${(smallSideBar || isMobile) ? "sm:ml-[55px]" : "sm:ml-[260px]"} ml-2 w-full`}>
                     {children}
                 </div>
                 {/* <Footer /> */}

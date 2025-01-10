@@ -4,7 +4,7 @@ import Icon from "./icon"
 export const Select = ({ value, data, onHandle, optionPrefix, showDropdown, onDropdown, dropdownRef, obk }: { value: string, data: string[], optionPrefix?: string, onHandle: (i: string, p:any ) => void, showDropdown: boolean, onDropdown: VoidFunction, dropdownRef: any, obk:string}) => {
 
     return (
-        <div className="relative">
+        <div className="relative  min-w-[150px]">
             <button
                 onClick={onDropdown}
                 className="flex h-9 w-full items-center justify-between whitespace-nowrap rounded-md border border-input bg-transparent px-3 py-2 text-md ring-offset-background placeholder:text-slate-700 disabled:cursor-not-allowed disabled:opacity-50 [&>span]:line-clamp-1"

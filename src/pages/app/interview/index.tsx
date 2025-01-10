@@ -94,16 +94,16 @@ const Interview = () => {
                                     </Link>
                                 </div>}
                         </div>
-                        <button className="flex items-center justify-center whitespace-nowrap rounded-md text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 border border-slate-300 bg-background hover:bg-accent hover:text-accent-foreground h-10 px-4 py-2">
+                        <Link to="/app/permission-setting" className="flex items-center justify-center whitespace-nowrap rounded-md text-md font-medium border-slate-300 h-10 px-4 py-2">
                             <Icon className="flex items-center w-5 h-5" icon="Setting" />
                             Setting
-                        </button>
+                        </Link>
                     </div>
                     <div className="hidden gap-4 md:flex">
                         <Select onDropdown={() => setShowStatusDropdown(true)} showDropdown={showStatusDropdown} value={status.status} obk="status" onHandle={onHandleStatus} data={["Ready to Launch", "In Progress", "Complete"]} dropdownRef={showStatusDropdownRef} />
                     </div>
                     <div className="flex flex-1 gap-2 md:hidden">
-                        <button onClick={() => setShowInterviewModal(true)} className="items-center justify-center whitespace-nowrap rounded-md text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 box-content flex h-[50px] flex-1 flex-col !bg-design-orange px-4 py-2.5">
+                        <button onClick={() => setShowInterviewModal(true)} className="items-center justify-center whitespace-nowrap rounded-md text-md font-medium bg-primary text-primary-foreground hover:bg-primary/90 box-content flex h-[50px] flex-1 flex-col !bg-design-orange px-4 py-2.5">
                             <Icon icon="New" className="text-white" />
                             <span className="text-lg font-medium text-slate-50">Live Interview</span>
                         </button>
@@ -112,36 +112,29 @@ const Interview = () => {
                 </div>
                 <div className="relative w-full overflow-auto">
                     <table className="w-full caption-bottom text-md hidden md:table">
-                        <thead className="[&_tr]:border-0">
-                            <tr className="border-b transition-colors hover:bg-slate-500/50 data-[state=selected]:bg-slate-500 h-12 bg-slate-50">
-                                <th className="h-10 px-2 text-left align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] w-3/12 font-semibold text-slate-900">Interview</th>
-                                <th className="h-10 px-2 text-left align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] hidden w-2/12 font-semibold text-slate-900 sm:table-cell">Status</th>
-                                <th className="h-10 px-2 text-left align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] hidden w-3/12 cursor-pointer font-semibold text-slate-900 md:table-cell">Appointment</th>
-                                <th className="h-10 px-2 text-left align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] w-3/12 font-semibold text-slate-900">Action</th>
+                        <thead>
+                            <tr className="border-b transition-colors hover:bg-slate-500/50 h-12 bg-slate-50">
+                                <th className="h-10 px-2 text-left align-middle w-3/12 font-semibold text-slate-900">Interview</th>
+                                <th className="h-10 px-2 text-left align-middle hidden w-2/12 font-semibold text-slate-900 sm:table-cell">Status</th>
+                                <th className="h-10 px-2 text-left align-middle hidden w-3/12 cursor-pointer font-semibold text-slate-900 md:table-cell">Appointment</th>
+                                <th className="h-10 px-2 text-left align-middle w-3/12 font-semibold text-slate-900">Action</th>
                             </tr>
                         </thead>
-                        <tbody className="[&_tr:last-child]:border-0">
-                            <tr className="border-b transition-colors hover:bg-slate-500/50 data-[state=selected]:bg-slate-500">
-                                <td className="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px]">
-                                    <span
-                                        className="inline-block max-w-64 truncate"
-                                        data-state="closed"
-                                    >
+                        <tbody className="">
+                            <tr className="border-b transition-colors hover:bg-slate-500/50">
+                                <td className="p-2 align-middle">
+                                    <span className="inline-block max-w-64 truncate" >
                                         &lt;Empty Job Info&gt;
                                     </span>
                                 </td>
-                                <td className="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] hidden sm:table-cell">
+                                <td className="p-2 align-middle hidden sm:table-cell">
                                     <span className="inline-flex items-center rounded-xl border border-slate-100 bg-white px-2.5 py-1.5">
                                         <span className="inline-block w-2 h-2 rounded-full mr-2 bg-slate-500" />
                                         <span className="text-xs text-slate-700">Completed</span>
                                     </span>
                                 </td>
-                                <td className="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] hidden md:table-cell">
-                                    N/A
-                                </td>
-                                <td className="p-2 align-middle [&:has([role=checkbox])]:pr-0 [&>[role=checkbox]]:translate-y-[2px] flex items-center gap-3">
-                                    <div>/</div>
-                                </td>
+                                <td className="p-2 align-middle hidden md:table-cell">N/A</td>
+                                <td className="p-2 align-middle flex items-center gap-3"><div>/</div></td>
                             </tr>
                         </tbody>
                     </table>
@@ -168,10 +161,10 @@ const Interview = () => {
                         </h4>
                     </div>
                     <div className="flex items-center space-x-2">
-                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 border border-slate-300 bg-background hover:bg-accent hover:text-accent-foreground box-content h-8 w-8 px-0 py-0" >
+                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-md font-medium border-slate-300 box-content h-8 w-8 px-0 py-0" >
                             <Icon icon="ArrowLeft" />
                         </button>
-                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 border border-slate-300 bg-background hover:bg-accent hover:text-accent-foreground box-content h-8 w-8 px-0 py-0" >
+                        <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-md font-medium border-slate-300 box-content h-8 w-8 px-0 py-0" >
                             <Icon icon="ChevronRight" />
                         </button>
                     </div>

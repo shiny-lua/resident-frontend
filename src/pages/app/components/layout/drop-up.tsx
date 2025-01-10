@@ -1,6 +1,12 @@
+import { Link, useNavigate } from "react-router-dom"
 import Icon from "../../../../components/icon"
 
-const DropUp = () => {
+const DropUp = ({onManageAccount}: {onManageAccount: VoidFunction}) => {
+    const navigate = useNavigate()
+    const onLogout = () => {
+        navigate("/")
+    }
+
     return (
         <div className="absolute -top-50 left-3 bg-white w-[330px] bg-opacity-100 shadow-4 border rounded-xl py-4 px-5">
             <div className="flex gap-4 items-center border-b pb-3">
@@ -18,14 +24,14 @@ const DropUp = () => {
                     <div className="text-md text-slate-600">alivestonyplayer@gmail</div>
                 </div>
             </div>
-            <div className="text-md text-slate-600 flex items-center gap-3">
+            <button onClick={onManageAccount} className="text-md text-slate-600 flex items-center gap-3">
                 <Icon className="flex items-center px-3 w-12 h-12" icon="Setting" />
-                <div>Setting</div>
-            </div>
-            <div className="text-md text-slate-600 border-t flex items-center gap-3">
+                <div>Manage Account</div>
+            </button>
+            <button onClick={onLogout} className="text-md text-slate-600 border-t flex items-center gap-3 w-full">
                 <Icon className="flex items-center px-3 w-12 h-12" icon="Logout" />
                 Logout
-            </div>
+            </button>
         </div>
     )
 }

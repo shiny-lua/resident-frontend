@@ -1,3 +1,4 @@
+import { Link } from "react-router-dom"
 import Icon from "../../../../components/icon"
 
 const DropRight = () => {
@@ -20,10 +21,10 @@ const DropRight = () => {
                     <Icon icon="Download" />
                     <span className="ml-3">Download Center</span>
                 </div>
-                <div className="flex w-full cursor-pointer flex-row items-center justify-start px-2 py-[6px] hover:bg-sky-100">
+                <Link to="/app/permission-setting" className="flex w-full cursor-pointer flex-row items-center justify-start px-2 py-[6px] hover:bg-sky-100">
                     <Icon icon="SettingOutLine" />
                     <span className="ml-3">Settings</span>
-                </div>
+                </Link>
                 <div className="flex w-full cursor-pointer flex-row items-center justify-start px-2 py-[6px] hover:bg-sky-100">
                     <Icon icon="HelpCenter" />
                     <span className="ml-3">Help Center</span>

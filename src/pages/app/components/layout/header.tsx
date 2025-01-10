@@ -45,7 +45,7 @@ const Header = () => {
 
 
     return (
-        <div className="block sm:hidden px-5 py-4">
+        <div className="fixed top-0 left-0 right-0 block sm:hidden px-5 py-4 bg-white z-99999" >
             {showNav ? (
                 <div className={`w-full z-10 bg-black bg-opacity-75 h-screen top-0 left-0 fixed`}>
                     <nav ref={sideBarRef} className={`flex relative max-w-[250px] h-full w-full flex-col py-5 transition-[width] duration-300 bg-sky-100 ${showNav ? "transform translate-x-0" : "transform -translate-x-full"}`}>
@@ -59,7 +59,7 @@ const Header = () => {
                             <div className={`border-t border-slate-100 px-2 py-3}`}>
                                 <div className="text-nowrap pl-3 font-medium text-slate-400">Interview</div>
                                 <Link
-                                    to="/app/interview"
+                                    to="/app/live-interview"
                                     className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                                 >
                                     <Icon icon="LiveInterview" />
@@ -86,13 +86,13 @@ const Header = () => {
                                     <Icon icon="DocumentCenter" />
                                     <span>Document Center</span>
                                 </Link>
-                                <Link
+                                {/* <Link
                                     to="/app/store"
                                     className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                                 >
                                     <Icon icon="Upgrade" />
                                     <span>Upgrade Your Copilot</span>
-                                </Link>
+                                </Link> */}
                             </div>
                             <div className={`border-t border-slate-100 px-2 py-3}`}>
                                 <div className="text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>

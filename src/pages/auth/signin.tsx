@@ -76,7 +76,7 @@ const SignIn = () => {
                             </div>
                             <input className="bg-white rounded-md outline-none border focus:shadow-1 focus:border-primary p-3" type="text" name="" id="password" />
                         </div>
-                        <button className="w-full mt-4 bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md">Continue</button>
+                        <button onClick={() => navigate("/app/started")} className="w-full mt-4 bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md">Continue</button>
                     </div>
                 )}
             </div>

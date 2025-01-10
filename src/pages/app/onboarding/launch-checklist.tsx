@@ -54,7 +54,7 @@ const LaunchChecklist = ({ onNext, onPrev }: { onNext: VoidFunction, onPrev: Voi
                         <div className="flex w-full justify-center">
                             <div className="flex w-full items-center justify-between rounded-md border border-slate-200 bg-white p-4 text-slate-700">
                                 <div className="flex items-center font-medium">
-                                    <Icon icon="Microphone" />
+                                    <Icon icon="Audio" />
                                     Microphone Permission
                                 </div>
                                 <div className="flex justify-center items-center gap-1">

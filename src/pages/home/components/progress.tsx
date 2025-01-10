@@ -54,11 +54,11 @@ const Progress = () => {
                                     <Link className="hover:text-sky-500" to="/app/interview">Real-Time Transcription</Link>
                                 </div>
                             </li>
-                            <li>
+                            {/* <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
                                     <Link className="hover:text-sky-500" to="/app/store">Domain Knowledge Support</Link>
                                 </div>
-                            </li>
+                            </li> */}
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
                                     <Link className="hover:text-sky-500" to="/app/interview">Coding Copilot</Link>

@@ -1,9 +1,10 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, useLocation } from "react-router-dom"
 
 import Icon from "../../../../components/icon"
 import DropUp from "./drop-up"
 import DropRight from "./drop-right"
+import ManageAccountModal from "./manage-account-modal"
 
 interface SideBarProps {
     smallSideBar: boolean
@@ -16,6 +17,8 @@ interface SideBarProps {
 
 const SideBar = (props: SideBarProps) => {
 
+    const { pathname } = useLocation();
+
     const { smallSideBar, onSideBar, showArrowButton, onShowArrowButton, onSmallSideBar, isMobile } = props
 
     const dropUpRef = React.useRef<HTMLDivElement>(null)
@@ -23,6 +26,7 @@ const SideBar = (props: SideBarProps) => {
 
     const [showDropUp, setShowDropUp] = React.useState(false)
     const [showDropRight, setShowDropRight] = React.useState(false)
+    const [showManageAccountModal, setShowManageAccountModal] = React.useState(false)
 
     const onUpOutside = (event: MouseEvent) => {
         if (dropUpRef.current && !dropUpRef.current.contains(event.target as Node)) {
@@ -46,7 +50,7 @@ const SideBar = (props: SideBarProps) => {
     }, []);
 
     return (
-        <div className={`${smallSideBar ? "w-[55px]" : isMobile ? "w-full z-10 bg-black bg-opacity-75" : "w-[260px]"} z-1 h-screen ${isMobile ? "absolute top-0 left-0" : "fixed"}`}>
+        <div className={`${smallSideBar ? "w-[55px]" : isMobile ? "w-full z-10 bg-black bg-opacity-75" : "w-[260px]"} z-1 sm:h-screen ${isMobile ? "absolute top-0 left-0" : "fixed"}`}>
             <nav className="hidden sm:flex relative max-w-[260px] h-full w-full flex-col py-5 transition-[width] duration-300 bg-sky-100">
                 {!smallSideBar && <span onClick={onSideBar} className="absolute right-4 border rounded-md p-1 border-slate-300 bg-white">
                     <Icon icon="ArrowLeft" />
@@ -69,67 +73,67 @@ const SideBar = (props: SideBarProps) => {
                     <div className={`border-t border-slate-100 px-2 py-3}`}>
                         {!smallSideBar && <div className="text-nowrap pl-3 font-medium text-slate-400">Interview</div>}
                         <Link
-                            to="/app/interview"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            to="/app/live-interview"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("live-interview") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="LiveInterview" />
                             {!smallSideBar && <span>Live Interview</span>}
                         </Link>
                         <Link
                             to="/app/mock-interview"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("mock-interview") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="MockInterview" />
                             {!smallSideBar && <span>Mock Interview</span>}
                         </Link>
                         <Link
                             to="/app/role"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("role") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="PreparationHub" />
                             {!smallSideBar && <span>Preparation Hub</span>}
                         </Link>
                         <Link
                             to="/app/resume"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("resume") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="DocumentCenter" />
                             {!smallSideBar && <span>Document Center</span>}
                         </Link>
-                        <Link
+                        {/* <Link
                             to="/app/store"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("store") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="Upgrade" />
                             {!smallSideBar && <span>Upgrade Your Copilot</span>}
-                        </Link>
+                        </Link> */}
                     </div>
                     <div className={`border-t border-slate-100 px-2 py-3}`}>
                         {!smallSideBar && <div className="text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>}
                         <Link
                             to="/app/ai-generator"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("generator") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="AiGenerator" />
                             {!smallSideBar && <span>AI Material Generator</span>}
                         </Link>
                         <Link
                             to="/app/interview-coach"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("coach") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="AiMagic" />
                             {!smallSideBar && <span>AI Career Coach</span>}
                         </Link>
                         <Link
                             to="/app/chat-with-recruiters"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("recruiters") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="Chat" />
                             {!smallSideBar && <span>Speak with Recruiters</span>}
                         </Link>
                         <Link
                             to="/app/question"
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("question") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="Question" />
                             {!smallSideBar && <span>Interview Question Bank</span>}
@@ -168,7 +172,7 @@ const SideBar = (props: SideBarProps) => {
                                     </div>
                                     <Icon className="text-black" icon="ChevronRight" />
                                 </div>
-                                {showDropUp && <DropUp />}
+                                {showDropUp && <DropUp onManageAccount={() => setShowManageAccountModal(true)} />}
                             </div>
                             <div ref={dropRightRef}>
                                 <div onClick={() => setShowDropRight(!showDropRight)} className="flex flex-row cursor-pointer justify-between items-center pt-2 pb-4">
@@ -201,10 +205,11 @@ const SideBar = (props: SideBarProps) => {
                                 alt="Show Alive"
                             />
                         </div>
-                        {showDropUp && <DropUp />}
+                        {showDropUp && <DropUp onManageAccount={() => setShowManageAccountModal(true)}  />}
                     </div>
                 )}
             </nav>
+            {showManageAccountModal && <ManageAccountModal isOpen={showManageAccountModal} onClose={() => setShowManageAccountModal(false)} />}
         </div>
     )
 }

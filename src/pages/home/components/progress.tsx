@@ -124,8 +124,7 @@ const Progress = () => {
                                     data-nimg={1}
                                     className="absolute bottom-[-8%] left-[15%] h-[105%] max-w-none max-h-none w-auto rotate-[-13.477deg]"
                                     style={{ color: "transparent" }}
-                                    srcSet="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Fats-optimized.webp&w=1200&q=75 1x, /_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Fats-optimized.webp&w=3840&q=75 2x"
-                                    src="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Fats-optimized.webp&w=3840&q=75"
+                                    src="/image/home/resume-editor.png"
                                 />
                             </div>
                             <div>
@@ -169,7 +168,7 @@ const Progress = () => {
                                 <div className="bubble is--green" />
                             </div>
                             <img
-                                src="https://d12araoe7z5xxk.cloudfront.net/landing-page/images/sticky-tabs/ats-optimized.webp"
+                                src="/image/home/resume-editor.png"
                                 alt="AI Resume Builder"
                                 width="1169.191"
                                 height="774.875"
@@ -223,20 +222,7 @@ const Progress = () => {
                                     data-nimg={1}
                                     className="absolute lg:top-[9.002%] top-[50%] left-[50%] lg:translate-y-[0%] translate-y-[-50%] translate-x-[-50%] w-[100%]"
                                     style={{ color: "transparent" }}
-                                    srcSet="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%203.webp&w=1080&q=75 1x, /_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%203.webp&w=3840&q=75 2x"
-                                    src="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%203.webp&w=3840&q=75"
-                                />
-                                <img
-                                    alt="AI Mock Interview"
-                                    loading="lazy"
-                                    width={826}
-                                    height={107}
-                                    decoding="async"
-                                    data-nimg={1}
-                                    className="absolute z-10 lg:rounded-[1rem] lg:top-[14.25rem] lg:left-[20.725%] lg:w-[76.766%] sm:left-[20%] sm:w-[79%] sm:top-[28.729%] left-[20%] w-[79%] top-[30%]"
-                                    style={{ color: "transparent" }}
-                                    srcSet="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%204.webp&w=828&q=75 1x, /_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%204.webp&w=1920&q=75 2x"
-                                    src="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%204.webp&w=1920&q=75"
+                                    src="https://www.finalroundai.com/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%203.webp&w=1080&q=75"
                                 />
                             </div>
                         </div>
@@ -311,28 +297,9 @@ const Progress = () => {
                                         translate: "none",
                                         rotate: "none",
                                         scale: "none",
-                                        transform: "translate(-50%, 0%) translate(-0.227px, 5.2047px)"
+                                        transform: "translate(-50%, 0) translate(-0.227px, 5.2047px)"
                                     }}
-                                    srcSet="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%205.webp&w=1080&q=75 1x, /_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%205.webp&w=3840&q=75 2x"
-                                    src="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%205.webp&w=3840&q=75"
-                                />
-                                <img
-                                    alt="Question Bank"
-                                    loading="lazy"
-                                    width={826}
-                                    height={107}
-                                    decoding="async"
-                                    data-nimg={1}
-                                    className="absolute z-10 lg:rounded-[1rem] lg:top-[14.25rem] lg:left-[20.725%] lg:w-[76.766%] sm:left-[20%] sm:w-[79%] sm:top-[28.729%] left-[20%] w-[79%] top-[30%]"
-                                    style={{
-                                        color: "transparent",
-                                        translate: "none",
-                                        rotate: "none",
-                                        scale: "none",
-                                        transform: "translate(0px, 7.807px)"
-                                    }}
-                                    srcSet="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-incop%206.webp&w=828&q=75 1x, /_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-incop%206.webp&w=1920&q=75 2x"
-                                    src="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-incop%206.webp&w=1920&q=75"
+                                    src="https://www.finalroundai.com/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%205.webp&w=1080&q=75"
                                 />
                             </div>
                         </div>
@@ -456,20 +423,12 @@ const Progress = () => {
                                 <div className="bubble is--green" />
                             </div>
                             <img
-                                src="https://d12araoe7z5xxk.cloudfront.net/landing-page/images/sticky-tabs/detailed-performance-analysis.webp"
+                                src="/image/home/interview-report.png"
                                 alt="Interview Report"
                                 width="1169.191"
                                 height="774.875"
                                 loading="lazy"
                                 className="absolute bottom-[-4%] left-[16.255%] lg:min-h-[100%] sm:min-h-[100%] max-w-none rotate-[-13.477deg]"
-                            />
-                            <img
-                                src="https://d12araoe7z5xxk.cloudfront.net/landing-page/images/sticky-tabs/interview-report-2.webp"
-                                alt="Interview Report"
-                                width={826}
-                                height={99}
-                                loading="lazy"
-                                className="absolute z-[2] left-[26.978%] top-[30.542%] h-[20.777%] w-auto max-w-none rotate-[-13.477deg]"
                             />
                         </div>
                     </div>

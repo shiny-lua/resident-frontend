@@ -15,13 +15,13 @@ const steps = [
     {
         title: "Launch an interview",
         desc: "Launch your Interview Copilot™ for real-time interview support",
-        link: "/app/interview",
+        link: "/app/live-interview",
         idx: 3,
     },
     {
         title: "View interview report",
         desc: "Review your interview notes and past interview performance",
-        link: "/app/interview",
+        link: "/app/live-interview",
         idx: 4,
     },
 ];

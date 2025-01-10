@@ -56,7 +56,7 @@ const Header = () => {
                     <Link to="/interview-copilot" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Interview Copllot™</Link>
                     <Link to="/ai-resume-builder" className={`${pathname.includes("ai-resume-builder") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>AI Resume Builder</Link>
                     <Link to="/ai-mock-interview" className={`${pathname.includes("ai-mock-interview") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>AI Mock Interview</Link>
-                    <Link to="" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Pricing</Link>
+                    <Link to="/app/subscription" className={`${pathname.includes("subscription") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Pricing</Link>
                     <button
                         onMouseOver={() => setShowResource(true)}
                         className={`group flex items-center bg-opacity-80 text-black text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}
@@ -64,14 +64,14 @@ const Header = () => {
                         Resources
                         <Icon className="h-6 w-6" icon={!showResource ? "ChevronDown" : "ChevronUp"} />
                     </button>
-                    <Link to="" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Question Bank</Link>
+                    <Link to="" className={`${pathname.includes("question-bank") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Question Bank</Link>
                 </div>
                 <div className={`${showDropdown ? 'translate-y-0  min-h-[calc(100vh-70px)]' : '-translate-y-full -z-99 opacity-0'} h-[calc(100vh-70px)] overflow-y-scroll duration-200 ease-linear absolute top-20 left-0 bg-black block 2xl:hidden w-full bg-opacity-80`}>
                     <div className="flex flex-col px-5 2xl:px-20 bg-white border rounded-b-[30px] border-b-2 gap-2 pb-4">
                         <Link to="/interview-copilot" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Interview Copllot™</Link>
                         <Link to="/ai-resume-builder" className={`${pathname.includes("ai-resume-builder") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>AI Resume Builder</Link>
                         <Link to="/ai-mock-interview" className={`${pathname.includes("ai-mock-interview") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>AI Mock Interview</Link>
-                        <Link to="" className={`${pathname.includes("pricing") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Pricing</Link>
+                        <Link to="/app/subscription" className={`${pathname.includes("subscription") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Pricing</Link>
                         <div>
                             <button
                                 onClick={() => setShowResource(!showResource)}
@@ -170,7 +170,7 @@ const Header = () => {
                                 </div>
                             )}
                         </div>
-                        <Link to="" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Question Bank</Link>
+                        <Link to="" className={`${pathname.includes("question-bank") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Question Bank</Link>
                     </div>
                 </div>
                 <div className="flex gap-3 sm:gap-6 items-center">

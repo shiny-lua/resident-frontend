@@ -31,10 +31,17 @@ const ManageAccountModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: Voi
                 className="grid place-items-center fixed w-screen h-screen bg-black bg-opacity-70 backdrop-blur-sm fade-in">
                 <div
                     ref={modalRef}
-                    className="fixed left-[50%] top-[50%] z-50 grid max-w-[900px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-4 shadow-lg duration-200 sm:rounded-lg rounded-lg max-h-[calc(100dvh-48px)] w-5/6 grid-rows-[auto_1fr_auto]"
+                    className="fixed left-[50%] top-[50%] z-50 flex max-w-[900px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-4 shadow-lg duration-200 sm:rounded-lg rounded-lg h-[700px] max-h-[calc(100dvh-48px)] w-5/6"
                     style={{ pointerEvents: "auto" }}
                 >
-                    <div className="flex h-full w-full">
+                    <div className="flex h-full w-full relative">
+                        <div
+                            onClick={onClose}
+                            className="absolute -top-2 -right-2 flex w-6 justify-center bg-white rounded-sm border align-middle hover:cursor-pointer"
+                            title="Close"
+                        >
+                            <Icon icon="Close" />
+                        </div>
                         <div className="hidden md:flex flex-col justify-between w-1/3 h-full bg-sky-100 pt-8 px-3">
                             <div className="h-full">
                                 <div className="text-2xl px-3">Account</div>

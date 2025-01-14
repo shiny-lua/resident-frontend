@@ -1,13 +1,52 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import VerificationInput from "react-verification-input";
+
 import Icon from "../../components/icon";
+import { restApi } from "../../context/restApi";
+import { useGlobalContext } from "../../context";
+import { showToast } from "../../context/helper";
+import Loader from "../../components/loader";
 
 const VerifyCode = () => {
     const navigate = useNavigate()
+    const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
+    const [status, setStatus] = React.useState({
+        code: "",
+        isWrongCode: false,
+        isLoading: false,
+        count: 30
+    })
 
-    const onSend = () => {
-        // navigate("/login")
+    React.useEffect(() => {
+        if (status.count === 0) return
+
+        const timer = setInterval(() => {
+            setStatus(prev => ({ ...prev, count: prev.count - 1 }))
+        }, 1000)
+        return () => clearInterval(timer)
+    }, [status.count])
+
+    const onSend = async () => {
+        if (status.isLoading || !status.code) return
+        setStatus({ ...status, isLoading: true })
+        const res = await restApi.postRequest("verify-email", { email: state.userEmail, code: status.code })
+        if (res === undefined) {
+            showToast('An error has occurred during communication with backend.', 'warning')
+        } else if (res.status === 200) {
+            dispatch({ type: "authToken", payload: res.data })
+            storeData(res.data)
+            navigate("/app/onboarding")
+        } else {
+            setStatus({ ...status, isWrongCode: true, isLoading: false })
+            showToast(res.msg, "error")
+            return
+        }
+        setStatus({ ...status, isLoading: false })
+    }
+
+    const onResend = async () => {
+        // const res = await restApi.postRequest("send-code", { email: state.userEmail })
     }
 
     return (
@@ -34,17 +73,18 @@ const VerifyCode = () => {
                         <div className="text-center opacity-60 text-sm">Verification code was sent to your email.</div>
                     </div>
                     <div className="flex justify-center items-center mb-10 gap-2 text-sm">
-                        <div className="opacity-60">bh066078@gmail.com</div>
+                        <div className="opacity-60">{state.userEmail}</div>
                         <button className="opacity-70" onClick={() => navigate("/auth/sign-up")}><Icon icon="Edit" /></button>
                     </div>
                     <div className="w-full">
                         <VerificationInput
-                            onComplete={onSend}
+                            value={status.code}
+                            onChange={e => setStatus({ ...status, code: e, isWrongCode: false })}
                             placeholder=""
                             autoFocus={true}
                             classNames={{
                                 container: "mt-3 w-full",
-                                character: "bg-white border-none rounded-md mx-1",
+                                character: `bg-white ${status.isWrongCode ? "border border-red-500 text-red-500" : "border-none text-black"} rounded-md mx-1`,
                                 characterInactive: "character--inactive",
                                 characterSelected: "character--selected",
                                 characterFilled: "character--filled",
@@ -52,15 +92,16 @@ const VerifyCode = () => {
                         />
 
                         <div className="text-md mt-3 flex justify-between">
-                            <div className="opacity-60">Resend code</div>
-                            <div className="opacity-60">30s</div>
+                            <button onClick={onResend} className={`${status.count === 0 ? "opacity-100" : "opacity-60"}`}>Resend code</button>
+                            <div className="opacity-60">{status.count}s</div>
                         </div>
                     </div>
                     <div className="mt-15">
                         <button
-                            onClick={() => navigate("/auth/set-password")}
-                            className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md"
+                            onClick={onSend}
+                            className="inline-flex justify-center items-center gap-2 w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-8"
                         >
+                            {status.isLoading && <Loader />}
                             Continue
                         </button>
                     </div>

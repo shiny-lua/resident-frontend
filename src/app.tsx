@@ -1,7 +1,7 @@
 import React from "react";
-import { Route, Routes, useLocation } from "react-router-dom";
+import { Navigate, Route, Routes, useLocation } from "react-router-dom";
 
-import { GlobalContextProvider } from "./context";
+import { GlobalContextProvider, useGlobalContext } from "./context";
 
 import Home from "./pages/home";
 import Auth from "./pages/auth";
@@ -16,13 +16,32 @@ function App() {
 
   return (
     <GlobalContextProvider>
-      <Routes>
-        <Route path="/auth/*" element={<Auth />} />
-        <Route path="/*" element={<Home />} />
-        <Route path="/app/*" element={<AppIndex />} />
-      </Routes>
+      <Routers />
     </GlobalContextProvider>
   );
+}
+
+const Routers = () => {
+
+  const [state]: GlobalContextType = useGlobalContext()
+
+  return (
+    <Routes>
+      {state.authToken ? (
+        <>
+          <Route path="/app/*" element={<AppIndex />} />
+          <Route path="/*" element={<Home />} />
+          <Route path="/auth/*" element={<Navigate to="/app/started" />}/>
+        </>
+      ) : (
+        <>
+          <Route path="/auth/*" element={<Auth />}/>
+          <Route path="/*" element={<Home />} />
+          <Route path="/app/*" element={<Navigate to="/auth/sign-in" />} />
+        </>
+      )}
+    </Routes>
+  )
 }
 
 export default App;

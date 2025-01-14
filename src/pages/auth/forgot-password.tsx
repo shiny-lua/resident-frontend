@@ -42,21 +42,20 @@ const SetPassword = () => {
                             <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
                             <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.png" className="w-6 h-6" alt="logo" /></button>
                         </div>
-                    <div className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
+                    <button className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
                         <Icon icon="Chain" />
                         <div>Email link to bh066078@gmail.com</div>
-                    </div>
-                    <div className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
+                    </button>
+                    <button className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
                         <Icon icon="Email" />
                         <div>Email code to bh066078@gmail.com</div>
-                    </div>
+                    </button>
                     <Link to={"/auth/sign-in"} className="flex justify-center font-semibold text-slate-500">Back</Link>
                     <div className="flex justify-center gap-4 pt-3">
                         <span className="text-slate-500">Don't have any of these?</span>
                         <button className="text-primary font-semibold">Get help</button>
                     </div>
                 </div>
-
             </div>
         </div>
     )

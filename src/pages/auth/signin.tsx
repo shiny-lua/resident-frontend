@@ -1,12 +1,66 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import Icon from "../../components/icon";
+import { emailValidator, showToast, strongPasswordValidator } from "../../context/helper";
+import { restApi } from "../../context/restApi";
+import { useGlobalContext } from "../../context";
+import Loader from "../../components/loader";
 
 const SignIn = () => {
 
     const navigate = useNavigate()
-    const [stepIndex, setStepIndex] = React.useState(0)
 
+    const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
+    const [stepIndex, setStepIndex] = React.useState(0)
+    const [isPwdVisible, setPwdVisible] = React.useState(false)
+
+    const [status, setStatus] = React.useState({
+        email: "",
+        password: "",
+        isLoading: false
+    })
+
+    const [validate, setValidate] = React.useState({
+        isValidEmail: { status: false, msg: "" },
+    })
+
+    const onNext = () => {
+        if (validate.isValidEmail.status) {
+            setStepIndex(1)
+        } else {
+            showToast(!validate.isValidEmail.msg ? "Email is required!" : validate.isValidEmail.msg, "warning")
+        }
+    }
+
+    const onInput = (e: any, k: string, v: string) => {
+        const value = e.target.value
+
+        const validation = () => {
+            if (k === "email") return emailValidator(value)
+            if (k === 'password') return strongPasswordValidator(value)
+        }
+        setStatus({ ...status, [k]: value })
+        setValidate({ ...validate, [v]: validation() })
+    }
+
+    const onSignIn = async () => {
+        if (!!status.isLoading || !status.password) return showToast("Password is required!", "warning")
+        const res = await restApi.postRequest("login", { email: status.email, password: status.password })
+
+        if (res === undefined) {
+            showToast('An error has occurred during communication with backend.', 'warning')
+            setStatus({ ...status, isLoading: false })
+        } else if (res.status === 200) {
+            dispatch({ type: "authToken", payload: res.data.token })
+            storeData(res.data.token)
+            navigate("/auth/verify-code")
+        } else {
+            showToast(res.msg, "error")
+        }
+        setStatus({ ...status, isLoading: false })
+
+        navigate("/app/started")
+    }
 
     return (
         <div className="flex w-full h-full relative bg-slate-50 ">
@@ -49,9 +103,16 @@ const SignIn = () => {
                         <div className="">
                             <div className="flex flex-col gap-2 mb-4">
                                 <label htmlFor="email">Email address</label>
-                                <input className="bg-white rounded-md outline-none border focus:border-primary p-3" type="text" name="" id="email" />
+                                <input
+                                    value={status.email}
+                                    onChange={e => onInput(e, "email", "isValidEmail")}
+                                    className="bg-white rounded-md outline-none border focus:border-primary p-3" type="text" name="" id="email"
+                                />
+                                {!validate.isValidEmail.status && (
+                                    <div className="text-orange-500 text-[13px]">{validate.isValidEmail.msg}</div>
+                                )}
                             </div>
-                            <button onClick={() => setStepIndex(1)} className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-2">Continue</button>
+                            <button onClick={onNext} className="w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-2">Continue</button>
                             <div className="text-sm mt-4 flex gap-2 justify-center  ">
                                 <div className="opacity-80">Don't have an account?</div>
                                 <Link to={"/auth/sign-up"} className="text-primary font-semibold hover:text-black hover:underline" >Sign Up</Link>
@@ -74,9 +135,23 @@ const SignIn = () => {
                                 <label htmlFor="password">Password</label>
                                 <button onClick={() => navigate("/auth/forgot-password")} className="text-slate-500 font-semibold text-sm">Forgot Password?</button>
                             </div>
-                            <input className="bg-white rounded-md outline-none border focus:shadow-1 focus:border-primary p-3" type="text" name="" id="password" />
+                            <div className="relative">
+                                <input
+                                    type={isPwdVisible ? "text" : "password"}
+                                    id="password"
+                                    value={status.password}
+                                    onChange={e => onInput(e, "password", "isStrongPassword")}
+                                    className="bg-white rounded-md w-full outline-none focus:border-primary border p-3 "
+                                />
+                                <span onClick={() => setPwdVisible(!isPwdVisible)} className="absolute right-3 top-3"><img width={24} height={24} src={`/image/icons/${isPwdVisible ? "visible" : "invisible"}.svg`} alt="" /></span>
+                            </div>
                         </div>
-                        <button onClick={() => navigate("/app/started")} className="w-full mt-4 bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md">Continue</button>
+                        <button onClick={onSignIn}
+                            className="inline-flex justify-center items-center gap-2 w-full bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] text-center text-white text-lg py-3 rounded-md mt-8"
+                        >
+                            {status.isLoading && <Loader />}
+                            Continue
+                        </button>
                     </div>
                 )}
             </div>

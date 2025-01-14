@@ -1,8 +1,11 @@
 import React from "react";
+import { config } from "../config/config";
+
+export { config }
 
 const INIT_STATE: InitStateObject = {
-    isLoggedIn: false,
-    isOpenedMenu: false
+    authToken: "",
+    userEmail: ""
 }
 
 const GlobalContext = React.createContext<any>(null);
@@ -19,27 +22,27 @@ function useGlobalContext() {
 }
 
 const storeData = async (value: string) => {
-    return window.localStorage.setItem("isLoggedIn", value)
+    return window.localStorage.setItem("authToken", value)
 }
 
 const getData = async () => {
-    return window.localStorage.getItem("isLoggedIn")
+    return window.localStorage.getItem("authToken")
 }
 
 const GlobalContextProvider = ({ children }: any) => {
     const [state, dispatch] = React.useReducer(reducer, INIT_STATE);
-    
+
     React.useEffect(() => {
         initSessionSetting()
     }, [])
 
     const initSessionSetting = async () => {
         try {
-            const isLoggedIn = await getData();
+            const authToken = await getData();
 
-            if (!!isLoggedIn) {
+            if (!!authToken) {
                 // const loginStatus = await
-                dispatch({ type: 'isLoggedIn', payload: isLoggedIn })
+                dispatch({ type: 'authToken', payload: authToken })
             } else {
                 // throw new ValidateError("Invalid authToken!")
             }

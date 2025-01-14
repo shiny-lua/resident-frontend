@@ -44,37 +44,6 @@ export const ConfirmModal = async (title: string, text?: string, confirmText?: s
     }
 };
 
-export const validateEvmAddress = (address: string) => {
-    const regex = /^(0x)?[0-9a-f]{40}$/i;
-    return regex.test(address);
-};
-
-export const validateTronAddress = (address: string) => {
-    const regex = /^T[a-zA-Z0-9]{33}$/;
-    return regex.test(address);
-};
-
-export const passwordAlert = async () => {
-
-    const { value: password } = await Swal.fire({
-        title: "Enter your password",
-        input: "password",
-        inputPlaceholder: "Enter your password",
-        inputAttributes: {
-            maxlength: "10",
-            autocapitalize: "off",
-            autocorrect: "off"
-        },
-        customClass: {
-            popup: 'bg-white dark:bg-slate-800',
-            htmlContainer: 'text-slate-800 dark:text-slate-400',
-        }
-    });
-    if (password) {
-        return password;
-    }
-}
-
 export const currentTime = () => Math.round(+new Date().getTime() / 1e3)
 
 export const emailEllipse = (email: string) => {
@@ -141,21 +110,6 @@ export const emailValidator = (mail: string) => {
         )
     ) {
         return { status: false, msg: 'Invalid email type!' }
-    } else {
-        return { status: true, msg: '' };
-    }
-}
-
-export const addressValidator = (addy: string) => {
-    if (!addy) {
-        return { status: false, msg: 'Address is required!' }
-    }
-    if (
-        !addy.match(
-            /^0x[a-fA-F0-9]{40}$/gi
-        )
-    ) {
-        return { status: false, msg: 'Invalid address type!' }
     } else {
         return { status: true, msg: '' };
     }

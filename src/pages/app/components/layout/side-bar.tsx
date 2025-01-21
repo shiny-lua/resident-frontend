@@ -2,9 +2,10 @@ import React from "react"
 import { Link, useLocation } from "react-router-dom"
 
 import Icon from "../../../../components/icon"
-import DropUp from "./drop-up"
+import ProfileDropdown from "../../../../components/profile-dropdown"
 import DropRight from "./drop-right"
 import ManageAccountModal from "./manage-account-modal"
+import { useGlobalContext } from "../../../../context"
 
 interface SideBarProps {
     smallSideBar: boolean
@@ -18,19 +19,21 @@ interface SideBarProps {
 const SideBar = (props: SideBarProps) => {
 
     const { pathname } = useLocation();
+    const [state]: GlobalContextType = useGlobalContext()
+
 
     const { smallSideBar, onSideBar, showArrowButton, onShowArrowButton, onSmallSideBar, isMobile } = props
 
-    const dropUpRef = React.useRef<HTMLDivElement>(null)
+    const profileDropdownRef = React.useRef<HTMLDivElement>(null)
     const dropRightRef = React.useRef<HTMLDivElement>(null)
 
-    const [showDropUp, setShowDropUp] = React.useState(false)
+    const [showProfileDropdown, setShowProfileDropdown] = React.useState(false)
     const [showDropRight, setShowDropRight] = React.useState(false)
     const [showManageAccountModal, setShowManageAccountModal] = React.useState(false)
 
     const onUpOutside = (event: MouseEvent) => {
-        if (dropUpRef.current && !dropUpRef.current.contains(event.target as Node)) {
-            setShowDropUp(false);
+        if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target as Node)) {
+            setShowProfileDropdown(false);
         }
     };
 
@@ -100,13 +103,6 @@ const SideBar = (props: SideBarProps) => {
                             <Icon icon="DocumentCenter" />
                             {!smallSideBar && <span>Document Center</span>}
                         </Link>
-                        {/* <Link
-                            to="/app/store"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("store") ? "bg-sky-200" : "bg-transparent"}`}
-                        >
-                            <Icon icon="Upgrade" />
-                            {!smallSideBar && <span>Upgrade Your Copilot</span>}
-                        </Link> */}
                     </div>
                     <div className={`border-t border-slate-100 px-2 py-3}`}>
                         {!smallSideBar && <div className="text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>}
@@ -154,63 +150,69 @@ const SideBar = (props: SideBarProps) => {
                 {!smallSideBar ? (
                     <div className="sticky bottom-0 m-2 rounded-lg border bg-slate-50 p-3 shadow-sm mt-auto px-2">
                         <div className="relative">
-                            <div ref={dropUpRef}>
-                                <div onClick={() => setShowDropUp(!showDropUp)} className={`flex h-12 cursor-pointer items-center justify-between border-b pb-3 text-slate-700`}>
+                            <div ref={profileDropdownRef}>
+                                <div onClick={() => setShowProfileDropdown(!showProfileDropdown)} className={`flex h-12 cursor-pointer items-center justify-between border-b pb-3 text-slate-700`}>
                                     <div className="flex gap-1 items-center">
                                         <div className="">
                                             <img
-                                                crossOrigin="anonymous"
-                                                src="https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18ycWJueGZTckVuZFJnYXhUU0ZJU2FhbFNHaEIifQ?width=160"
+                                                src={state.user.pfp ? state.user.pfp : "/image/icons/temp-user.png"}
                                                 className="rounded-full w-10 h-10"
-                                                title="Show Alive"
-                                                alt="Show Alive"
+                                                title={state.user.fullName}
+                                                alt={state.user.fullName}
                                             />
                                         </div>
                                         <div className="items-center rounded-md border py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-black ml-[10px] inline-block w-[128px] overflow-hidden break-all bg-transparent px-0 text-sm hover:bg-transparent">
-                                            Show Alive
+                                            {state.user.fullName ? state.user.fullName : state.user.email}
                                         </div>
                                     </div>
                                     <Icon className="text-black" icon="ChevronRight" />
                                 </div>
-                                {showDropUp && <DropUp onManageAccount={() => setShowManageAccountModal(true)} />}
-                            </div>
-                            <div ref={dropRightRef}>
-                                <div onClick={() => setShowDropRight(!showDropRight)} className="flex flex-row cursor-pointer justify-between items-center pt-2 pb-4">
-                                    <div className="flex items-center">
-                                        <Icon icon="Plan" />
-                                        <div className="items-center rounded-md border py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-black ml-[10px] inline-block w-[128px] overflow-hidden break-all bg-transparent px-0 text-sm hover:bg-transparent">
-                                            Plan Usage Other
-                                        </div>
+                                {showProfileDropdown &&
+                                    <div className="absolute -top-54 left-3 ">
+                                        <ProfileDropdown onManageAccount={() => setShowManageAccountModal(true)} />
                                     </div>
-                                    <Icon className="text-black" icon="ChevronRight" />
-                                </div>
-                                {showDropRight && <DropRight />}
+                                }
                             </div>
-                            <Link to="/app/subscription">
-                                <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 px-4 py-2 w-full bg-gradient-to-r from-[#0090FF] to-[#00F7FF] text-white">
-                                    <Icon icon="Diamond" />
-                                    Upgrade Now
-                                </button>
-                            </Link>
                         </div>
+                        <div ref={dropRightRef}>
+                            <div onClick={() => setShowDropRight(!showDropRight)} className="flex flex-row cursor-pointer justify-between items-center pt-2 pb-4">
+                                <div className="flex items-center">
+                                    <Icon icon="Plan" />
+                                    <div className="items-center rounded-md border py-0.5 font-semibold transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-transparent text-black ml-[10px] inline-block w-[128px] overflow-hidden break-all bg-transparent px-0 text-sm hover:bg-transparent">
+                                        Plan Usage Other
+                                    </div>
+                                </div>
+                                <Icon className="text-black" icon="ChevronRight" />
+                            </div>
+                            {showDropRight && <DropRight />}
+                        </div>
+                        <Link to="/app/subscription">
+                            <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-ring focus-visible:ring-offset-2 focus-visible:ring-0 disabled:pointer-events-none disabled:opacity-50 bg-primary hover:bg-primary/90 h-10 px-4 py-2 w-full bg-gradient-to-r from-[#0090FF] to-[#00F7FF] text-white">
+                                <Icon icon="Diamond" />
+                                Upgrade Now
+                            </button>
+                        </Link>
                     </div>
                 ) : (
                     <div className="sticky bottom-0 flex justify-center items-center mt-auto bg-transparent cursor-pointer ">
-                        <div onClick={() => setShowDropUp(!showDropUp)} className="flex justify-center items-center w-12 h-12 border rounded-full bg-sky-100 shadow-4">
+                        <div onClick={() => setShowProfileDropdown(!showProfileDropdown)} className="flex justify-center items-center w-12 h-12 border rounded-full bg-sky-100 shadow-4">
                             <img
-                                crossOrigin="anonymous"
-                                src="https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18ycWJueGZTckVuZFJnYXhUU0ZJU2FhbFNHaEIifQ?width=160"
+                                src={state.user.pfp ? state.user.pfp : "/image/icons/temp-user.png"}
                                 className="rounded-full w-10 h-10"
-                                title="Show Alive"
-                                alt="Show Alive"
+                                title={state.user.fullName}
+                                alt={state.user.fullName}
                             />
                         </div>
-                        {showDropUp && <DropUp onManageAccount={() => setShowManageAccountModal(true)}  />}
-                    </div>
-                )}
-            </nav>
+                        {showProfileDropdown &&
+                            <div className="absolute -top-54 left-3 ">
+                                <ProfileDropdown onManageAccount={() => setShowManageAccountModal(true)} />
+                            </div>
+                        }
+                    </div>)
+                }
+            </nav >
             {showManageAccountModal && <ManageAccountModal isOpen={showManageAccountModal} onClose={() => setShowManageAccountModal(false)} />}
-        </div>
+        </div >
     )
 }
 

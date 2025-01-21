@@ -6,6 +6,7 @@ interface ReducerObject {
 interface InitStateObject {
     authToken: string
     userEmail: string
+    user: { email: string, fullName: string, pfp: string }
 }
 
 type GlobalContextType = [

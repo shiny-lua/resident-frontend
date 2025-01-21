@@ -2,6 +2,7 @@ import Carousel from "react-multi-carousel"
 
 import Icon from "../../../components/icon"
 import { companies } from "./data.d"
+import { Link } from "react-router-dom"
 
 const responsive = {
     desktop: {
@@ -44,7 +45,7 @@ const Header = () => {
                                 <div className="text-sm md:text-xl font-normal md:font-[600] text-center lg:text-left">1.2M + Interviews Aced</div>
                             </div>
                             <div className="flex justify-center lg:justify-start">
-                                <button className="text-white rounded-md px-10 py-4 text-md bg-primary hover:bg-black">Activate AI Interview Mode Now</button>
+                                <Link to={"/app/live-interview"} className="text-white rounded-md px-10 py-4 text-md bg-primary hover:bg-black">Activate AI Interview Mode Now</Link>
                             </div>
 
                             <div className="flex justify-center lg:justify-start">

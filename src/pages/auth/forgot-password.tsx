@@ -30,7 +30,7 @@ const SetPassword = () => {
 
                 <div className="w-full sm:w-[430px] px-5 mt-5">
                     <button
-                        onClick={() => { }}
+                        onClick={() => {navigate("/auth/reset-password")}}
                         className="w-full px-4 py-3 mb-3 text-sm font-medium text-white bg-[linear-gradient(180deg,_#414141_0%,_#000000_50%,_#414141_100%)] rounded-lg"
                     >
                         Reset your password

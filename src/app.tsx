@@ -27,19 +27,9 @@ const Routers = () => {
 
   return (
     <Routes>
-      {state.authToken ? (
-        <>
-          <Route path="/app/*" element={<AppIndex />} />
-          <Route path="/*" element={<Home />} />
-          <Route path="/auth/*" element={<Navigate to="/app/started" />}/>
-        </>
-      ) : (
-        <>
-          <Route path="/auth/*" element={<Auth />}/>
-          <Route path="/*" element={<Home />} />
-          <Route path="/app/*" element={<Navigate to="/auth/sign-in" />} />
-        </>
-      )}
+      <Route path="/*" element={<Home />} />
+      <Route path="/app/*" element={<AppIndex />} />
+      <Route path="/auth/*" element={state.authToken ? <Navigate to="/app/started" /> : <Auth />} />
     </Routes>
   )
 }

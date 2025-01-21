@@ -7,7 +7,12 @@ import StepCard from "./components/step-card";
 import TutorialCard from "./components/tutorial-card";
 import InfoCard from "./components/info-card";
 
+import { useGlobalContext } from "../../../context";
+
 const Started = () => {
+
+    const [state, { dispatch }]: GlobalContextType = useGlobalContext()
+    
     return (
         <Layout>
             <div className="relative flex flex-1 flex-col gap-3 overflow-auto p-4 pb-8 lg:gap-4 lg:p-6 lg:pb-6 md:max-h-screen">

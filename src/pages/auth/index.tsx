@@ -4,6 +4,7 @@ import SignUp from "./signup"
 import SignIn from "./signin"
 import VerifyCode from "./verify-code"
 import ForgotPassword from "./forgot-password"
+import ResetPassword from "./reset-password"
 
 const Auth = () => {
     return (
@@ -12,6 +13,7 @@ const Auth = () => {
             <Route path="/sign-in" element={<SignIn />} />
             <Route path="/verify-code" element={<VerifyCode />} />
             <Route path="/forgot-password" element={<ForgotPassword />} />
+            <Route path="/reset-password" element={<ResetPassword />} />
         </Routes>
     )
 }

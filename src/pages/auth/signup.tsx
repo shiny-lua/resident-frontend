@@ -96,7 +96,7 @@ const SiginUp = () => {
                         </div>
                         <div className="flex gap-2 mt-10 justify-center">
                             <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
-                            <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
+                            <button onClick={() => window.location.href = 'http://localhost:10001/api/google-login'} className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
                             <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
                             <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.png" className="w-6 h-6" alt="logo" /></button>
                         </div>

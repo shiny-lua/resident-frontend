@@ -1,27 +1,33 @@
-import { Link, useNavigate } from "react-router-dom"
-import Icon from "../../../../components/icon"
+import { useNavigate } from "react-router-dom"
 
-const DropUp = ({onManageAccount}: {onManageAccount: VoidFunction}) => {
+import Icon from "./icon"
+import { useGlobalContext } from "../context"
+
+const ProfileDropdown = ({ onManageAccount }: { onManageAccount: VoidFunction }) => {
     const navigate = useNavigate()
+
+    const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
+
     const onLogout = () => {
+        dispatch({ type: "authToken", payload: "" })
+        storeData("")
         navigate("/")
     }
 
     return (
-        <div className="absolute -top-50 left-3 bg-white w-[330px] bg-opacity-100 shadow-4 border rounded-xl py-4 px-5">
+        <div className="bg-white w-[330px] bg-opacity-100 shadow-4 border rounded-xl py-4 px-5">
             <div className="flex gap-4 items-center border-b pb-3">
                 <div className="">
                     <img
-                        crossOrigin="anonymous"
-                        src="https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18ycWJueGZTckVuZFJnYXhUU0ZJU2FhbFNHaEIifQ?width=160"
+                        src={state.user.pfp ? state.user.pfp : "/image/icons/temp-user.png"}
                         className="rounded-full w-12 h-12"
-                        title="Show Alive"
-                        alt="Show Alive"
+                        title={state.user.fullName}
+                        alt={state.user.fullName}
                     />
                 </div>
                 <div className="text-md flex flex-col">
-                    <div className="text-md font-semibold text-slate-900">Show Alive</div>
-                    <div className="text-md text-slate-600">alivestonyplayer@gmail</div>
+                    <div className="text-md font-semibold text-slate-900">{state.user.email}</div>
+                    <div className="text-md text-slate-600">{state.user.fullName}</div>
                 </div>
             </div>
             <button onClick={onManageAccount} className="text-md text-slate-600 flex items-center gap-3">
@@ -36,4 +42,4 @@ const DropUp = ({onManageAccount}: {onManageAccount: VoidFunction}) => {
     )
 }
 
-export default DropUp
+export default ProfileDropdown

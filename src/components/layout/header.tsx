@@ -4,17 +4,33 @@ import { Link, useLocation } from "react-router-dom";
 import { useGlobalContext } from "../../context";
 import Hamburger from "./hamburger";
 import Icon from "../icon";
+import ProfileDropdown from "../profile-dropdown";
 
 const Header = () => {
     const [state, { dispatch }]: GlobalContextType = useGlobalContext();
     const location = useLocation();
     const { pathname } = location;
 
+    const profileDropdownRef = React.useRef<HTMLDivElement>(null)
     const [showNavbar, setShowNavbar] = React.useState(true);
     const [showDropdown, setShowDropdown] = React.useState(false);
     const [showResource, setShowResource] = React.useState(false);
+    const [showProfileDropdown, setShowProfileDropdown] = React.useState(false)
 
     let lastScrollY = 0;
+
+    const onProfileDropdownOutside = (event: MouseEvent) => {
+        if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target as Node)) {
+            setShowProfileDropdown(false);
+        }
+    };
+
+    React.useEffect(() => {
+        document.addEventListener("mousedown", onProfileDropdownOutside);
+        return () => {
+            document.removeEventListener("mousedown", onProfileDropdownOutside);
+        };
+    }, []);
 
     const handleScroll = () => {
         if (!showDropdown) {
@@ -173,9 +189,27 @@ const Header = () => {
                         <Link to="" className={`${pathname.includes("question-bank") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Question Bank</Link>
                     </div>
                 </div>
-                <div className="flex gap-3 sm:gap-6 items-center">
-                    <Link to="/auth/sign-in" className="text-md hidden sm:block hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md">Sign In</Link>
-                    <Link to="/auth/sign-up" className="text-white px-4 py-2 text-md hover:bg-sky-200 hover:text-primary p-2 rounded-md bg-primary">Sign Up</Link>
+                <div className="flex items-center">
+                    {!state.authToken ? (
+                        <div className="flex gap-3 sm:gap-6 items-center">
+                            <Link to="/auth/sign-in" className="text-md hidden sm:block hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md">Sign In</Link>
+                            <Link to="/auth/sign-up" className="text-white px-4 py-2 text-md hover:bg-sky-200 hover:text-primary p-2 rounded-md bg-primary">Sign Up</Link>
+                        </div>
+                    ) : (
+                        <div className="flex items-center gap-4">
+                            <Link to="/app/started" className={`flex items-center text-white px-4 py-2 text-md hover:bg-sky-200 hover:text-primary p-2 rounded-md bg-primary 2xl:mr-0 ${showDropdown ? "mr-0" : "mr-3"}`}>Dashboard</Link>
+                            <div className={`relative ${showDropdown ? "block" : "hidden"} 2xl:flex`} ref={profileDropdownRef} >
+                                <button onClick={() => setShowProfileDropdown(true)}>
+                                    <img src={state.user.pfp ? state.user.pfp : "/image/icons/user.png"} className="w-10 rounded-full opacity-70 mr-2" alt="avatar" />
+                                </button>
+                                {showProfileDropdown && (
+                                    <div className="absolute top-14 right-0">
+                                        <ProfileDropdown onManageAccount={() => setShowProfileDropdown(true)} />
+                                    </div>
+                                )}
+                            </div>
+                        </div>
+                    )}
                     <div>
                         <Hamburger onHandle={() => setShowDropdown(!showDropdown)} />
                     </div>

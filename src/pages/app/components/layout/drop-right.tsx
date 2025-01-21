@@ -3,7 +3,7 @@ import Icon from "../../../../components/icon"
 
 const DropRight = () => {
     return (
-        <div className="absolute -top-10 -right-[270px] bg-white w-[250px] bg-opacity-100 shadow-4 border rounded-xl p-2">
+        <div className="absolute -top-10 -right-[255px] bg-white w-[250px] bg-opacity-100 shadow-4 border rounded-xl p-2">
             <div className="px-2 py-[7px]">
                 <div className="flex w-full justify-between text-sm font-medium">
                     <div className="whitespace-nowrap">Live Interview</div>

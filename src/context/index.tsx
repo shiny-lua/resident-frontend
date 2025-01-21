@@ -1,11 +1,18 @@
 import React from "react";
+
 import { config } from "../config/config";
+import { restApi } from "./restApi";
 
 export { config }
 
 const INIT_STATE: InitStateObject = {
     authToken: "",
-    userEmail: ""
+    userEmail: "",
+    user: {
+        email: "",
+        fullName: "",
+        pfp: "",
+    }
 }
 
 const GlobalContext = React.createContext<any>(null);
@@ -42,13 +49,17 @@ const GlobalContextProvider = ({ children }: any) => {
 
             if (!!authToken) {
                 // const loginStatus = await
-                dispatch({ type: 'authToken', payload: authToken })
+                const res = await restApi.postRequest("get-user");
+                const data = res.data.data;
+
+                // console.log("userData::", userData)
+                dispatch({ type: "authToken", payload: authToken });
+                dispatch({ type: "user", payload: data });
             } else {
                 // throw new ValidateError("Invalid authToken!")
             }
 
         } catch (error: any) {
-            // setTimeout(() => { dispatch({ type: "showLoadingPage", payload: false }) }, 1000);
             console.error(error)
         }
     }

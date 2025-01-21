@@ -53,13 +53,12 @@ const SignIn = () => {
         } else if (res.status === 200) {
             dispatch({ type: "authToken", payload: res.data.token })
             storeData(res.data.token)
-            navigate("/auth/verify-code")
+            navigate("/app/started")
         } else {
             showToast(res.msg, "error")
+            setStatus({ ...status, isLoading: false })
         }
-        setStatus({ ...status, isLoading: false })
 
-        navigate("/app/started")
     }
 
     return (
@@ -73,7 +72,7 @@ const SignIn = () => {
             <div className="hidden bg-slate-200 w-full h-[100vh] lg:flex justify-center items-center">
                 <img src="/image/auth/login.png" alt="login" />
             </div>
-            <div className="w-full h-[100vh] flex flex-col items-center mt-20 lg:mt-50">
+            <div className="w-full h-full flex flex-col items-center mt-20 lg:mt-50">
                 <Link to="/" className="flex lg:hidden gap-2 top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
                     <div className="text-2xl text-primary">Final Round</div>
                     <div>
@@ -127,7 +126,7 @@ const SignIn = () => {
                             <div className="text-center opacity-60 text-sm">Enter the password associated with your account.</div>
                         </div>
                         <div className="flex justify-center items-center mb-10 gap-2 text-sm">
-                            <div className="opacity-60">bh066078@gmail.com</div>
+                            <div className="opacity-60">{status.email}</div>
                             <button className="opacity-70" onClick={() => setStepIndex(0)}><Icon icon="Edit" /></button>
                         </div>
                         <div className="flex flex-col gap-2">

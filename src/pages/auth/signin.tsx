@@ -1,9 +1,10 @@
 import React from "react";
+
 import { Link, useNavigate } from "react-router-dom";
 import Icon from "../../components/icon";
 import { emailValidator, showToast, strongPasswordValidator } from "../../context/helper";
 import { restApi } from "../../context/restApi";
-import { useGlobalContext } from "../../context";
+import { config, useGlobalContext } from "../../context";
 import Loader from "../../components/loader";
 
 const SignIn = () => {
@@ -27,6 +28,7 @@ const SignIn = () => {
     const onNext = () => {
         if (validate.isValidEmail.status) {
             setStepIndex(1)
+            dispatch({ type: "userEmail", payload: status.email })
         } else {
             showToast(!validate.isValidEmail.msg ? "Email is required!" : validate.isValidEmail.msg, "warning")
         }
@@ -61,6 +63,16 @@ const SignIn = () => {
 
     }
 
+    const onGoogle = () => {
+        dispatch({type: "authType", payload: "signin"})
+        window.location.href = `${config.BACKEND_URL}/api/google-login`
+    }
+
+    const onFacebook = () => {
+        dispatch({type: "authType", payload: "signin"})
+        window.location.href = `${config.BACKEND_URL}/api/facebook-login`
+    }
+
     return (
         <div className="flex w-full h-full relative bg-slate-50 ">
             <Link to="/" className="hidden lg:flex gap-2 items-center absolute top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
@@ -87,10 +99,10 @@ const SignIn = () => {
                             <div className="text-center opacity-60 text-sm">Welcome back! Please sign in to continue</div>
                         </div>
                         <div className="flex gap-2 mt-10 justify-center">
-                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
-                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
+                            <button onClick={onFacebook} className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
+                            <button onClick={onGoogle} className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
                             <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
-                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.svg" className="w-6 h-6" alt="logo" /></button>
                         </div>
                         <div className="flex justify-center">
                             <div className="flex justif-center items-center gap-2 my-8">

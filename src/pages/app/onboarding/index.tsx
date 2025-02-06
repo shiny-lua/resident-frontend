@@ -23,7 +23,7 @@ const Onboarding = () => {
                         <img src="/image/icons/logo.png" alt="logo" />
                     </div>
                 </Link>
-                <span className="top-10   hover:underline absolute right-5 z-50 cursor-pointer text-sm font-medium text-slate-400">Skip to app</span>
+                <Link to="/app/started" className="top-10   hover:underline absolute right-5 z-50 cursor-pointer text-sm font-medium text-slate-400">Skip to app</Link>
                 {stepIndex === 0 && (<InterviewHelper onNext={onNext} />)}
                 {stepIndex === 1 && (<InterviewRolePrompt onNext={onNext} onPrev={onPrev} />)}
                 {stepIndex === 2 && (<RealtimeResponseCustomizer onNext={onNext} onPrev={onPrev} />)}

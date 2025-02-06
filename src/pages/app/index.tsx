@@ -33,11 +33,16 @@ const AppIndex = () => {
                     showToast('An error has occurred during communication with backend.', 'warning');
                 } else if (res.status === 200) {
                     const data = res.data.data;
-                    const user = { email: data.email, fullName: data.full_name, pfp: data.pfp };
+                    const user: { email: string, fullName: string, pfp: string } = { email: data.email, fullName: data.full_name, pfp: data.pfp };
+                    console.log(user);
                     dispatch({ type: "user", payload: user });
                     dispatch({ type: "authToken", payload: res.data.token });
                     storeData(res.data.token);
-                    navigate("/app/started");
+                    if (state.authType !== "signup") {
+                        navigate("/app/started");
+                    } else {
+                        navigate("/app/onboarding");
+                    }
                 } else {
                     navigate("/auth/sign-in");
                 }

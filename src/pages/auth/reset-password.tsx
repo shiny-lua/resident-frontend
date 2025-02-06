@@ -10,8 +10,7 @@ const ResetPassword = () => {
 
     const navigate = useNavigate()
 
-    const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
-    const [stepIndex, setStepIndex] = React.useState(0)
+    const [state]: GlobalContextType = useGlobalContext()
     const [isPwdVisible, setPwdVisible] = React.useState(false)
 
     const [status, setStatus] = React.useState({
@@ -39,20 +38,18 @@ const ResetPassword = () => {
 
     const onResetPassword = async () => {
         if (!!status.isLoading || !status.password) return showToast("Password is required!", "warning")
-        const res = await restApi.postRequest("login", { email: state.userEmail, password: status.password })
+        const res = await restApi.postRequest("reset-password", { email: state.userEmail, password: status.password, conf_password: status.confPassword })
 
         if (res === undefined) {
             showToast('An error has occurred during communication with backend.', 'warning')
             setStatus({ ...status, isLoading: false })
         } else if (res.status === 200) {
-            dispatch({ type: "authToken", payload: res.data.token })
-            storeData(res.data.token)
-            navigate("/app/started")
+            navigate("/auth/sign-in")
+            showToast(res.msg, "success")
         } else {
             showToast(res.msg, "error")
         }
         setStatus({ ...status, isLoading: false })
-
     }
 
     return (
@@ -80,7 +77,7 @@ const ResetPassword = () => {
                     </div>
                     <div className="mt-10">
                         <div className="flex flex-col gap-2 mb-4">
-                            <label className="" htmlFor="password">Password</label>
+                            <label className="" htmlFor="password">New Password</label>
                             <div className="relative">
                                 <input
                                     type={isPwdVisible ? "text" : "password"}
@@ -96,7 +93,7 @@ const ResetPassword = () => {
                             )}
                         </div>
                         <div className="flex flex-col gap-2 mb-4">
-                            <label className="" htmlFor="confPassword">Password</label>
+                            <label className="" htmlFor="confPassword">Confirm Password</label>
                             <div className="relative">
                                 <input
                                     type={isPwdVisible ? "text" : "password"}

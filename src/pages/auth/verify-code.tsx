@@ -30,13 +30,17 @@ const VerifyCode = () => {
     const onSend = async () => {
         if (status.isLoading || !status.code) return
         setStatus({ ...status, isLoading: true })
-        const res = await restApi.postRequest("verify-email", { email: state.userEmail, code: status.code })
+        const res = await restApi.postRequest("verify-email", { email: state.userEmail, code: status.code, type: state.verifyCodeType })
         if (res === undefined) {
             showToast('An error has occurred during communication with backend.', 'warning')
         } else if (res.status === 200) {
-            dispatch({ type: "authToken", payload: res.data })
-            storeData(res.data)
-            navigate("/app/onboarding")
+            if (state.verifyCodeType === "forgotPassword") {
+                navigate("/auth/reset-password")
+            } else {
+                dispatch({ type: "authToken", payload: res.data })
+                storeData(res.data)
+                navigate("/app/onboarding")
+            }
         } else {
             setStatus({ ...status, isWrongCode: true, isLoading: false })
             showToast(res.msg, "error")

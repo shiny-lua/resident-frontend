@@ -2,7 +2,7 @@ import React from "react";
 import Modal from "../../../components/modal";
 import Icon from "../../../components/icon";
 import { Select } from "../../../components/select";
-import DatePicker from "react-datepicker";;
+import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link } from "react-router-dom";
 import { timezones } from "./data.d";

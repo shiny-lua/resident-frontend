@@ -1,11 +1,31 @@
-import React from "react";
+import React, { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import Icon from "../../components/icon";
+import { useGlobalContext } from "../../context";
+import { restApi } from "../../context/restApi";
+import { showToast } from "../../context/helper";
+import Loader from "../../components/loader";
 
 const SetPassword = () => {
 
     const navigate = useNavigate()
+    const [state, { dispatch }]: GlobalContextType = useGlobalContext()
+    const [isLoading, setIsLoading] = useState(false)
 
+    const onVerifyCode = async () => {
+        if (isLoading) return
+        dispatch({ type: "verifyCodeType", payload: "forgotPassword" })
+        setIsLoading(true)
+        const res = await restApi.postRequest("send-code", { email: state.userEmail })
+        if (res === undefined) {
+            showToast('An error has occurred during communication with backend.', 'warning')
+            setIsLoading(false)
+        } else if (res.status === 200) {
+            navigate("/auth/verify-code")
+            setIsLoading(false)
+        }
+    }
     return (
         <div className="flex w-full h-full relative bg-slate-50 ">
             <Link to="/" className="hidden lg:flex gap-2 items-center absolute top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
@@ -29,28 +49,28 @@ const SetPassword = () => {
                 </div>
 
                 <div className="w-full sm:w-[430px] px-5 mt-5">
-                    <button
-                        onClick={() => {navigate("/auth/reset-password")}}
-                        className="w-full px-4 py-3 mb-3 text-sm font-medium text-white bg-[linear-gradient(180deg,_#414141_0%,_#000000_50%,_#414141_100%)] rounded-lg"
-                    >
-                        Reset your password
+                    {/* <button className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
+                        <Icon icon="Chain" />
+                        <div>Email link to {state.userEmail}</div>
+                    </button> */}
+                    <button onClick={onVerifyCode} className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full hover:bg-slate-200 ">
+                        {isLoading ?
+                            <Loader color="border-slate-500" />
+                            : (<div className="flex items-center gap-2">
+                                <Icon icon="Email" />
+                                <div>Email code to {state.userEmail}</div>
+                            </div>)}
+
                     </button>
                     <div className="text-sm text-center pt-3 font-semibold text-slate-500">Or, sign in with another method</div>
                     <div className="flex gap-2 mt-10 justify-center">
-                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
-                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
-                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
-                            <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.png" className="w-6 h-6" alt="logo" /></button>
-                        </div>
-                    <button className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
-                        <Icon icon="Chain" />
-                        <div>Email link to bh066078@gmail.com</div>
-                    </button>
-                    <button className="flex justify-center items-center gap-2 my-4 border-2 border-slate-200 rounded-lg p-3 w-full">
-                        <Icon icon="Email" />
-                        <div>Email code to bh066078@gmail.com</div>
-                    </button>
-                    <Link to={"/auth/sign-in"} className="flex justify-center font-semibold text-slate-500">Back</Link>
+                        <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
+                        <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
+                        <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
+                        <button className="bg-white border border-slate-200 hover:bg-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.svg" className="w-6 h-6" alt="logo" /></button>
+                    </div>
+
+                    <Link to={"/auth/sign-in"} className="flex justify-center font-semibold text-slate-500 mt-6">Back</Link>
                     <div className="flex justify-center gap-4 pt-3">
                         <span className="text-slate-500">Don't have any of these?</span>
                         <button className="text-primary font-semibold">Get help</button>

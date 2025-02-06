@@ -8,6 +8,8 @@ export { config }
 const INIT_STATE: InitStateObject = {
     authToken: "",
     userEmail: "",
+    verifyCodeType: "",
+    authType: "",
     user: {
         email: "",
         fullName: "",

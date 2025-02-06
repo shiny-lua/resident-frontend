@@ -3,7 +3,7 @@ import { Link, useNavigate } from "react-router-dom";
 import { emailValidator, passwordMatch, showToast, strongPasswordValidator } from "../../context/helper";
 import { restApi } from "../../context/restApi";
 import Loader from "../../components/loader";
-import { useGlobalContext } from "../../context";
+import { config, useGlobalContext } from "../../context";
 
 const SiginUp = () => {
 
@@ -63,11 +63,21 @@ const SiginUp = () => {
             setStatus({ ...status, isLoading: false })
         } else if (res.status === 200) {
             dispatch({type: "userEmail", payload: status.email})
+            dispatch({type: "verifyCodeType", payload: "signup"})
             navigate("/auth/verify-code")
         } else {
             showToast(res.msg, "error")
         }
         setStatus({ ...status, isLoading: false })
+    }
+    const onGoogle = () => {
+        dispatch({type: "authType", payload: "signup"})
+        window.location.href = `${config.BACKEND_URL}/api/google-login`
+    }
+
+    const onFacebook = () => {
+        dispatch({type: "authType", payload: "signup"})
+        window.location.href = `${config.BACKEND_URL}/api/facebook-login`
     }
 
     return (
@@ -95,10 +105,10 @@ const SiginUp = () => {
                             <div className="text-center opacity-60 text-sm">Welcome! Please fill in the details to get started.</div>
                         </div>
                         <div className="flex gap-2 mt-10 justify-center">
-                            <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
-                            <button onClick={() => window.location.href = 'http://localhost:10001/api/google-login'} className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
+                            <button onClick={onFacebook} className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/facebook.png" className="w-6 h-6" alt="logo" /></button>
+                            <button onClick={onGoogle} className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/google.png" className="w-6 h-6" alt="logo" /></button>
                             <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/linkedin.png" className="w-6 h-6" alt="logo" /></button>
-                            <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.png" className="w-6 h-6" alt="logo" /></button>
+                            <button className="bg-white border border-slate-200 rounded-md flex items-center justify-center w-full py-4"><img src="/image/icons/microsoft.svg" className="w-6 h-6" alt="logo" /></button>
                         </div>
                         <div className="flex justify-center">
                             <div className="flex justif-center items-center gap-2 my-8">

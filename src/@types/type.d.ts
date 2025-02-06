@@ -6,6 +6,8 @@ interface ReducerObject {
 interface InitStateObject {
     authToken: string
     userEmail: string
+    verifyCodeType: string
+    authType: string
     user: { email: string, fullName: string, pfp: string }
 }
 

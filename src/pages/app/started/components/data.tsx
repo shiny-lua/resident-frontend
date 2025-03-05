@@ -57,7 +57,7 @@ const infoCards = [
     {
         title: "Need more interview guides?",
         desc: "Most recent interview questions and answers verified by our community",
-        buttonText: "Read more at Final Round AI Blog",
+        buttonText: "Read more at Theresidentguy Blog",
         link: "",
     },
     {

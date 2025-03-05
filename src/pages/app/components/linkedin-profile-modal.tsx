@@ -33,7 +33,8 @@ const LinkedinProfileModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: V
                 className="grid place-items-center fixed w-screen h-screen bg-black bg-opacity-70 backdrop-blur-sm fade-in">
                 <div
                     ref={modalRef}
-                    className="fixed left-[50%] top-[50%] z-50 grid max-w-[500px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 sm:rounded-lg rounded-lg max-h-[calc(100dvh-48px)] w-5/6 grid-rows-[auto_1fr_auto] pt-8"
+                    className="fixed left-[50%] top-[50%] z-50 grid max-w-[500px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 sm:rounded-lg rounded-lg max-h-[calc(100dvh-48px)] w-[95%] sm:w-5/6 
+                     grid-rows-[auto_1fr_auto] pt-8"
                     style={{ pointerEvents: "auto" }}
                 >
                     <div className="space-y-2 text-center sm:text-left mb-2 relative flex flex-row justify-between align-middle">

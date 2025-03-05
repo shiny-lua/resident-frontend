@@ -1,4 +1,5 @@
 import React from "react";
+import Cookies from "js-cookie";
 
 import { config } from "../config/config";
 import { restApi } from "./restApi";
@@ -6,14 +7,21 @@ import { restApi } from "./restApi";
 export { config }
 
 const INIT_STATE: InitStateObject = {
-    authToken: "",
+    access_token: "",
     userEmail: "",
     verifyCodeType: "",
+    isSharedScreen: false,
     authType: "",
+    isLeaveInterview: {
+        status: false,
+        link: ""
+    },
     user: {
+        id: "",
         email: "",
         fullName: "",
         pfp: "",
+        isPasswordSet: false
     }
 }
 
@@ -30,14 +38,6 @@ function useGlobalContext() {
     return context;
 }
 
-const storeData = async (value: string) => {
-    return window.localStorage.setItem("authToken", value)
-}
-
-const getData = async () => {
-    return window.localStorage.getItem("authToken")
-}
-
 const GlobalContextProvider = ({ children }: any) => {
     const [state, dispatch] = React.useReducer(reducer, INIT_STATE);
 
@@ -47,18 +47,23 @@ const GlobalContextProvider = ({ children }: any) => {
 
     const initSessionSetting = async () => {
         try {
-            const authToken = await getData();
+            const access_token = Cookies.get("access_token");
 
-            if (!!authToken) {
+            if (!!access_token) {
                 // const loginStatus = await
                 const res = await restApi.postRequest("get-user");
                 const data = res.data.data;
 
-                // console.log("userData::", userData)
-                dispatch({ type: "authToken", payload: authToken });
-                dispatch({ type: "user", payload: data });
+                dispatch({ type: "access_token", payload: access_token });
+                dispatch({ type: "user", payload: {
+                    id: data._id,
+                    email: data.email,
+                    fullName: data.full_name,
+                    pfp: data.pfp,
+                    isPasswordSet: data.is_password_set
+                } });
             } else {
-                // throw new ValidateError("Invalid authToken!")
+                // throw new ValidateError("Invalid access_token!")
             }
 
         } catch (error: any) {
@@ -69,7 +74,7 @@ const GlobalContextProvider = ({ children }: any) => {
     return (
         <GlobalContext.Provider
             value={React.useMemo(() => [
-                state, { dispatch, storeData }
+                state, { dispatch }
             ], [state])}
         >
             {children}

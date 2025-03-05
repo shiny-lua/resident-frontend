@@ -1,4 +1,6 @@
 import React from "react";
+import Cookies from "js-cookie";
+
 import { Link, useNavigate } from "react-router-dom";
 import VerificationInput from "react-verification-input";
 
@@ -10,7 +12,7 @@ import Loader from "../../components/loader";
 
 const VerifyCode = () => {
     const navigate = useNavigate()
-    const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
+    const [state, { dispatch }]: GlobalContextType = useGlobalContext()
     const [status, setStatus] = React.useState({
         code: "",
         isWrongCode: false,
@@ -37,9 +39,8 @@ const VerifyCode = () => {
             if (state.verifyCodeType === "forgotPassword") {
                 navigate("/auth/reset-password")
             } else {
-                dispatch({ type: "authToken", payload: res.data })
-                storeData(res.data)
-                navigate("/app/onboarding")
+                navigate("/auth/sign-in")
+                showToast("User registered successfully, please login to continue.", "success")
             }
         } else {
             setStatus({ ...status, isWrongCode: true, isLoading: false })
@@ -56,9 +57,9 @@ const VerifyCode = () => {
     return (
         <div className="flex w-full h-full relative bg-slate-50 ">
             <Link to="/" className="hidden lg:flex gap-2 items-center absolute top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
-                <div className="text-lg md:text-xl text-primary">Final Round</div>
+                <div className="text-lg md:text-xl text-primary">Theresidentguy</div>
                 <div>
-                    <img src="/image/icons/logo.png" alt="logo" />
+                    <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                 </div>
             </Link>
             <div className="hidden bg-slate-200 w-full h-[100vh] lg:flex justify-center items-center">
@@ -66,9 +67,9 @@ const VerifyCode = () => {
             </div>
             <div className="w-full h-[100vh] flex flex-col items-center mt-20 lg:mt-50 px-5">
                 <Link to="/" className="flex lg:hidden gap-2 top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
-                    <div className="text-2xl text-primary">Final Round</div>
+                    <div className="text-2xl text-primary">Theresidentguy</div>
                     <div>
-                        <img src="/image/icons/logo.png" alt="logo" />
+                        <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                     </div>
                 </Link>
                 <div className="pt-10 w-full sm:w-[430px]">

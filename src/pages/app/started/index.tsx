@@ -17,7 +17,7 @@ const Started = () => {
         <Layout>
             <div className="relative flex flex-1 flex-col gap-3 overflow-auto p-4 pb-8 lg:gap-4 lg:p-6 lg:pb-6 md:max-h-screen">
                 <div className="flex items-center">
-                    <h1 className="text-left text-2xl sm:text-3xl font-semibold leading-8">Get the most out of Final Round AI</h1>
+                    <h1 className="text-left text-2xl sm:text-3xl font-semibold leading-8">Get the most out of Theresidentguy</h1>
                 </div>
                 <div className="my-3 opacity-100 transition-all duration-200">
                     <h2 className="flex text-lg sm:text-xl pt-2 pb-4 font-semibold text-slate-900">

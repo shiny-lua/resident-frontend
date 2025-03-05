@@ -33,7 +33,7 @@ const Question = () => {
     };
 
     return (
-        <section className="flex flex-col items-center gap-20 pb-40 pt-6 px-3 sm:px-5">
+        <section id="faq" className="flex flex-col items-center gap-20 pb-40 pt-6 px-3 sm:px-5">
             <div className="flex flex-col items-center lg:gap-16 gap-12 text-center relative z-10">
                 <p className="text-xl text-gray-400">Questions &amp; Answers</p>
                 <h2 className="text-4xl font-albra max-w-[46.9375rem]">

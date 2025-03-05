@@ -41,13 +41,15 @@
 .fade-out {
   animation: fadeOut 0.2s ease-in-out forwards;
 }
+
 .blur-overlay {
-  position: absolute;                      /* Overlay covers the entire viewport */
+  position: absolute;
+  /* Overlay covers the entire viewport */
   top: 0;
   left: 0;
   right: 0;
   bottom: 0;
-  background: hsla(36, 23%, 91%, 0.1); 
+  background: hsla(36, 23%, 91%, 0.1);
   backdrop-filter: blur(87px);
   -webkit-backdrop-filter: blur(87px);
   z-index: 2;
@@ -85,7 +87,27 @@
   top: 30%;
   right: -10.295%;
 }
+
 .react-multi-carousel-track {
   gap: 1em;
 }
 
+
+@media (max-width: 768px) {
+  ::-webkit-scrollbar {
+    width: 5px;
+  }
+
+  ::-webkit-scrollbar-track {
+    background: #f1f1f1;
+  }
+
+  ::-webkit-scrollbar-thumb {
+    background: #777;
+    border-radius: 10px;
+  }
+}
+
+svg.star-svg {
+  display: inline;
+}

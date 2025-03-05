@@ -4,11 +4,16 @@ interface ReducerObject {
 }
 
 interface InitStateObject {
-    authToken: string
+    access_token: string
     userEmail: string
     verifyCodeType: string
     authType: string
-    user: { email: string, fullName: string, pfp: string }
+    user: { id: string, email: string, fullName: string, pfp: string, isPasswordSet: boolean }
+    isSharedScreen: boolean
+    isLeaveInterview: {
+        status: boolean
+        link: string
+    }
 }
 
 type GlobalContextType = [
@@ -16,6 +21,5 @@ type GlobalContextType = [
 
     {
         dispatch: (data: ReducerObject) => void
-        storeData: (authToken: string) => void
     }
 ]

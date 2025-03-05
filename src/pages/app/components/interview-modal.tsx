@@ -4,9 +4,10 @@ import Icon from "../../../components/icon";
 import { Select } from "../../../components/select";
 import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { timezones } from "./data.d";
-
+import { meetingId } from "../../../context/helper";
+import { useGlobalContext } from "../../../context";
 type DropdownStatus = {
   resume: { value: string; data: string[]; prefix: string };
   role: { value: string; data: string[]; prefix: string };
@@ -15,7 +16,9 @@ type DropdownStatus = {
 };
 
 const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFunction }) => {
+  const [state] = useGlobalContext();
 
+  const navigate = useNavigate();
   const today = new Date();
   today.setDate(today.getDate());
   const modalRef = React.useRef<HTMLDivElement | null>(null);
@@ -125,6 +128,15 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     }
   };
 
+  const onLaunch = () => {
+    if (state.isLeaveInterview.status) {
+      return;
+    }
+
+    onClose();
+    navigate(`/app/live-interview/live/${meetingId(12)}`);
+  }
+
   return (
     <Modal>
       <div
@@ -133,7 +145,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       >
         <div
           ref={modalRef}
-          className="fixed left-[50%] top-[50%] z-50 grid max-w-[500px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 sm:rounded-lg rounded-lg max-h-[calc(100dvh-48px)] w-5/6 grid-rows-[auto_1fr_auto] pt-8"
+          className="fixed left-[50%] top-[50%] z-50 grid max-w-[500px] translate-x-[-50%] translate-y-[-50%] gap-4 border bg-white p-6 shadow-lg duration-200 sm:rounded-lg rounded-lg max-h-[calc(100dvh-48px)] w-[95%] sm:w-5/6 grid-rows-[auto_1fr_auto] pt-8"
           style={{ pointerEvents: "auto" }}
         >
           <div className="space-y-2 text-center sm:text-left relative flex flex-row justify-between align-middle">
@@ -347,7 +359,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
               Cancel
             </button>
             <span>
-              <button onClick={onClose} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[13px] font-medium ring-offset-background transition-colors text-white px-4 h-[42px] w-full bg-slate-900 py-2.5 hover:bg-slate-900/90 md:h-9">
+              <button onClick={onLaunch} className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${state.isLeaveInterview.status ? "bg-slate-500" : "bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] "}`}>
                 Launch
               </button>
             </span>
@@ -357,5 +369,5 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     </Modal >
   );
 };
-
+ 
 export default InterviewModal;

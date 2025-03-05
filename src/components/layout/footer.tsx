@@ -7,9 +7,9 @@ const Footer = () => {
                 <div className="flex flex-wrap justify-between gap-12 xl:flex-nowrap">
                     <div className="flex w-full max-w-[400px] flex-col gap-6">
                         <Link to={"/"} className="flex gap-2 items-center cursor-pointer">
-                            <div className="text-lg md:text-xl text-primary">Final Round</div>
+                            <div className="text-lg md:text-xl text-primary">Theresidentguy</div>
                             <div>
-                                <img src="/image/icons/logo.png" alt="logo" />
+                                <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                             </div>
                         </Link>
                         <div className="text-gray-600 text-lg">
@@ -26,8 +26,6 @@ const Footer = () => {
                                     loading="lazy"
                                     width={24}
                                     height={24}
-                                    decoding="async"
-                                    data-nimg={1}
                                     style={{ color: "transparent" }}
                                     src="/image/icons/icon-twitter.svg"
                                 />
@@ -41,8 +39,6 @@ const Footer = () => {
                                     loading="lazy"
                                     width={24}
                                     height={24}
-                                    decoding="async"
-                                    data-nimg={1}
                                     style={{ color: "transparent" }}
                                     src="/image/icons/icon-subtract.svg"
                                 />
@@ -56,8 +52,6 @@ const Footer = () => {
                                     loading="lazy"
                                     width={24}
                                     height={24}
-                                    decoding="async"
-                                    data-nimg={1}
                                     style={{ color: "transparent" }}
                                     src="/image/icons/icon-youtube.svg"
                                 />
@@ -67,12 +61,10 @@ const Footer = () => {
                                 className="without-underline flex h-[54px] w-[54px] items-center justify-center overflow-hidden rounded-full bg-cyan-200"
                             >
                                 <img
-                                    alt="Discord"
+                                    alt="Discord"   
                                     loading="lazy"
                                     width={24}
                                     height={24}
-                                    decoding="async"
-                                    data-nimg={1}
                                     style={{ color: "transparent" }}
                                     src="/image/icons/icon-twitch.svg"
                                 />
@@ -86,8 +78,6 @@ const Footer = () => {
                                     loading="lazy"
                                     width={24}
                                     height={24}
-                                    decoding="async"
-                                    data-nimg={1}
                                     style={{ color: "transparent" }}
                                     src="/image/icons/icon-tiktok.svg"
                                 />
@@ -126,10 +116,10 @@ const Footer = () => {
                             <li>
                                 <Link className="text-lg text-gray-500" to="/ai-mock-interview">AI Mock Interview</Link>
                             </li>
-                            <li>
+                            {/* <li>
                                 <Link className="text-lg text-gray-500" to="/ai-resume-builder">AI Resume Builder</Link>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <Link className="text-lg text-gray-500" to="/hirevue">Hirevue</Link>
                             </li>
                             <li>
@@ -143,27 +133,27 @@ const Footer = () => {
                             </li>
                             <li>
                                 <Link className="text-lg text-gray-500" to="/auto-apply">Auto Apply</Link>
-                            </li>
+                            </li> */}
                         </ul>
                         <ul className="flex w-[240px] flex-col justify-center gap-3">
                             <li className="text-xl">Resources</li>
                             <li>
-                                <Link className="text-lg text-gray-500" to="/tutorial">Tutorials</Link>
+                                <Link className="text-lg text-gray-500" to="/guide">Guide</Link>
                             </li>
                             <li>
                                 <Link className="text-lg text-gray-500" to="/blog">Blog</Link>
                             </li>
-                            <li>
+                            {/* <li>
                                 <Link className="text-lg text-gray-500" to="/special-discount">Special Discount</Link>
-                            </li>
-                            <li>
+                            </li> */}
+                            {/* <li>
                                 <Link className="text-lg text-gray-500" to="/influencer-program">Influencer Program</Link>
-                            </li>
+                            </li> */}
                         </ul>
                         <ul className="flex w-[240px] flex-col justify-center gap-3">
                             <li className="text-xl">Support</li>
                             <li>
-                                <Link className="text-lg text-gray-500" to="/#new-faq">FAQ</Link>
+                                <a className="text-lg text-gray-500" href="/#faq">FAQ</a>
                             </li>
                             <li>
                                 <Link className="text-lg text-gray-500" to="/contact">Contact Us</Link>
@@ -173,7 +163,7 @@ const Footer = () => {
                             <li className="text-xl">Company</li>
                             <li>
                                 <Link className="text-lg text-gray-500" to="https://youtu.be/nBoH3bjPLWQ?si=_1dzqs5vv9wc5KPi">
-                                    How Final Round AI works
+                                    How Theresidentguy works
                                 </Link>
                             </li>
                             <li>
@@ -189,45 +179,8 @@ const Footer = () => {
                                 <Link className="text-lg text-gray-500" to="/referral-program">Referral Program</Link>
                             </li>
                         </ul>
-                        <ul className="flex w-[240px] flex-col justify-center gap-3">
-                            <li className="text-xl">Interview Questions</li>
-                            <li>
-                                <Link className="text-lg text-gray-500" to="/blog/career-ambition-interview-questions">
-                                    Common Career Ambition Interview Questions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-lg text-gray-500" to="/blog/collaborative-leadership-interview-questions">
-                                    Collaborative Leadership Interview Questions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-lg text-gray-500" to="/blog/product-knowledge-interview-questions">
-                                    Product Manager Interview Questions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-lg text-gray-500" to="/blog/coding-interview-questions">
-                                    Coding Interview Questions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-lg text-gray-500" to="/blog/technical-interview-questions">
-                                    Technical Interview Questions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-lg text-gray-500" to="/blog/generative-ai-engineer-interview-questions">
-                                    Generative AI Engineer Interview Questions
-                                </Link>
-                            </li>
-                            <li>
-                                <Link className="text-lg text-gray-500" to="/blog/swift-developer-interview-questions">
-                                    Swift Developer Interview Questions
-                                </Link>
-                            </li>
-                        </ul>
-                        <ul className="flex w-[240px] flex-col justify-center gap-3">
+                        
+                        {/* <ul className="flex w-[240px] flex-col justify-center gap-3">
                             <li className="text-xl">AI Tools</li>
                             <li>
                                 <Link className="text-lg text-gray-500" to="/ai-tools/career-coach">AI Career Coach</Link>
@@ -286,13 +239,13 @@ const Footer = () => {
                                     USA Job Resume Builder
                                 </Link>
                             </li>
-                        </ul>
+                        </ul> */}
                     </nav>
                 </div>
                 <div className="mt-12 flex justify-between border-t border-gray-primary/10 pt-12 text-body/small">
                     <div className="footer-copyright items-end justify-between text-gray-primary lg:flex">
                         <div className="opacity-50 mb-4 lg:mb-0">
-                            © {/* */}2025{/* */} Final Round, <br />
+                            © {/* */}2025{/* */} Theresidentguy, <br />
                             456 University Ave, Palo Alto, CA 94301
                         </div>
                     </div>

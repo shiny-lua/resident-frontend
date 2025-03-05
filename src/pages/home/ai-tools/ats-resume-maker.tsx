@@ -53,7 +53,7 @@ const AtsResumeMaker = () => {
                             </div>
                             <div className="absolute bottom-[144px] flex shrink-0 flex-grow items-end justify-center sm:static">
                                 <img
-                                    alt="Resume Optimizer with Final Round AI"
+                                    alt="Resume Optimizer with Theresidentguy"
                                     width={280}
                                     height={264}
                                     className="max-w-[280px] -z-10 w-11/12 sm:z-0"
@@ -126,7 +126,7 @@ const AtsResumeMaker = () => {
                                 </div>
                                 <div className="absolute bottom-[144px] flex shrink-0 flex-grow items-end justify-center sm:static">
                                     <img
-                                        alt="Resume Optimizer with Final Round AI"
+                                        alt="Resume Optimizer with Theresidentguy"
                                         width={280}
                                         height={264}
                                         className="max-w-[280px] -z-10 w-11/12 sm:z-0"
@@ -170,7 +170,7 @@ const AtsResumeMaker = () => {
                                     Use Interview Copilot™️ for your interview questions
                                 </div>
                                 <div className="flex flex-col-reverse items-center justify-center text-lg leading-[24px] tracking-tight text-slate-500 xs:mt-4 md:mt-6 md:flex-row ">
-                                    Mock interviews or live interviews. Final Round AI is here to help you
+                                    Mock interviews or live interviews. Theresidentguy is here to help you
                                     succeed.
                                 </div>
                             </div>
@@ -213,7 +213,7 @@ const AtsResumeMaker = () => {
                             <div className="relative z-20 mx-auto flex h-52 items-center justify-center px-3 pt-12 lg:h-full lg:max-w-[1440px] lg:justify-start lg:pt-0">
                                 <div className="flex flex-col items-center justify-center px-6 lg:ml-28 lg:max-w-[720px] lg:items-start">
                                     <h3 className="text-center font-albra text-3xl tracking-tight text-white antialiased lg:text-left lg:text-5xl">
-                                        Join millions worldwide who crush their interviews with Final Round AI
+                                        Join millions worldwide who crush their interviews with Theresidentguy
                                     </h3>
                                     <Link to="https://app.finalroundai.com/sign-in" className="text-black hover:!bg-transparent hover:text-sky-500" >
                                         <button className="mt-6 h-12 w-60 rounded-md bg-white text-lg"> Get started for free</button>

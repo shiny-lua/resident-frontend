@@ -8,15 +8,15 @@ export const Radio = ({ isChecked, onChangeRadio, value }: { value: string, isCh
                 className="sr-only"
                 onChange={onChangeRadio}
             />
-            <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full border-2 border-primary dark:border-slate-300">
+            <div className="mr-2 flex h-5 w-5 items-center justify-center rounded-full border border-slate-500">
                 <span
-                    className={`h-2.5 w-2.5 rounded-full bg-transparent ${isChecked && '!bg-primary dark:!bg-slate-300'
+                    className={`h-2.5 w-2.5 rounded-full bg-transparent ${isChecked && '!bg-slate-500'
                         }`}
                 >
                     {' '}
                 </span>
             </div>
-            <div className="text-black dark:text-white">{value}</div>
+            <div className="text-black font-semibold dark:text-white">{value}</div>
         </label>
     )
 }

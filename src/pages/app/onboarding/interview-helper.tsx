@@ -19,7 +19,7 @@ const InterviewHelper = ({onNext}: {onNext: VoidFunction}) => {
                 />
                 <Card
                     title="I just want to explore"
-                    desc="Take a tour of Final Round, explore our AI resume builder and questions bank."
+                    desc="Take a tour of Theresidentguy, explore our AI resume builder and questions bank."
                     subscribe="Free"
                     onNext={onNext}
                 />

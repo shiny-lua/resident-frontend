@@ -1,16 +1,21 @@
 import React from "react"
-import { Link } from "react-router-dom"
+import { Link, useNavigate } from "react-router-dom"
+import Cookies from "js-cookie";
 
-import Hamburger from "../../../../components/layout/hamburger"
 import Icon from "../../../../components/icon"
-
+import { useGlobalContext } from "../../../../context";
+import ManageAccountModal from "../../../../components/manage-account-modal";
 const Header = () => {
     const [showNav, setShowNav] = React.useState(false)
     const [showUserOption, setShowUserOption] = React.useState(false)
+    const [showManageAccountModal, setShowManageAccountModal] = React.useState(false)
+    const [showProfileDropdown, setShowProfileDropdown] = React.useState(false)
 
     const sideBarRef = React.useRef<HTMLDivElement>(null)
     const userOptionRef = React.useRef<HTMLDivElement>(null)
-
+    const profileDropdownRef = React.useRef<HTMLDivElement>(null)
+    const [state, { dispatch }]: GlobalContextType = useGlobalContext();
+    const navigate = useNavigate();
 
     React.useEffect(() => {
         // Conditionally set the overflow style based on the conditions
@@ -21,6 +26,12 @@ const Header = () => {
         }
     }, [showNav]); // Re-run effect when these values change
 
+
+    const onLogout = () => {
+        dispatch({ type: "access_token", payload: "" })
+        Cookies.remove("access_token")
+        navigate("/")
+    }
 
     const onSideBar = (event: MouseEvent) => {
         if (sideBarRef.current && !sideBarRef.current.contains(event.target as Node)) {
@@ -34,12 +45,20 @@ const Header = () => {
         }
     };
 
+    const onProfileDropdown = (event: MouseEvent) => {
+        if (profileDropdownRef.current && !profileDropdownRef.current.contains(event.target as Node)) {
+            setShowProfileDropdown(false);
+        }
+    };
+
     React.useEffect(() => {
         document.addEventListener("mousedown", onSideBar);
         document.addEventListener("mousedown", onUserOption);
+        document.addEventListener("mousedown", onProfileDropdown);
         return () => {
             document.removeEventListener("mousedown", onSideBar);
             document.removeEventListener("mousedown", onUserOption);
+            document.removeEventListener("mousedown", onProfileDropdown);
         };
     }, []);
 
@@ -50,9 +69,9 @@ const Header = () => {
                 <div className={`w-full z-10 bg-black bg-opacity-75 h-screen top-0 left-0 fixed`}>
                     <nav ref={sideBarRef} className={`flex relative max-w-[250px] h-full w-full flex-col py-5 transition-[width] duration-300 bg-sky-100 ${showNav ? "transform translate-x-0" : "transform -translate-x-full"}`}>
                         <Link to={"/"} className="flex gap-2 px-5 pb-4 items-center cursor-pointer">
-                            <div className="text-lg md:text-xl text-primary">Final Round</div>
+                            <div className="text-lg md:text-xl text-primary">Theresidentguy</div>
                             <div>
-                                <img src="/image/icons/logo.png" alt="logo" />
+                                <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                             </div>
                         </Link>
                         <div className="">
@@ -145,34 +164,56 @@ const Header = () => {
                 <div className="flex justify-between items-center">
                     <div onClick={() => setShowNav(!showNav)}><Icon icon="Menu" /></div>
                     <Link to={"/"} className="flex gap-2 justify-center items-center cursor-pointer">
-                        <div className="text-xl text-primary">Final Round</div>
+                        <div className="text-xl text-primary">Theresidentguy</div>
                         <div>
-                            <img src="/image/icons/logo.png" alt="logo" />
+                            <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                         </div>
                     </Link>
                     <div className="relative z-1" ref={userOptionRef}>
-                        <div className="cursor-pointer" onClick={() => setShowUserOption(!showUserOption)}><Icon icon="User" /></div>
+                        <div className="cursor-pointer" onClick={() => setShowUserOption(!showUserOption)}>
+                            {state.user?.pfp ? <img
+                                crossOrigin="anonymous"
+                                src={state.user?.pfp ? state.user?.pfp : "/image/icons/user.avif"}
+                                className="rounded-full w-12 h-12"
+                                title={state.user?.fullName}
+                                alt={state.user?.fullName}
+                            /> : <div className="relative rounded-full w-12 h-12 flex items-center justify-center">
+                                <img src="/image/icons/user-bg.png" className="rounded-full w-full h-full" />
+                                <div className="absolute text-white text-xl">
+                                    {state.user?.fullName?.charAt(0)}
+                                </div>
+                            </div>}
+                        </div>
                         {showUserOption && (
-                            <div className="absolute top-8 w-[300px] right-0 rounded-lg border bg-white p-3 shadow-sm mt-auto">
+                            <div className="absolute top-12 w-[250px] right-0 rounded-lg border bg-white p-3 shadow-sm mt-auto">
                                 <div className="relative">
-                                    <div className={`flex h-12 cursor-pointer items-center justify-between border-b pb-3 text-slate-700`}>
+                                    <div onClick={() => setShowProfileDropdown(true)} className={`flex h-12 cursor-pointer items-center justify-between border-b pb-3 text-slate-700`}>
                                         <div className="flex gap-1 items-center">
-                                            <img
+                                            {state.user?.pfp ? <img
                                                 crossOrigin="anonymous"
-                                                src="https://img.clerk.com/eyJ0eXBlIjoicHJveHkiLCJzcmMiOiJodHRwczovL2ltYWdlcy5jbGVyay5kZXYvb2F1dGhfZ29vZ2xlL2ltZ18ycWJueGZTckVuZFJnYXhUU0ZJU2FhbFNHaEIifQ?width=160"
-                                                className="rounded-full w-8 h-8"
-                                                title="Show Alive"
-                                                alt="Show Alive"
-                                            />
+                                                src={state.user?.pfp ? state.user?.pfp : "/image/icons/user.avif"}
+                                                className="rounded-full w-12 h-12"
+                                                title={state.user?.fullName}
+                                                alt={state.user?.fullName}
+                                            /> : <div className="relative rounded-full w-12 h-12 flex items-center justify-center">
+                                                <img src="/image/icons/user-bg.png" className="rounded-full w-full h-full" />
+                                                <div className="absolute text-white text-xl">
+                                                    {state.user?.fullName?.charAt(0)}
+                                                </div>
+                                            </div>}
+                                            <div className="ml-2">
+                                                <div className="text-sm font-semibold">{state.user?.fullName}</div>
+                                                <div className="text-sm text-slate-500">{state.user?.email}</div>
+                                            </div>
                                         </div>
                                     </div>
-                                    <div className="px-2 py-[7px]">
+                                    <div onClick={() => navigate("/app/live-interview")} className="px-2 py-[7px] cursor-pointer hover:bg-sky-50">
                                         <div className="flex w-full justify-between text-sm font-medium">
                                             <div className="whitespace-nowrap">Live Interview</div>
                                             <div className="my-auto flex items-center rounded-md text-[#007CEE]">Free Trial</div>
                                         </div>
                                     </div>
-                                    <div className="px-2 py-[7px]">
+                                    <div onClick={() => navigate("/app/mock-interview")} className="px-2 py-[7px] cursor-pointer hover:bg-sky-50">
                                         <div className="flex w-full justify-between text-sm font-medium">
                                             <div className="whitespace-nowrap">Mock Interview</div>
                                             <div className="my-auto flex items-center rounded-md text-[#007CEE]">Free Trial</div>
@@ -201,9 +242,42 @@ const Header = () => {
                                 </div>
                             </div>
                         )}
+                        {showProfileDropdown && (
+                            <div ref={profileDropdownRef} className="absolute top-14 right-0 bg-white w-[330px] bg-opacity-100 shadow-4 border rounded-xl py-4 px-5">
+                                <div className="flex gap-4 items-center border-b pb-3">
+                                    <div className="">
+                                        {state.user?.pfp ? <img
+                                            crossOrigin="anonymous"
+                                            src={state.user?.pfp ? state.user?.pfp : "/image/icons/user.avif"}
+                                            className="rounded-full w-12 h-12"
+                                            title={state.user?.fullName}
+                                            alt={state.user?.fullName}
+                                        /> : <div className="relative rounded-full w-12 h-12 flex items-center justify-center">
+                                            <img src="/image/icons/user-bg.png" className="rounded-full w-full h-full" />
+                                            <div className="absolute text-white text-xl">
+                                                {state.user?.fullName?.charAt(0)}
+                                            </div>
+                                        </div>}
+                                    </div>
+                                    <div className="text-md flex flex-col">
+                                        <div className="text-md font-semibold text-slate-900">{state.user.email}</div>
+                                        <div className="text-md text-slate-600">{state.user.fullName}</div>
+                                    </div>
+                                </div>
+                                <button onClick={() => setShowManageAccountModal(true)} className="text-md text-slate-600 flex items-center gap-3">
+                                    <Icon className="flex items-center px-3 w-12 h-12" icon="Setting" />
+                                    <div>Manage Account</div>
+                                </button>
+                                <button onClick={onLogout} className="text-md text-slate-600 border-t flex items-center gap-3 w-full">
+                                    <Icon className="flex items-center px-3 w-12 h-12" icon="Logout" />
+                                    Logout
+                                </button>
+                            </div>
+                        )}
                     </div>
                 </div>
             )}
+            {showManageAccountModal && <ManageAccountModal isOpen={showManageAccountModal} onClose={() => setShowManageAccountModal(false)} />}
         </div>
     )
 }

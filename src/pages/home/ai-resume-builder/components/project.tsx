@@ -44,7 +44,7 @@ const Project = () => {
                         <label className="text-lg font-medium text-gray-700 col-span-4">
                             Project Name
                             <input
-                                placeholder="Final Round AI AI Resume Builder"
+                                placeholder="Theresidentguy AI Resume Builder"
                                 className="mt-1 px-3 py-2 block w-full rounded-md border border-gray-300 text-gray-900 shadow-sm outline-none font-normal text-lg"
                                 type="text"
                             />

@@ -40,7 +40,7 @@ const ResumeGrader = () => {
                             </div>
                             <div className="absolute bottom-[144px] flex shrink-0 flex-grow items-end justify-center sm:static">
                                 <img
-                                    alt="Resume Optimizer with Final Round AI"
+                                    alt="Resume Optimizer with Theresidentguy"
                                     width={280}
                                     height={264}
                                     className="max-w-[280px] -z-10 w-11/12 sm:z-0"
@@ -120,7 +120,7 @@ const ResumeGrader = () => {
                                 </div>
                                 <div className="absolute bottom-[144px] flex shrink-0 flex-grow items-end justify-center sm:static">
                                     <img
-                                        alt="Resume Optimizer with Final Round AI"
+                                        alt="Resume Optimizer with Theresidentguy"
                                         width={280}
                                         height={264}
                                         className="max-w-[280px] -z-10 w-11/12 sm:z-0"

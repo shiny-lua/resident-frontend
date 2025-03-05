@@ -19,7 +19,7 @@ const testimonials = [
     },
     {
         "tag": "Software",
-        "quote": "Final Round AI gave me the edge I needed to break into product management. The AI Interview Copilot was super helpful.",
+        "quote": "Theresidentguy gave me the edge I needed to break into product management. The AI Interview Copilot was super helpful.",
         "person": "Michael Johnson",
         "role": "Product Manager at Salesforce",
         "companyLogo": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/questionBank/company3.png",
@@ -59,7 +59,7 @@ const testimonials = [
     },
     {
         "tag": "IT",
-        "quote": "Using Final Round AI, I felt much more confident in my interview approach, which led to my offer in project management.",
+        "quote": "Using Theresidentguy, I felt much more confident in my interview approach, which led to my offer in project management.",
         "person": "James Matthews",
         "role": "Project Manager at IBM",
         "companyLogo": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/questionBank/company8.png",
@@ -75,7 +75,7 @@ const testimonials = [
     },
     {
         "tag": "Healthcare",
-        "quote": "Final Round AI's structured approach to interview prep helped me feel more prepared and get the job I've always wanted in healthcare.",
+        "quote": "Theresidentguy's structured approach to interview prep helped me feel more prepared and get the job I've always wanted in healthcare.",
         "person": "Rajiv Kumar",
         "role": "Healthcare Professional at Tata 1mg",
         "companyLogo": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/questionBank/company10.png",
@@ -83,7 +83,7 @@ const testimonials = [
     },
     {
         "tag": "Food Delivery Services",
-        "quote": "Final Round AI helped me practice for interviews with confidence, which led to me getting an offer in sales.",
+        "quote": "Theresidentguy helped me practice for interviews with confidence, which led to me getting an offer in sales.",
         "person": "Maya Patel",
         "role": "Sales Professional at Swiggy",
         "companyLogo": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/questionBank/company11.png",
@@ -99,7 +99,7 @@ const testimonials = [
     },
     {
         "tag": "Telecommunications",
-        "quote": "Final Round AI's structured feedback allowed me to refine my communication skills and successfully transition into a product marketing role.",
+        "quote": "Theresidentguy's structured feedback allowed me to refine my communication skills and successfully transition into a product marketing role.",
         "person": "Anita Desai",
         "role": "Product Marketing at MyJio",
         "companyLogo": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/questionBank/company13.png",
@@ -115,7 +115,7 @@ const testimonials = [
     },
     {
         "tag": "Software",
-        "quote": "Final Round AI helped me refine my answers, giving me the confidence to secure a UX design role.",
+        "quote": "Theresidentguy helped me refine my answers, giving me the confidence to secure a UX design role.",
         "person": "Hannah Wilson",
         "role": "UX Designer at Zoho",
         "companyLogo": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/questionBank/company15.png",
@@ -129,7 +129,7 @@ const faqs = [
     {
         "question": "Is interview transcription available?",
         "answer":
-            "In adherence to data privacy protection standards, Final Round AI does not retain interview transcriptions. However, users have the option to access an Interview Report immediately following each session. It is important to note that if the 'View Interview Report' option is not selected upon session completion, retrieval of the report will not be possible at a later time.",
+            "In adherence to data privacy protection standards, Theresidentguy does not retain interview transcriptions. However, users have the option to access an Interview Report immediately following each session. It is important to note that if the 'View Interview Report' option is not selected upon session completion, retrieval of the report will not be possible at a later time.",
     },
     {
         "question": "What is the cancellation and refund policy?",
@@ -142,7 +142,7 @@ const faqs = [
             "Our free trial offers users limited access to select product features, including AI resume revision and cover letter generation, among others. For the Interview Copilot feature, users are entitled to unlimited access to 5-minute free trial sessions. This means users can initiate the Interview Copilot as often as they wish, with each session being valid for up to 5 minutes.",
     },
     {
-        "question": "Which domains/industries are supported by Final Round AI?",
+        "question": "Which domains/industries are supported by Theresidentguy?",
         "answer":
             "Our services offer extensive coverage across a variety of domains and industries. We are actively developing domain-specific knowledge bases to supercharge domain knowledges, encompassing areas such as Finance, Consulting, Marketing, Customer Success, Sales, Product Management, IT, Cyber Security, Data Analytics, Software Engineering, among others. For additional details or inquiries about specific domains, please reach out to our customer support.",
     },
@@ -152,14 +152,14 @@ const faqs = [
             "Our goal is to ensure a smooth and convenient experience for our customers. We offer a wide range of payment options through our payment processing partner, Stripe. Accepted payment methods include major credit cards such as Visa, MasterCard, American Express, and Discover, as well as ACH transfers. For those interested in using cryptocurrencies, we kindly ask you to reach out to our customer support for further assistance.",
     },
     {
-        "question": "Which online meeting platforms are supported by Final Round AI?",
+        "question": "Which online meeting platforms are supported by Theresidentguy?",
         "answer":
-            "For optimal performance of Final Round AI, we recommend using the platform on the latest version of the Chrome browser. The Interview Copilot feature is compatible with major online meeting platforms, including Zoom, WebEx, Microsoft Teams, Google Meet, and Chime, among others. For detailed instructions on how to configure the Interview Copilot for successful use, please visit our tutorial at /blog/how-to-set-up-interview-copilot.",
+            "For optimal performance of Theresidentguy, we recommend using the platform on the latest version of the Chrome browser. The Interview Copilot feature is compatible with major online meeting platforms, including Zoom, WebEx, Microsoft Teams, Google Meet, and Chime, among others. For detailed instructions on how to configure the Interview Copilot for successful use, please visit our tutorial at /blog/how-to-set-up-interview-copilot.",
     },
     {
-        "question": "What are the system requirements for running the Final Round AI WebApp?",
+        "question": "What are the system requirements for running the Theresidentguy WebApp?",
         "answer":
-            "Final Round AI provides a comprehensive suite of AI-driven solutions designed to assist candidates during challenging recruitment periods. Our platform is accessible via an integrated Web App experience, optimized for use with the latest version of the Chrome browser to ensure the best possible user experience. While many of our AI tools, including AI Resume Revision and AI Cover Letter Generation, are compatible with various browsers, the Interview Copilot feature specifically requires the Chrome browser. To download the latest version of Chrome, please visit https://www.google.com/chrome/",
+            "Theresidentguy provides a comprehensive suite of AI-driven solutions designed to assist candidates during challenging recruitment periods. Our platform is accessible via an integrated Web App experience, optimized for use with the latest version of the Chrome browser to ensure the best possible user experience. While many of our AI tools, including AI Resume Revision and AI Cover Letter Generation, are compatible with various browsers, the Interview Copilot feature specifically requires the Chrome browser. To download the latest version of Chrome, please visit https://www.google.com/chrome/",
     }
 ]
 
@@ -176,7 +176,7 @@ const innovation = [
         "sourceImage": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/business-excellence.png"
     },
     {
-        "quote": "Revolutionize your hiring process with cutting-edge technology like Final Round AI!",
+        "quote": "Revolutionize your hiring process with cutting-edge technology like Theresidentguy!",
         "author": "Mohini S.",
         "source": "@LinkedIn",
         "sourceImage": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/linkedin.png"
@@ -193,7 +193,7 @@ const innovation = [
         "sourceImage": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/business-excellence.png"
     },
     {
-        "quote": "Revolutionize your hiring process with cutting-edge technology like Final Round AI!",
+        "quote": "Revolutionize your hiring process with cutting-edge technology like Theresidentguy!",
         "author": "Mohini S.",
         "source": "@LinkedIn",
         "sourceImage": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/linkedin.png"
@@ -210,7 +210,7 @@ const innovation = [
         "sourceImage": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/business-excellence.png"
     },
     {
-        "quote": "Revolutionize your hiring process with cutting-edge technology like Final Round AI!",
+        "quote": "Revolutionize your hiring process with cutting-edge technology like Theresidentguy!",
         "author": "Mohini S.",
         "source": "@LinkedIn",
         "sourceImage": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/linkedin.png"
@@ -233,29 +233,29 @@ const tutorials = [
     {
         "title": "How to use AI Mock Interview",
         "date": "Feb 01, 2024",
-        "description": "A detailed instruction on the settings of AI Mock Interview. Final Round AI helps you effectively prepare and practice interviews for your target job positions in a highly immersive manner....",
+        "description": "A detailed instruction on the settings of AI Mock Interview. Theresidentguy helps you effectively prepare and practice interviews for your target job positions in a highly immersive manner....",
         "image": "https://uploads-ssl.webflow.com/664ed8170ea9a09ebb0c8a24/66600a2f3a18a3d052de1c06_tutor-4.webp",
     },
     {
         "title": "How to use AI Material Generator",
         "date": "Feb 01, 2024",
-        "description": "A detailed instruction on the settings of AI Material Generator. Final Round AI helps you automatically create job application materials such as resume, cover letters, and interview Q&A flashcards, tailored to the job yo...",
+        "description": "A detailed instruction on the settings of AI Material Generator. Theresidentguy helps you automatically create job application materials such as resume, cover letters, and interview Q&A flashcards, tailored to the job yo...",
         "image": "https://uploads-ssl.webflow.com/664ed8170ea9a09ebb0c8a24/66600a2aa990e4c75da6fe07_tutor-3.webp",
     }
 ]
 
 const askedQuestion = [
     {
-        "question": "What is the Final Round AI Referral Program?",
-        "answer": "The Final Round AI Referral Program is a way for our users to earn rewards by referring friends, colleagues, or anyone interested in improving their interview skills using our AI-powered tools and land dream jobs. Each successful referral earns you exciting rewards, including discounts, free access, or gift cards."
+        "question": "What is the Theresidentguy Referral Program?",
+        "answer": "The Theresidentguy Referral Program is a way for our users to earn rewards by referring friends, colleagues, or anyone interested in improving their interview skills using our AI-powered tools and land dream jobs. Each successful referral earns you exciting rewards, including discounts, free access, or gift cards."
     },
     {
         "question": "How do I participate in the referral program?",
-        "answer": "To participate, simply log into your Final Round AI account and navigate to the referral section. From there, you can share your unique referral link via email, social media, or any other platform. When someone uses your link to sign up and makes a subscription, you'll receive a reward. The exact rewards may vary depending on the promotion and will be clearly outlined in the referral program details."
+        "answer": "To participate, simply log into your Theresidentguy account and navigate to the referral section. From there, you can share your unique referral link via email, social media, or any other platform. When someone uses your link to sign up and makes a subscription, you'll receive a reward. The exact rewards may vary depending on the promotion and will be clearly outlined in the referral program details."
     },
     {
         "question": "How can I track my referrals and rewards?",
-        "answer": "You can track your referrals and rewards by logging into your Final Round AI account and visiting the referral dashboard. Here, you'll see the status of each referral, including whether they've signed up and made a qualifying subscription."
+        "answer": "You can track your referrals and rewards by logging into your Theresidentguy account and visiting the referral dashboard. Here, you'll see the status of each referral, including whether they've signed up and made a qualifying subscription."
     },
     {
         "question": "Is there a limit to how many people I can refer?",
@@ -279,7 +279,7 @@ const askedQuestion = [
     },
     {
         "question": "Who can I contact if I have questions about the referral program?",
-        "answer": "If you have any questions or need assistance with the referral program, please contact our support team through the Final Round AI website customer support chatbot or support@finalroundai.com, and we'll be happy to help."
+        "answer": "If you have any questions or need assistance with the referral program, please contact our support team through the Theresidentguy website customer support chatbot or support@finalroundai.com, and we'll be happy to help."
     }
 ]
 

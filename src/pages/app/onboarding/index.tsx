@@ -18,9 +18,9 @@ const Onboarding = () => {
         <div className="flex w-full h-[100vh] justify-center relative">
             <div className="max-w-[500px] flex flex-col mt-10 px-5">
                 <Link to="/" className="flex justify-center gap-2 top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
-                    <div className="text-2xl text-primary">Final Round</div>
+                    <div className="text-2xl text-primary">Theresidentguy</div>
                     <div>
-                        <img src="/image/icons/logo.png" alt="logo" />
+                        <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                     </div>
                 </Link>
                 <Link to="/app/started" className="top-10   hover:underline absolute right-5 z-50 cursor-pointer text-sm font-medium text-slate-400">Skip to app</Link>

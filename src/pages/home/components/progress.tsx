@@ -14,7 +14,7 @@ const Progress = () => {
                     </div>
                     <div className="flex flex-col items-center lg:gap-16 gap-12 text-center relative z-10 lg:mb-[6.87rem] lg:max-w-[34.8125rem]">
                         <p className="text-xl leading-[1.31] tracking-[-0.0225rem] text-gray-900/30">
-                            From Day One to Final Rounds
+                            From Day One to Theresidentguys
                         </p>
                         <h2 className="font-albra text-[30px] md:text-[36px] tracking-tight max-w-[46.9375rem]">
                             A suite of AI tools to navigate through this difficult recruiting
@@ -22,7 +22,7 @@ const Progress = () => {
                         </h2>
                     </div>
                     <div className="text-center max-w-[82rem] w-full px-4 relative z-10 flex justify-between gap-8 flex-col items-center lg:flex-row lg:items-start">
-                        <ul className="text-nowrap flex flex-col gap-1 pt-25">
+                        <ul className="text-nowrap flex flex-col gap-1">
                             <li className="relative mb-12">
                                 <h3 className="text-3xl md:text-4xl font-albra">Before Interviews</h3>
                                 <span className="absolute right-[-1rem] bottom-[0.9rem] opacity-50 text-gray-500">1</span>
@@ -34,7 +34,7 @@ const Progress = () => {
                             </li>
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
-                                    <Link className="hover:text-sky-500" to="/app/interview" >AI Mock Interview</Link>
+                                    <Link className="hover:text-sky-500" to="/app/mock-interview" >AI Mock Interview</Link>
                                 </div>
                             </li>
                         </ul>
@@ -46,12 +46,12 @@ const Progress = () => {
                             </li>
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
-                                    <Link className="hover:text-sky-500" to="/app/interview">🚀 Interview Copilot™</Link>
+                                    <Link className="hover:text-sky-500" to="/app/mock-interview">🚀 Interview Copilot™</Link>
                                 </div>
                             </li>
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
-                                    <Link className="hover:text-sky-500" to="/app/interview">Real-Time Transcription</Link>
+                                    <Link className="hover:text-sky-500" to="/app/mock-interview">Real-Time Transcription</Link>
                                 </div>
                             </li>
                             {/* <li>
@@ -61,7 +61,7 @@ const Progress = () => {
                             </li> */}
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
-                                    <Link className="hover:text-sky-500" to="/app/interview">Coding Copilot</Link>
+                                    <Link className="hover:text-sky-500" to="/app/mock-interview">Coding Copilot</Link>
                                 </div>
                             </li>
                         </ul>
@@ -73,19 +73,19 @@ const Progress = () => {
                             </li>
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
-                                    <Link className="hover:text-sky-500" to="/app/interview?tab=completed">Interview Summary
+                                    <Link className="hover:text-sky-500" to="/app/mock-interview?tab=completed">Interview Summary
                                     </Link>
                                 </div>
                             </li>
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
-                                    <Link className="hover:text-sky-500" to="/app/interview?tab=completed">Interview Analytics
+                                    <Link className="hover:text-sky-500" to="/app/mock-interview?tab=completed">Interview Analytics
                                     </Link>
                                 </div>
                             </li>
                             <li>
                                 <div className="px-8 py-4 rounded-full bg-white">
-                                    <Link className="hover:text-sky-500" to="/app/interview?tab=completed">Sentiment Assessment
+                                    <Link className="hover:text-sky-500" to="/app/mock-interview?tab=completed">Sentiment Assessment
                                     </Link>
                                 </div>
                             </li>
@@ -93,7 +93,7 @@ const Progress = () => {
                     </div>
                 </div>
             </section>
-            <section className="lg:sticky static top-0 p-5 min-h-[100svh] flex bg-black lg:pb-5 pb-0">
+            {/* <section className="lg:sticky static top-0 p-5 min-h-[100svh] flex bg-black lg:pb-5 pb-0">
                 <div className="p-8 rounded-[2rem] bg-white w-full flex flex-col items-center justify-center self-stretch relative overflow-hidden lg:p-8 sm:p-12 p-4 ">
                     <div className="horizontal-tab flex items-stretch self-stretch h-full gap-50">
                         <div className="lg:max-w-[35.4rem] w-full flex flex-col justify-between">
@@ -185,7 +185,7 @@ const Progress = () => {
                         </div>
                     </div>
                 </div>
-            </section>
+            </section> */}
             <section
                 className="lg:sticky static top-0 p-5 min-h-[100svh] flex bg-black lg:pb-5 pb-0"
                 id="mock-interview"
@@ -222,7 +222,7 @@ const Progress = () => {
                                     data-nimg={1}
                                     className="absolute lg:top-[9.002%] top-[50%] left-[50%] lg:translate-y-[0%] translate-y-[-50%] translate-x-[-50%] w-[100%]"
                                     style={{ color: "transparent" }}
-                                    src="https://www.finalroundai.com/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%203.webp&w=1080&q=75"
+                                    src="/image/home/mock-interview.png"
                                 />
                             </div>
                         </div>
@@ -299,7 +299,7 @@ const Progress = () => {
                                         scale: "none",
                                         transform: "translate(-50%, 0) translate(-0.227px, 5.2047px)"
                                     }}
-                                    src="https://www.finalroundai.com/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Ffr-intcop%205.webp&w=1080&q=75"
+                                    src="/image/home/question-bank.png"
                                 />
                             </div>
                         </div>
@@ -359,18 +359,7 @@ const Progress = () => {
                                     <div className="bubble is--sky" />
                                     <div className="bubble is--green" />
                                 </div>
-                                <img
-                                    alt="Interview Report"
-                                    loading="lazy"
-                                    width="1169.191"
-                                    height="774.875"
-                                    decoding="async"
-                                    data-nimg={1}
-                                    className="absolute bottom-[-8%] left-[15%] h-[105%] max-w-none max-h-none w-auto rotate-[-13.477deg]"
-                                    style={{ color: "transparent" }}
-                                    srcSet="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Fdetailed-performance-analysis.webp&w=1200&q=75 1x, /_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Fdetailed-performance-analysis.webp&w=3840&q=75 2x"
-                                    src="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Fdetailed-performance-analysis.webp&w=3840&q=75"
-                                />
+                                
                                 <img
                                     alt="Interview Report"
                                     loading="lazy"
@@ -380,8 +369,7 @@ const Progress = () => {
                                     data-nimg={1}
                                     className="absolute z-[2] sm:top-[29.59%] top-[31%] left-[30%] rotate-[-13.477deg]"
                                     style={{ color: "transparent" }}
-                                    srcSet="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Finterview-report-2.webp&w=828&q=75 1x, /_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Finterview-report-2.webp&w=1920&q=75 2x"
-                                    src="/_next/image?url=https%3A%2F%2Fd12araoe7z5xxk.cloudfront.net%2Flanding-page%2Fimages%2Fsticky-tabs%2Finterview-report-2.webp&w=1920&q=75"
+                                    src="/image/home/interview-report.png"
                                 />
                             </div>
                             <div>

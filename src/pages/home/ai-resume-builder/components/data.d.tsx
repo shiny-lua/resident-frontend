@@ -65,7 +65,7 @@ const slides = [
         }
     },
     {
-        "quote": "Final Round AI gave me the edge I needed to break into product management. The AI Interview Copilot was super helpful.",
+        "quote": "Theresidentguy gave me the edge I needed to break into product management. The AI Interview Copilot was super helpful.",
         "avatar": {
             "src": "https://d12araoe7z5xxk.cloudfront.net/landing-page/images/questionBank/user3.png",
             "alt": "avatar"

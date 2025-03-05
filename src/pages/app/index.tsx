@@ -1,4 +1,4 @@
-import { Navigate, Route, Routes, useNavigate } from "react-router-dom"
+import { Navigate, Route, Routes, useLocation, useNavigate, useParams } from "react-router-dom"
 
 import Onboarding from "./onboarding"
 import Started from "./started";
@@ -20,28 +20,36 @@ import React from "react";
 const AppIndex = () => {
 
     const navigate = useNavigate()
-    const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
+    const [state, { dispatch }]: GlobalContextType = useGlobalContext()
+
+    const location = useLocation()
 
     React.useEffect(() => {
 
         const fetchData = async () => {
             try {
-                console.log(state.authToken);
+                console.log(state.access_token);
                 const res = await restApi.postRequest("get-user");
 
                 if (res === undefined) {
                     showToast('An error has occurred during communication with backend.', 'warning');
                 } else if (res.status === 200) {
                     const data = res.data.data;
-                    const user: { email: string, fullName: string, pfp: string } = { email: data.email, fullName: data.full_name, pfp: data.pfp };
+                    const user: { id: number, email: string, fullName: string, pfp: string, isPasswordSet: boolean } = { id: data._id, email: data.email, fullName: data.full_name, pfp: data.pfp, isPasswordSet: data.is_password_set };
                     console.log(user);
                     dispatch({ type: "user", payload: user });
-                    dispatch({ type: "authToken", payload: res.data.token });
-                    storeData(res.data.token);
                     if (state.authType !== "signup") {
-                        navigate("/app/started");
+                        if (location.pathname) {
+                            navigate(`${location.pathname}`);
+                        } else {
+                            navigate("/app/started");
+                        }
                     } else {
-                        navigate("/app/onboarding");
+                        if (location.pathname) {
+                            navigate(`${location.pathname}`);
+                        } else {
+                            navigate("/app/onboarding");
+                        }
                     }
                 } else {
                     navigate("/auth/sign-in");
@@ -60,8 +68,8 @@ const AppIndex = () => {
         <Routes>
             <Route path="/onboarding" element={<Onboarding />} />
             <Route path="/started" element={<Started />} />
-            <Route path="/live-interview" element={<Interview />} />
-            <Route path="/mock-interview" element={<MockInterview />} />
+            <Route path="/live-interview/*" element={<Interview />} />
+            <Route path="/mock-interview/*" element={<MockInterview />} />
             <Route path="/permission-setting" element={<PermissionSetting />} />
             <Route path="/role" element={<Role />} />
             <Route path="/resume" element={<Resume />} />

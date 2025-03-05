@@ -6,12 +6,13 @@ import { emailValidator, showToast, strongPasswordValidator } from "../../contex
 import { restApi } from "../../context/restApi";
 import { config, useGlobalContext } from "../../context";
 import Loader from "../../components/loader";
+import Cookies from "js-cookie";
 
 const SignIn = () => {
 
     const navigate = useNavigate()
 
-    const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
+    const [_, { dispatch }]: GlobalContextType = useGlobalContext()
     const [stepIndex, setStepIndex] = React.useState(0)
     const [isPwdVisible, setPwdVisible] = React.useState(false)
 
@@ -53,9 +54,14 @@ const SignIn = () => {
             showToast('An error has occurred during communication with backend.', 'warning')
             setStatus({ ...status, isLoading: false })
         } else if (res.status === 200) {
-            dispatch({ type: "authToken", payload: res.data.token })
-            storeData(res.data.token)
+            dispatch({ type: "access_token", payload: res.data.token })
+            Cookies.set("access_token", res.data.token, {
+                expires: 30, // 1 hour (same as backend's 3600 seconds)
+                secure: false,
+                sameSite: 'lax'
+            })
             navigate("/app/started")
+            showToast("User logged in successfully, please continue.", "success")
         } else {
             showToast(res.msg, "error")
             setStatus({ ...status, isLoading: false })
@@ -76,9 +82,9 @@ const SignIn = () => {
     return (
         <div className="flex w-full h-full relative bg-slate-50 ">
             <Link to="/" className="hidden lg:flex gap-2 items-center absolute top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
-                <div className="text-lg md:text-xl text-primary">Final Round</div>
+                <div className="text-lg md:text-xl text-primary">Theresidentguy</div>
                 <div>
-                    <img src="/image/icons/logo.png" alt="logo" />
+                    <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                 </div>
             </Link>
             <div className="hidden bg-slate-200 w-full h-[100vh] lg:flex justify-center items-center">
@@ -86,16 +92,16 @@ const SignIn = () => {
             </div>
             <div className="w-full h-full flex flex-col items-center mt-20 lg:mt-50">
                 <Link to="/" className="flex lg:hidden gap-2 top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
-                    <div className="text-2xl text-primary">Final Round</div>
+                    <div className="text-2xl text-primary">Theresidentguy</div>
                     <div>
-                        <img src="/image/icons/logo.png" alt="logo" />
+                        <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                     </div>
                 </Link>
 
                 {stepIndex === 0 && (
                     <div className="w-full sm:w-[430px] px-5">
                         <div className="pt-10">
-                            <div className="text-title-md font-semibold text-center mb-2">Sign in to Final Round AI</div>
+                            <div className="text-title-md font-semibold text-center mb-2">Sign in to Theresidentguy</div>
                             <div className="text-center opacity-60 text-sm">Welcome back! Please sign in to continue</div>
                         </div>
                         <div className="flex gap-2 mt-10 justify-center">

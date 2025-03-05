@@ -13,7 +13,7 @@ const Header = () => {
                 </div>
                 <Link
                     className="mt-12 flex h-[56px] w-[251px] text-lg cursor-pointer items-center justify-center rounded-[8px] bg-sky-500 text-white"
-                    to="/app/interview"
+                    to="/app/mock-interview"
                 >
                     Start Now for Free
                 </Link>

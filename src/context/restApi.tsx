@@ -1,25 +1,23 @@
 import axios from "axios";
 import { config } from ".";
+import Cookies from "js-cookie";
 
-// Set the base URL for Axios
 axios.defaults.baseURL = config.BACKEND_URL + '/api/';
-axios.defaults.withCredentials = true;
-
-const getToken = () => {
-  return localStorage.getItem("authToken"); 
-};
+axios.interceptors.request.use((config: any) => {
+  const token = Cookies.get("access_token")
+  if (token) {
+    if (!config.headers) {
+      config.headers = {};
+    }
+    config.headers.Authorization = `Bearer ${token}`;
+  }
+  return config;
+});
 
 const restApi = {
   postRequest: async (url: string, data?: any) => {
     try {
-      const token = getToken(); // Get the token
-      const res = await axios.post(url, data, {
-        headers: {
-          'Content-Type': 'application/json', 
-          'Authorization': token ? `Bearer ${token}` : ''
-        },
-        withCredentials: true
-      });
+      const res = await axios.post(url, data);
       return res
     } catch (error: any) {
       console.error("Error response:", error.response); 

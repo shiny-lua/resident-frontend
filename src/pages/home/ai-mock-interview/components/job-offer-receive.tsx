@@ -14,7 +14,7 @@ const JobOfferReceive = () => {
                 </div>
                 <div className="mt-3 w-full max-w-[1068px] text-center opacity-70">
                     Say goodbye to sweaty palms, blank stares, and “I should've said that”
-                    moments.&nbsp; With Final Round AI, you get real practice, real feedback,
+                    moments.&nbsp; With Theresidentguy, you get real practice, real feedback,
                     and real confidence.&nbsp; Step into your next interview calm, clear, and
                     ready to impress.
                 </div>

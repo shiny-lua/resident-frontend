@@ -76,12 +76,12 @@ const RecruitingTools = () => {
                     >
                         Get Started Free
                     </Link>
-                    <Link
+                    {/* <Link
                         className="mt-4 h-[40px] w-[145px] cursor-pointer rounded-[6px] border border-gray-200 px-4 py-[10px] text-center text-md text-black hover:text-sky-500 hover:bg-sky-100"
                         to="/ai-resume-builder"
                     >
                         learn more
-                    </Link>
+                    </Link> */}
                 </div>
             </div>
         </div>

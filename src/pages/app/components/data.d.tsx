@@ -229,4 +229,24 @@ const companies = [
     }
 ]
 
-export { timezones, languages, companies };
+const mockInterviewData = {
+    "problems": [
+        "Nailing technical questions",
+        "Crushing behavioral interviews",
+        "Getting comfy with the whole process",
+        "Improving my interview chat game",
+        "Other (Tell us!)"
+    ],
+    "feelings": [
+        "Too Slow",
+        "Too Fast",
+        "Just Right",
+    ],
+    "satisfaction": [
+        "Super Helpful!",
+        "Meh, could be better",
+        "Not helpful at all"
+    ],
+}
+
+export { timezones, languages, companies, mockInterviewData };

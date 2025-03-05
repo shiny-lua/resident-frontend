@@ -125,7 +125,7 @@ const InterviewCopilot = () => {
                 <div className="mt-12 min-h-[80px] w-full bg-gradient-to-r from-[#0090FF] to-[#00F7FF] px-4 py-6 text-white">
                     <div className="mx-auto flex w-full max-w-[1200px] items-center justify-center flex-col md:flex-row md:justify-between">
                         <div className="text-center text-xl md:mr-16 md:text-left lg:w-[892px]">
-                            Your final round of interview, your AI Interview Copilot!
+                            Your Theresidentguy of interview, your AI Interview Copilot!
                         </div>
                         <Link to="/auth/sign-in" className="!flex h-[36px] w-[158px] cursor-pointer flex-row items-center justify-center !rounded-full border-[2px] border-white text-md text-white mt-6 md:mt-0">
                             <div>Get Started Free</div>
@@ -282,14 +282,14 @@ const InterviewCopilot = () => {
                             </div>
                         </div>
                         <img
-                            alt="Final Round AI provides real-time transcription and multilingual capabilities"
+                            alt="Theresidentguy provides real-time transcription and multilingual capabilities"
                             width={592}
                             height={672}
                             className="hidden md:inline-block"
                             src="/image/home/real-time-transcription-1.png"
                         />
                         <img
-                            alt="Final Round AI provides real-time transcription and multilingual capabilities"
+                            alt="Theresidentguy provides real-time transcription and multilingual capabilities"
                             width={357}
                             height={290}
                             className="inline-block md:hidden"
@@ -361,7 +361,7 @@ const InterviewCopilot = () => {
                             </div>
                         </div>
                         <img
-                            alt="Final Round AI provides Interview summary report for implementation feedback"
+                            alt="Theresidentguy provides Interview summary report for implementation feedback"
                             width={592}
                             height={672}
                             className="hidden md:inline-block"

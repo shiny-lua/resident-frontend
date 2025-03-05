@@ -8,10 +8,11 @@ import { config, useGlobalContext } from "../../context";
 const SiginUp = () => {
 
     const navigate = useNavigate()
-    const [_, {dispatch}] = useGlobalContext()
+    const [_, { dispatch }] = useGlobalContext()
     const [tabIdx, setTabIdx] = React.useState(0);
 
     const [status, setStatus] = React.useState({
+        fullName: "",
         email: "",
         password: "",
         confPassword: "",
@@ -48,6 +49,9 @@ const SiginUp = () => {
 
     const onSignUp = async () => {
         if (status.isLoading) return
+        if (!status.fullName) {
+            return showToast("Full Name is required!", "warning")
+        }
         if (!validate.isStrongPassword.status) {
             return showToast(!validate.isStrongPassword.msg ? "Password is required!" : validate.isStrongPassword.msg, "warning")
         }
@@ -55,15 +59,15 @@ const SiginUp = () => {
             return showToast("The Password and Confirm password fields do not match.", "warning")
         }
         setStatus({ ...status, isLoading: true })
-        
-        const res = await restApi.postRequest("register", { email: status.email, password: status.password, conf_password: status.confPassword })
-        
+
+        const res = await restApi.postRequest("register", {full_name: status.fullName, email: status.email, password: status.password, conf_password: status.confPassword })
+
         if (res === undefined) {
             showToast('An error has occurred during communication with backend.', 'warning')
             setStatus({ ...status, isLoading: false })
         } else if (res.status === 200) {
-            dispatch({type: "userEmail", payload: status.email})
-            dispatch({type: "verifyCodeType", payload: "signup"})
+            dispatch({ type: "userEmail", payload: status.email })
+            dispatch({ type: "verifyCodeType", payload: "signup" })
             navigate("/auth/verify-code")
         } else {
             showToast(res.msg, "error")
@@ -71,21 +75,21 @@ const SiginUp = () => {
         setStatus({ ...status, isLoading: false })
     }
     const onGoogle = () => {
-        dispatch({type: "authType", payload: "signup"})
+        dispatch({ type: "authType", payload: "signup" })
         window.location.href = `${config.BACKEND_URL}/api/google-login`
     }
 
     const onFacebook = () => {
-        dispatch({type: "authType", payload: "signup"})
+        dispatch({ type: "authType", payload: "signup" })
         window.location.href = `${config.BACKEND_URL}/api/facebook-login`
     }
 
     return (
         <div className="flex w-full h-full relative bg-slate-50 ">
             <Link to="/" className="hidden lg:flex gap-2 items-center absolute top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
-                <div className="text-lg md:text-xl text-primary">Final Round</div>
+                <div className="text-lg md:text-xl text-primary">Theresidentguy</div>
                 <div>
-                    <img src="/image/icons/logo.png" alt="logo" />
+                    <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                 </div>
             </Link>
             <div className="hidden bg-slate-200 w-full h-[100vh] lg:flex justify-center items-center">
@@ -93,9 +97,9 @@ const SiginUp = () => {
             </div>
             <div className="w-full h-full flex flex-col items-center mt-20 lg:mt-50">
                 <Link to="/" className="flex lg:hidden gap-2 top-5 left-5 sm:left-10 2xl:left-20 cursor-pointer">
-                    <div className="text-2xl text-primary">Final Round</div>
+                    <div className="text-2xl text-primary">Theresidentguy</div>
                     <div>
-                        <img src="/image/icons/logo.png" alt="logo" />
+                        <img src="/image/icons/logo.png"  width={25} height={25} alt="logo" />
                     </div>
                 </Link>
                 {tabIdx === 0 ? (
@@ -118,6 +122,14 @@ const SiginUp = () => {
                             </div>
                         </div>
                         <div className="">
+                            <div className="flex flex-col gap-2 mb-4">
+                                <label htmlFor="fullName">Full Name</label>
+                                <input
+                                    value={status.fullName}
+                                    onChange={e => onInput(e, "fullName", "")}
+                                    className="bg-white rounded-md outline-none border focus:border-primary p-3" type="text" name="" id="fullName"
+                                />
+                            </div>
                             <div className="flex flex-col gap-2 mb-4">
                                 <label htmlFor="email">Email address</label>
                                 <input

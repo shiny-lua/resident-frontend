@@ -29,7 +29,7 @@ const Routers = () => {
     <Routes>
       <Route path="/*" element={<Home />} />
       <Route path="/app/*" element={<AppIndex />} />
-      <Route path="/auth/*" element={state.authToken ? <Navigate to="/app/started" /> : <Auth />} />
+      <Route path="/auth/*" element={state.access_token ? <Navigate to="/app/started" /> : <Auth />} />
     </Routes>
   )
 }

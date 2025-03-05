@@ -25,7 +25,7 @@ const Resume = () => {
                             <Icon icon="Upload" />
                             Upload
                         </button>
-                        <button className="items-center justify-center gap-1 whitespace-nowrap rounded-md text-md font-medium hover:bg-sky-100 py-1 hidden border border-slate-300 bg-white px-3 shadow-sm md:flex">
+                        {/* <button className="items-center justify-center gap-1 whitespace-nowrap rounded-md text-md font-medium hover:bg-sky-100 py-1 hidden border border-slate-300 bg-white px-3 shadow-sm md:flex">
                             <Icon icon="New" />
                             <Link to={"/ai-resume-builder"} className="ml-[6px] text-left">
                                 <div className="mt-1 text-md text-slate-900">Create</div>
@@ -33,7 +33,7 @@ const Resume = () => {
                                     by AI Resume Builder
                                 </div>
                             </Link>
-                        </button>
+                        </button> */}
                         <button onClick={() => setShowLinkedinProfileModal(!showLinkedinProfileModal)} className="flex gap-1 items-center justify-center whitespace-nowrap rounded-md text-md font-medium border hover:bg-sky-100 py-1 px-4">LinkedIn Profile</button>
                     </div>
                 </div>

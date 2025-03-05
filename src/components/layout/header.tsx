@@ -3,8 +3,8 @@ import { Link, useLocation } from "react-router-dom";
 
 import { useGlobalContext } from "../../context";
 import Hamburger from "./hamburger";
-import Icon from "../icon";
 import ProfileDropdown from "../profile-dropdown";
+import ManageAccountModal from "../manage-account-modal";
 
 const Header = () => {
     const [state, { dispatch }]: GlobalContextType = useGlobalContext();
@@ -16,6 +16,7 @@ const Header = () => {
     const [showDropdown, setShowDropdown] = React.useState(false);
     const [showResource, setShowResource] = React.useState(false);
     const [showProfileDropdown, setShowProfileDropdown] = React.useState(false)
+    const [showManageAccountModal, setShowManageAccountModal] = React.useState(false)
 
     let lastScrollY = 0;
 
@@ -33,7 +34,7 @@ const Header = () => {
     }, []);
 
     const handleScroll = () => {
-        if (!showDropdown) {
+        if (showDropdown) {
             if (window.scrollY > lastScrollY) {
                 setShowNavbar(false);
             } else {
@@ -59,36 +60,50 @@ const Header = () => {
         }
     }, [showDropdown]); // Re-run effect when these values change
 
+    React.useEffect(() => {
+        // Conditionally set the overflow style based on the conditions
+        if (showManageAccountModal) {
+            document.documentElement.style.overflow = 'hidden'; // Hide scrollbar
+        } else {
+            document.documentElement.style.overflow = 'auto'; // Allow scrollbar
+        }
+    }, [showManageAccountModal]); // Re-run effect when these values change
+
+
     return (
         <nav className={`fixed top-0 left-0 w-full z-99999 ${showDropdown ? "bg-white" : "bg-transparent bg-opacity-40"} backdrop-blur-[50px] webkit-backdrop-blur-[50px] transition-transform duration-300 ${showNavbar ? "transform translate-y-0" : "transform -translate-y-full"}`}>
             <header className="relative flex justify-between px-5 2xl:px-20 py-5 bg-opacity-10 z-999">
-                <Link to={"/"} className="flex gap-2 px-0 sm:px-5 items-center cursor-pointer">
-                    <div className="text-lg md:text-xl text-primary">Final Round</div>
-                    <div>
-                        <img src="/image/icons/logo.png" alt="logo" />
+                <Link to={"/"} className="flex px-0 sm:px-5 items-center cursor-pointer">
+                    <div className="text-lg md:text-xl text-primary mr-2">Theresidentguy</div>
+                    <div className="flex items-end">
+                        <img src="/image/icons/logo.png" width={30} height={30} alt="logo" />
                     </div>
                 </Link>
                 <div className="gap-2 hidden 2xl:flex items-center">
                     <Link to="/interview-copilot" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Interview Copllot™</Link>
-                    <Link to="/ai-resume-builder" className={`${pathname.includes("ai-resume-builder") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>AI Resume Builder</Link>
+                    {/* <Link to="/ai-resume-builder" className={`${pathname.includes("ai-resume-builder") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>AI Resume Builder</Link> */}
                     <Link to="/ai-mock-interview" className={`${pathname.includes("ai-mock-interview") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>AI Mock Interview</Link>
                     <Link to="/app/subscription" className={`${pathname.includes("subscription") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Pricing</Link>
-                    <button
+                    <Link to="/guide" className={`${pathname.includes("guides") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Guides</Link>
+                    <Link to="/blog" className={`${pathname.includes("blog") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Blog</Link>
+                    {/* <button
                         onMouseOver={() => setShowResource(true)}
                         className={`group flex items-center bg-opacity-80 text-black text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}
                     >
                         Resources
                         <Icon className="h-6 w-6" icon={!showResource ? "ChevronDown" : "ChevronUp"} />
-                    </button>
+                    </button> */}
                     <Link to="" className={`${pathname.includes("question-bank") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md`}>Question Bank</Link>
                 </div>
                 <div className={`${showDropdown ? 'translate-y-0  min-h-[calc(100vh-70px)]' : '-translate-y-full -z-99 opacity-0'} h-[calc(100vh-70px)] overflow-y-scroll duration-200 ease-linear absolute top-20 left-0 bg-black block 2xl:hidden w-full bg-opacity-80`}>
                     <div className="flex flex-col px-5 2xl:px-20 bg-white border rounded-b-[30px] border-b-2 gap-2 pb-4">
                         <Link to="/interview-copilot" className={`${pathname.includes("interview-copilot") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Interview Copllot™</Link>
-                        <Link to="/ai-resume-builder" className={`${pathname.includes("ai-resume-builder") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>AI Resume Builder</Link>
+                        {/* <Link to="/ai-resume-builder" className={`${pathname.includes("ai-resume-builder") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>AI Resume Builder</Link> */}
                         <Link to="/ai-mock-interview" className={`${pathname.includes("ai-mock-interview") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>AI Mock Interview</Link>
                         <Link to="/app/subscription" className={`${pathname.includes("subscription") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Pricing</Link>
-                        <div>
+                        <Link to="/guide" className={`${pathname.includes("guides") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Guides</Link>
+                        <Link to="/blog" className={`${pathname.includes("blog") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Blog</Link>
+                        {/* <div>
                             <button
                                 onClick={() => setShowResource(!showResource)}
                                 className={`w-full group flex justify-between items-center bg-opacity-80 text-black text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}
@@ -185,12 +200,12 @@ const Header = () => {
                                     </div>
                                 </div>
                             )}
-                        </div>
+                        </div> */}
                         <Link to="" className={`${pathname.includes("question-bank") && "bg-sky-200 bg-opacity-80 text-primary"} text-md hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-3 px-4 rounded-md`}>Question Bank</Link>
                     </div>
                 </div>
                 <div className="flex items-center">
-                    {!state.authToken ? (
+                    {!state.access_token ? (
                         <div className="flex gap-3 sm:gap-6 items-center">
                             <Link to="/auth/sign-in" className="text-md hidden sm:block hover:bg-sky-200 hover:bg-opacity-80 hover:text-primary py-2 px-4 rounded-md">Sign In</Link>
                             <Link to="/auth/sign-up" className="text-white px-4 py-2 text-md hover:bg-sky-200 hover:text-primary p-2 rounded-md bg-primary">Sign Up</Link>
@@ -200,11 +215,22 @@ const Header = () => {
                             <Link to="/app/started" className={`flex items-center text-white px-4 py-2 text-md hover:bg-sky-200 hover:text-primary p-2 rounded-md bg-primary 2xl:mr-0 ${showDropdown ? "mr-0" : "mr-3"}`}>Dashboard</Link>
                             <div className={`relative ${showDropdown ? "block" : "hidden"} 2xl:flex`} ref={profileDropdownRef} >
                                 <button onClick={() => setShowProfileDropdown(true)}>
-                                    <img src={state.user.pfp ? state.user.pfp : "/image/icons/user.png"} className="w-10 rounded-full opacity-70 mr-2" alt="avatar" />
+                                    {state.user?.pfp ? <img
+                                        crossOrigin="anonymous"
+                                        src={state.user?.pfp ? state.user?.pfp : "/image/icons/user.avif"}
+                                        className="rounded-full w-12 h-12"
+                                        title={state.user?.fullName}
+                                        alt={state.user?.fullName}
+                                    /> : <div className="relative rounded-full w-12 h-12 flex items-center justify-center">
+                                        <img src="/image/icons/user-bg.png" className="rounded-full w-full h-full" />
+                                        <div className="absolute text-white text-xl">
+                                            {state.user?.fullName?.charAt(0)}
+                                        </div>
+                                    </div>}
                                 </button>
                                 {showProfileDropdown && (
                                     <div className="absolute top-14 right-0">
-                                        <ProfileDropdown onManageAccount={() => setShowProfileDropdown(true)} />
+                                        <ProfileDropdown onManageAccount={() => setShowManageAccountModal(true)} />
                                     </div>
                                 )}
                             </div>
@@ -215,6 +241,7 @@ const Header = () => {
                     </div>
                 </div>
             </header>
+            {showManageAccountModal && <ManageAccountModal isOpen={showManageAccountModal} onClose={() => setShowManageAccountModal(false)} />}
             <div
                 onMouseOver={() => setShowResource(true)}
                 onMouseOut={() => setShowResource(false)}
@@ -325,13 +352,18 @@ const Header = () => {
                                 </div>
                             </div>
                             <div className="mt-6 flex w-[296px] flex-row items-center justify-start pl-6 gap-2">
-                                <img
-                                    alt="avatar"
-                                    width={48}
-                                    height={48}
-                                    className="rounded-[50%]"
-                                    src="/image/icons/user.png"
-                                />
+                                {state.user?.pfp ? <img
+                                    crossOrigin="anonymous"
+                                    src={state.user?.pfp ? state.user?.pfp : "/image/icons/user.avif"}
+                                    className="rounded-full w-12 h-12"
+                                    title={state.user?.fullName}
+                                    alt={state.user?.fullName}
+                                /> : <div className="relative rounded-full w-12 h-12 flex items-center justify-center">
+                                    <img src="/image/icons/user-bg.png" className="rounded-full w-full h-full" />
+                                    <div className="absolute text-white text-xl">
+                                        {state.user?.fullName?.charAt(0)}
+                                    </div>
+                                </div>}
                                 <div className="ml-2">
                                     <div className="text-md font-medium text-gray-500">
                                         Ananya Sharma

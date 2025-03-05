@@ -1,6 +1,7 @@
 import { toast } from 'react-toastify';
 import Swal from 'sweetalert2';
 import withReactContent from 'sweetalert2-react-content';
+import { customAlphabet } from 'nanoid';
 
 export const showToast = (html: string, type: 'info' | 'success' | 'warning' | 'error' | 'default') => {
     toast(html, {
@@ -138,4 +139,13 @@ export const getFormattedDate = (date: number) => {
 
 export const getCaseSensitive = (v: string) => {
     return v.slice(0, 1).toUpperCase() + v.slice(1)
+}
+
+const nanoid = customAlphabet(
+    'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789',
+    10,
+);
+
+export function meetingId(length = 12) {
+    return nanoid(length);
 }

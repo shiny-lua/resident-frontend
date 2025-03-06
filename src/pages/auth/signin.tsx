@@ -48,6 +48,7 @@ const SignIn = () => {
 
     const onSignIn = async () => {
         if (!!status.isLoading || !status.password) return showToast("Password is required!", "warning")
+        setStatus({ ...status, isLoading: true })
         const res = await restApi.postRequest("login", { email: status.email, password: status.password })
 
         if (res === undefined) {
@@ -62,6 +63,7 @@ const SignIn = () => {
             })
             navigate("/app/started")
             showToast("User logged in successfully, please continue.", "success")
+            setStatus({ ...status, isLoading: false })
         } else {
             showToast(res.msg, "error")
             setStatus({ ...status, isLoading: false })

@@ -19,12 +19,22 @@ const ProfileDropdown = ({ onManageAccount }: { onManageAccount: VoidFunction })
         <div className="bg-white w-[330px] bg-opacity-100 shadow-4 border rounded-xl py-4 px-5">
             <div className="flex gap-4 items-center border-b pb-3">
                 <div className="">
-                    <img
-                        src={state.user.pfp ? state.user.pfp : "/image/icons/temp-user.png"}
-                        className="rounded-full w-12 h-12"
-                        title={state.user.fullName}
-                        alt={state.user.fullName}
-                    />
+                    {state.user?.pfp ? (
+                        <img
+                            crossOrigin="anonymous"
+                            src={state.user.pfp}
+                            className="rounded-full w-14 h-14"
+                            title={state.user?.fullName}
+                            alt={state.user?.fullName}
+                        />
+                    ) : (
+                        <div className="relative rounded-full w-14 h-14 flex items-center justify-center">
+                            <img src="/image/icons/user-bg.png" className="rounded-full w-full h-full" />
+                            <div className="absolute text-white text-xl">
+                                {state.user?.fullName?.charAt(0)}
+                            </div>
+                        </div>
+                    )}
                 </div>
                 <div className="text-md flex flex-col">
                     <div className="text-md font-semibold text-slate-900">{state.user.email}</div>

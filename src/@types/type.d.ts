@@ -21,5 +21,6 @@ type GlobalContextType = [
 
     {
         dispatch: (data: ReducerObject) => void
+        storeData: (value: any) => void
     }
 ]

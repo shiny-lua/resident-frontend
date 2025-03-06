@@ -1,4 +1,5 @@
 import { useNavigate } from "react-router-dom"
+import Cookies from "js-cookie"
 
 import Icon from "./icon"
 import { useGlobalContext } from "../context"
@@ -9,8 +10,8 @@ const ProfileDropdown = ({ onManageAccount }: { onManageAccount: VoidFunction })
     const [state, { dispatch, storeData }]: GlobalContextType = useGlobalContext()
 
     const onLogout = () => {
-        dispatch({ type: "authToken", payload: "" })
-        storeData("")
+        dispatch({ type: "access_token", payload: "" })
+        Cookies.remove("access_token")
         navigate("/")
     }
 

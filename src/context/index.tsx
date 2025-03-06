@@ -38,6 +38,10 @@ function useGlobalContext() {
     return context;
 }
 
+const storeData = async (value: any) => {
+    return window.localStorage.setItem("access_token", JSON.stringify(value))
+}
+
 const GlobalContextProvider = ({ children }: any) => {
     const [state, dispatch] = React.useReducer(reducer, INIT_STATE);
 
@@ -74,7 +78,7 @@ const GlobalContextProvider = ({ children }: any) => {
     return (
         <GlobalContext.Provider
             value={React.useMemo(() => [
-                state, { dispatch }
+                state, { dispatch, storeData }
             ], [state])}
         >
             {children}

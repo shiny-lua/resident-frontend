@@ -21,7 +21,8 @@ const INIT_STATE: InitStateObject = {
         email: "",
         fullName: "",
         pfp: "",
-        isPasswordSet: false
+        isPasswordSet: false,
+        isPremium: false
     }
 }
 
@@ -64,7 +65,8 @@ const GlobalContextProvider = ({ children }: any) => {
                     email: data.email,
                     fullName: data.full_name,
                     pfp: data.pfp,
-                    isPasswordSet: data.is_password_set
+                    isPasswordSet: data.is_password_set,
+                    isPremium: data.is_premium
                 } });
             } else {
                 // throw new ValidateError("Invalid access_token!")

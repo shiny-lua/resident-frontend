@@ -1,15 +1,46 @@
 import React from "react";
+
 import Icon from "../../../../components/icon";
 import { useGlobalContext } from "../../../../context";
-const InterviewerSection = () => {
-    const [_, { dispatch }] = useGlobalContext();
+import CreateStripePaymentModal from "./create-stripe-payment-modal";
 
-    const [screenStream, setScreenStream] = React.useState<MediaStream | null>(null);
+import { loadStripe } from "@stripe/stripe-js";
+import { restApi } from "../../../../context/restApi";
+
+const InterviewerSection = () => {
+    const [state, { dispatch }]: GlobalContextType = useGlobalContext();
     const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
     const chunksRef = React.useRef<Blob[]>([]);
 
+    const [screenStream, setScreenStream] = React.useState<MediaStream | null>(null);
+    const [isOpenModal, setIsOpenModal] = React.useState(false);
+    const [isPremium, setIsPremium] = React.useState(false);
+
+    const [stripePromise, setStripePromise] = React.useState(null as any);
+
+    React.useEffect(() => {
+        const fetchClientSecret = async () => {
+            const res = await restApi.postRequest('get-stripe-client-secret');
+            if (res.data.publishableKey) {
+                setStripePromise(loadStripe(res.data.publishableKey));
+            }
+        };
+
+        fetchClientSecret();
+    }, []);
+
+    React.useEffect(() => {
+        setIsPremium(state.user.isPremium);
+    }, [state.user])
+
     const handleScreenShare = async () => {
         try {
+            
+            if (!isPremium) {
+                setIsOpenModal(true);
+                return;
+            }
+
             if (screenStream) {
                 // Stop recording if it's running
                 if (mediaRecorderRef.current && mediaRecorderRef.current.state === 'recording') {
@@ -140,8 +171,8 @@ const InterviewerSection = () => {
                     </div>
                 </div>
             </div>
+            {isOpenModal && <CreateStripePaymentModal setIsPremium={setIsPremium} handleScreenShare={handleScreenShare} isOpen={isOpenModal} onClose={() => setIsOpenModal(false)} stripePromise={stripePromise} />}
         </div>
-
     )
 }
 

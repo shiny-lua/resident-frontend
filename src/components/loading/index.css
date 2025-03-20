@@ -1,92 +1,102 @@
-@keyframes animate8345 {
+@keyframes ldio-4j5ay0xf86g {
+    0% {
+        opacity: 1
+    }
 
-    0%,
     100% {
-        filter: hue-rotate(0deg);
-    }
-
-    50% {
-        filter: hue-rotate(360deg);
+        opacity: 0
     }
 }
 
-.loader-1 {
-    color: rgb(0, 0, 0);
-    background: linear-gradient(to right, #2d60ec, #3ccfda);
-    font-size: 35px;
-    -webkit-text-fill-color: transparent;
-    -webkit-background-clip: text;
-    animation: animate8345 9s linear infinite;
-    font-weight: bold;
-}
-
-.loader {
-    width: 6em;
-    height: 6em;
-    font-size: 10px;
-    position: relative;
-    display: flex;
-    align-items: center;
-    justify-content: center;
-}
-
-.loader .face {
+.ldio-4j5ay0xf86g div {
+    left: 94px;
+    top: 48px;
     position: absolute;
-    border-radius: 50%;
-    border-style: solid;
-    animation: animate023845 3s linear infinite;
+    animation: ldio-4j5ay0xf86g linear 1s infinite;
+    background: oklch(0.685 0.169 237.323);
+    width: 12px;
+    height: 24px;
+    border-radius: 6px / 12px;
+    transform-origin: 6px 52px;
 }
 
-.loader .face:nth-child(1) {
+.ldio-4j5ay0xf86g div:nth-child(1) {
+    transform: rotate(0deg);
+    animation-delay: -0.9166666666666666s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(2) {
+    transform: rotate(30deg);
+    animation-delay: -0.8333333333333334s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(3) {
+    transform: rotate(60deg);
+    animation-delay: -0.75s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(4) {
+    transform: rotate(90deg);
+    animation-delay: -0.6666666666666666s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(5) {
+    transform: rotate(120deg);
+    animation-delay: -0.5833333333333334s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(6) {
+    transform: rotate(150deg);
+    animation-delay: -0.5s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(7) {
+    transform: rotate(180deg);
+    animation-delay: -0.4166666666666667s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(8) {
+    transform: rotate(210deg);
+    animation-delay: -0.3333333333333333s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(9) {
+    transform: rotate(240deg);
+    animation-delay: -0.25s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(10) {
+    transform: rotate(270deg);
+    animation-delay: -0.16666666666666666s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(11) {
+    transform: rotate(300deg);
+    animation-delay: -0.08333333333333333s;
+    background: oklch(0.685 0.169 237.323)}
+
+.ldio-4j5ay0xf86g div:nth-child(12) {
+    transform: rotate(330deg);
+    animation-delay: 0s;
+    background: oklch(0.685 0.169 237.323)}
+
+.loadingio-spinner-spinner-977el9wwy2v {
+    width: 200px;
+    height: 200px;
+    display: inline-block;
+    overflow: hidden;
+}
+
+.ldio-4j5ay0xf86g {
     width: 100%;
     height: 100%;
-    color: gold;
-    border-color: currentColor transparent transparent currentColor;
-    border-width: 0.2em 0.2em 0em 0em;
-    --deg: -45deg;
-    animation-direction: normal;
+    position: relative;
+    transform: translateZ(0) scale(1);
+    backface-visibility: hidden;
+    transform-origin: 0 0;
+    /* see note above */
 }
 
-.loader .face:nth-child(2) {
-    width: 70%;
-    height: 70%;
-    color: lime;
-    border-color: currentColor currentColor transparent transparent;
-    border-width: 0.2em 0em 0em 0.2em;
-    --deg: -135deg;
-    animation-direction: reverse;
-}
-
-.loader .face .circle {
-    position: absolute;
-    width: 50%;
-    height: 0.1em;
-    top: 50%;
-    left: 50%;
-    background-color: transparent;
-    transform: rotate(var(--deg));
-    transform-origin: left;
-}
-
-.loader .face .circle::before {
-    position: absolute;
-    top: -0.5em;
-    right: -0.5em;
-    content: '';
-    width: 1em;
-    height: 1em;
-    background-color: currentColor;
-    border-radius: 50%;
-    box-shadow: 0 0 2em,
-        0 0 4em,
-        0 0 6em,
-        0 0 8em,
-        0 0 10em,
-        0 0 0 0.5em rgba(255, 255, 0, 0.1);
-}
-
-@keyframes animate023845 {
-    to {
-        transform: rotate(1turn);
-    }
+.ldio-4j5ay0xf86g div {
+    box-sizing: content-box;
 }

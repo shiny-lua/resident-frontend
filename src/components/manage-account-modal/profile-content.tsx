@@ -44,7 +44,8 @@ const ProfileContent = () => {
                 email: data.email,
                 fullName: data.full_name,
                 pfp: data.pfp,
-                isPasswordSet: data.is_password_set
+                isPasswordSet: data.is_password_set,
+                isPremium: data.is_premium
             } })
         }
     }

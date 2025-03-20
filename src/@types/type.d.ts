@@ -8,7 +8,7 @@ interface InitStateObject {
     userEmail: string
     verifyCodeType: string
     authType: string
-    user: { id: string, email: string, fullName: string, pfp: string, isPasswordSet: boolean }
+    user: { id: string, email: string, fullName: string, pfp: string, isPasswordSet: boolean, isPremium: boolean }
     isSharedScreen: boolean
     isLeaveInterview: {
         status: boolean

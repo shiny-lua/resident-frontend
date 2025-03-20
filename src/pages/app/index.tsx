@@ -35,8 +35,7 @@ const AppIndex = () => {
                     showToast('An error has occurred during communication with backend.', 'warning');
                 } else if (res.status === 200) {
                     const data = res.data.data;
-                    const user: { id: number, email: string, fullName: string, pfp: string, isPasswordSet: boolean } = { id: data._id, email: data.email, fullName: data.full_name, pfp: data.pfp, isPasswordSet: data.is_password_set };
-                    console.log(user);
+                    const user: { id: number, email: string, fullName: string, pfp: string, isPasswordSet: boolean, isPremium: boolean } = { id: data._id, email: data.email, fullName: data.full_name, pfp: data.pfp, isPasswordSet: data.is_password_set, isPremium: data.is_premium };
                     dispatch({ type: "user", payload: user });
                     if (state.authType !== "signup") {
                         if (location.pathname) {

@@ -38,8 +38,9 @@ const DeleteAccount = () => {
                     pfp: "",
                     isPasswordSet: false
                 }
-            }),
-                Cookies.set("access_token", "")
+            })
+            dispatch({ type: "access_token", payload: "" })
+            Cookies.remove("access_token")
             navigate("/")
         } else {
             showToast(res.msg, "error")

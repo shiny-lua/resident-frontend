@@ -1,17 +1,22 @@
 import "./index.css";
 
-const Loading = ({ children }: { children: React.ReactNode }) => {
+const Loading = () => {
     return (
-        <div className="w-full h-screen flex gap-8 justify-center items-center">
-            <div className="loader">
-                <div className="face">
-                    <div className="circle"></div>
-                </div>
-                <div className="face">
-                    <div className="circle"></div>
-                </div>
+        <div className="loadingio-spinner-spinner-977el9wwy2v">
+            <div className="ldio-4j5ay0xf86g">
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
+                <div />
             </div>
-            <div className="loader-1">{children}</div>
         </div>
     )
 };

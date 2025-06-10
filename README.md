@@ -12,3 +12,15 @@
 - **Authentication**: Secure sign-up, sign-in, password reset, and verification flows.
 - **Responsive UI**: Modern, mobile-friendly design using Tailwind CSS.
 
+
+## Tech Stack
+
+- **Frontend**: React 18, TypeScript, Vite
+- **Routing**: React Router DOM
+- **State Management**: React Context API
+- **Styling**: Tailwind CSS, custom themes
+- **UI Components**: Framer Motion, ApexCharts, SweetAlert2, React Multi Carousel, and more
+- **Notifications**: React Toastify
+- **APIs**: Integration with backend via REST API
+- **Deployment**: Vercel (with SPA rewrites)
+

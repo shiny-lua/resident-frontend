@@ -24,3 +24,28 @@
 - **APIs**: Integration with backend via REST API
 - **Deployment**: Vercel (with SPA rewrites)
 
+
+## Project Structure
+
+```
+.
+├── public/                # Static assets (logo, images, favicon)
+├── src/
+│   ├── app.tsx            # Main app component and routing
+│   ├── main.tsx           # React entry point
+│   ├── index.css          # Global styles
+│   ├── components/        # Reusable UI components
+│   ├── context/           # Global state and API helpers
+│   ├── pages/
+│   │   ├── home/          # Landing and feature pages
+│   │   ├── app/           # Authenticated app/dashboard pages
+│   │   ├── auth/          # Authentication pages
+│   │   └── ...            # Other feature modules
+│   └── ...                # Types, config, etc.
+├── package.json           # Project metadata and dependencies
+├── tailwind.config.cjs    # Tailwind CSS configuration
+├── vite.config.js         # Vite configuration
+├── vercel.json            # Vercel deployment config
+└── README.md              # Project documentation
+```
+

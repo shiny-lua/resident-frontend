@@ -49,3 +49,9 @@
 └── README.md              # Project documentation
 ```
 
+## Getting Started
+
+### Prerequisites
+
+- Node.js (v16+ recommended)
+- Yarn or npm

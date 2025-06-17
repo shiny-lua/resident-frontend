@@ -55,3 +55,12 @@
 
 - Node.js (v16+ recommended)
 - Yarn or npm
+
+### Installation
+
+```bash
+# Install dependencies
+yarn install
+# or
+npm install
+```

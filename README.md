@@ -64,3 +64,12 @@ yarn install
 # or
 npm install
 ```
+
+### Development
+
+```bash
+# Start the development server
+yarn dev
+# or
+npm run dev
+`

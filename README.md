@@ -72,4 +72,15 @@ npm install
 yarn dev
 # or
 npm run dev
-`
+```
+
+The app will be available at `http://localhost:5174`.
+
+### Build
+
+```bash
+# Build for production
+yarn build
+# or
+npm run build
+```

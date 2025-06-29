@@ -14,6 +14,12 @@ interface InitStateObject {
         status: boolean
         link: string
     }
+    currentQuestion: string
+    currentResponse: string
+    streamingResponse: string
+    isLoadingResponse: boolean
+    isStreamingResponse: boolean
+    conversationHistory: Array<{ question: string; answer: string; timestamp: Date }>
 }
 
 type GlobalContextType = [

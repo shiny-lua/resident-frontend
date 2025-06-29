@@ -23,7 +23,13 @@ const INIT_STATE: InitStateObject = {
         pfp: "",
         isPasswordSet: false,
         isPremium: false
-    }
+    },
+    currentQuestion: "",
+    currentResponse: "",
+    streamingResponse: "",
+    isLoadingResponse: false,
+    isStreamingResponse: false,
+    conversationHistory: []
 }
 
 const GlobalContext = React.createContext<any>(null);

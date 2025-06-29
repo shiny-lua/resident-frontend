@@ -3,18 +3,22 @@ import React from "react";
 import Icon from "../../../../components/icon";
 import { useGlobalContext } from "../../../../context";
 import CreateStripePaymentModal from "./create-stripe-payment-modal";
+import { generateInterviewResponseStream } from "../../../../utils/openai";
+import interviewQuestionsData from "../../../../data/interview-questions.json";
 
 import { loadStripe } from "@stripe/stripe-js";
 import { restApi } from "../../../../context/restApi";
 
 const InterviewerSection = () => {
-    const [state, { dispatch }]: GlobalContextType = useGlobalContext();
+    const [state, { dispatch }] = useGlobalContext();
     const mediaRecorderRef = React.useRef<MediaRecorder | null>(null);
     const chunksRef = React.useRef<Blob[]>([]);
 
     const [screenStream, setScreenStream] = React.useState<MediaStream | null>(null);
     const [isOpenModal, setIsOpenModal] = React.useState(false);
     const [isPremium, setIsPremium] = React.useState(false);
+    const [currentQuestionIndex, setCurrentQuestionIndex] = React.useState(0);
+    const [isProcessingQuestion, setIsProcessingQuestion] = React.useState(false);
 
     const [stripePromise, setStripePromise] = React.useState(null as any);
 
@@ -33,13 +37,114 @@ const InterviewerSection = () => {
         setIsPremium(state.user.isPremium);
     }, [state.user])
 
+    // Simulate getting text from screen sharing and process it
+    const processScreenText = async () => {
+        if (currentQuestionIndex >= interviewQuestionsData.questions.length) {
+            console.log("All questions processed");
+            return;
+        }
+
+        const currentQuestion = interviewQuestionsData.questions[currentQuestionIndex];
+        
+        // Display the question first
+        dispatch({ type: 'currentQuestion', payload: currentQuestion });
+        dispatch({ type: 'currentResponse', payload: '' });
+        dispatch({ type: 'isLoadingResponse', payload: true });
+
+        try {
+            // Simulate delay for question display
+            await new Promise(resolve => setTimeout(resolve, 2000));
+            
+            // Start streaming response
+            dispatch({ type: 'isLoadingResponse', payload: false });
+            dispatch({ type: 'isStreamingResponse', payload: true });
+            dispatch({ type: 'streamingResponse', payload: '' });
+            
+            // Generate streaming response using openai-streams
+            let streamingText = '';
+            await generateInterviewResponseStream(
+                currentQuestion,
+                // onChunk: called for each piece of text received
+                (chunk: string) => {
+                    streamingText += chunk;
+                    dispatch({ 
+                        type: 'streamingResponse', 
+                        payload: streamingText 
+                    });
+                },
+                // onComplete: called when streaming is finished
+                (fullResponse: string) => {
+                    dispatch({ type: 'isStreamingResponse', payload: false });
+                    dispatch({ type: 'currentResponse', payload: fullResponse });
+                    dispatch({ type: 'streamingResponse', payload: '' });
+                    
+                    // Add to conversation history
+                    const conversationEntry = {
+                        question: currentQuestion,
+                        answer: fullResponse,
+                        timestamp: new Date()
+                    };
+                    dispatch({ 
+                        type: 'conversationHistory', 
+                        payload: [...state.conversationHistory, conversationEntry] 
+                    });
+
+                    // Clear current question and response after adding to history
+                    setTimeout(() => {
+                        dispatch({ type: 'currentQuestion', payload: '' });
+                        dispatch({ type: 'currentResponse', payload: '' });
+                    }, 2000);
+
+                    // Move to next question after 5 seconds
+                    setTimeout(() => {
+                        setCurrentQuestionIndex(prev => prev + 1);
+                    }, 5000);
+                },
+                // onError: called if there's an error
+                (error: Error) => {
+                    console.error('Error processing question:', error);
+                    dispatch({ type: 'isStreamingResponse', payload: false });
+                    dispatch({ type: 'isLoadingResponse', payload: false });
+                    dispatch({ type: 'currentResponse', payload: 'Sorry, I encountered an error generating a response.' });
+                }
+            );
+
+        } catch (error) {
+            console.error('Error processing question:', error);
+            dispatch({ type: 'isLoadingResponse', payload: false });
+            dispatch({ type: 'isStreamingResponse', payload: false });
+            dispatch({ type: 'currentResponse', payload: 'Sorry, I encountered an error generating a response.' });
+        }
+    };
+
+    // Auto-process questions when screen is shared
+    React.useEffect(() => {
+        if (screenStream && !isProcessingQuestion) {
+            setIsProcessingQuestion(true);
+            // Start processing questions after screen sharing
+            setTimeout(() => {
+                processScreenText();
+            }, 3000); // Start after 3 seconds of screen sharing
+        }
+    }, [screenStream]);
+
+    React.useEffect(() => {
+        if (screenStream && isProcessingQuestion && currentQuestionIndex < interviewQuestionsData.questions.length) {
+            const timer = setTimeout(() => {
+                processScreenText();
+            }, 8000); // Process next question every 8 seconds
+
+            return () => clearTimeout(timer);
+        }
+    }, [currentQuestionIndex, screenStream, isProcessingQuestion]);
+
     const handleScreenShare = async () => {
         try {
             
-            if (!isPremium) {
-                setIsOpenModal(true);
-                return;
-            }
+            // if (!isPremium) {
+            //     setIsOpenModal(true);
+            //     return;
+            // }
 
             if (screenStream) {
                 // Stop recording if it's running
@@ -48,6 +153,16 @@ const InterviewerSection = () => {
                 }
                 screenStream.getTracks().forEach(track => track.stop());
                 setScreenStream(null);
+                
+                // Reset processing state
+                setIsProcessingQuestion(false);
+                setCurrentQuestionIndex(0);
+                dispatch({ type: 'currentQuestion', payload: '' });
+                dispatch({ type: 'currentResponse', payload: '' });
+                dispatch({ type: 'streamingResponse', payload: '' });
+                dispatch({ type: 'isLoadingResponse', payload: false });
+                dispatch({ type: 'isStreamingResponse', payload: false });
+                dispatch({ type: 'isSharedScreen', payload: false });
             } else {
                 const mediaStream = await navigator.mediaDevices.getDisplayMedia({
                     video: true,

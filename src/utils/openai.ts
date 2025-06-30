@@ -1,6 +1,5 @@
-import { OpenAI } from 'openai-streams';
-
-const OPENAI_API_KEY = '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';
+import { restApi } from '../context/restApi';
+import { config } from '../config/config';
 
 export interface ChatResponse {
   question: string;
@@ -10,90 +9,117 @@ export interface ChatResponse {
 
 export const generateInterviewResponse = async (question: string): Promise<string> => {
   try {
-    const response = await fetch('https://api.openai.com/v1/chat/completions', {
-      method: 'POST',
-      headers: {
-        'Content-Type': 'application/json',
-        'Authorization': `Bearer ${OPENAI_API_KEY}`,
-      },
-      body: JSON.stringify({
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an AI assistant helping with interview preparation. Provide concise, professional answers to interview questions. Keep responses under 200 words and focus on practical examples and skills. I am daniel from colombia. I have 8 years of experiecne in software development like, react, vue, python, node and so on.'
-          },
-          {
-            role: 'user',
-            content: question
-          }
-        ],
-        max_tokens: 300,
-        temperature: 0.7,
-      }),
+    const response = await restApi.postRequest('ai/chat', {
+      question: question
     });
 
-    if (!response.ok) {
-      throw new Error(`OpenAI API error: ${response.status}`);
+    if (response && response.data && response.data.answer) {
+      return response.data.answer;
     }
-
-    const data = await response.json();
-    return data.choices[0].message.content;
+    
+    // Handle error response
+    if (response && response.msg) {
+      throw new Error(response.msg);
+    }
+    
+    throw new Error('Failed to generate response');
   } catch (error) {
-    console.error('Error calling OpenAI API:', error);
+    console.error('Error calling backend AI API:', error);
     throw new Error('Failed to generate response');
   }
 };
 
-// Streaming function using openai-streams package
+// Streaming function using backend API
 export const generateInterviewResponseStream = async (
   question: string,
   onChunk: (chunk: string) => void,
   onComplete: (fullResponse: string) => void,
-  onError: (error: Error) => void
+  onError: (error: Error) => void,
+  transcribedText?: string
 ): Promise<void> => {
   try {
-    const stream = await OpenAI(
-      'chat',
-      {
-        model: 'gpt-4',
-        messages: [
-          {
-            role: 'system',
-            content: 'You are an AI assistant helping with interview preparation. Provide concise, professional answers to interview questions. Keep responses under 200 words and focus on practical examples and skills. I am daniel from colombia. I have 8 years of experiecne in software development like, react, vue, python, node and so on.'
-          },
-          {
-            role: 'user',
-            content: question
-          }
-        ],
-        max_tokens: 300,
-        temperature: 0.7,
+    // Use fetch to handle streaming response from backend
+    // Try to get token from cookies using js-cookie (same as restApi)
+    const getCookie = (name: string) => {
+      const value = `; ${document.cookie}`;
+      const parts = value.split(`; ${name}=`);
+      if (parts.length === 2) return parts.pop()?.split(';').shift();
+      return null;
+    };
+    
+    const token = getCookie('access_token');
+
+    if (!token) {
+      throw new Error('No authentication token found');
+    }
+
+    const requestBody: any = {
+      question: question
+    };
+    
+    if (transcribedText) {
+      requestBody.transcribed_text = transcribedText;
+    }
+
+    const response = await fetch(`${config.BACKEND_URL}/api/ai/stream`, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${token}`,
       },
-      { 
-        apiKey: OPENAI_API_KEY,
-        mode: 'tokens' // Get just the text chunks, not full events
-      }
-    );
+      body: JSON.stringify(requestBody),
+    });
 
-    const reader = stream.getReader();
+    if (!response.ok) {
+      throw new Error(`HTTP error! status: ${response.status}`);
+    }
+
+    const reader = response.body?.getReader();
+    if (!reader) {
+      throw new Error('Failed to get response reader');
+    }
+
     let fullResponse = '';
-
+    
     while (true) {
       const { done, value } = await reader.read();
       
       if (done) {
-        onComplete(fullResponse);
         break;
       }
 
-      // Decode the chunk (value is Uint8Array)
+      // Decode the chunk
       const chunk = new TextDecoder().decode(value);
-      fullResponse += chunk;
-      onChunk(chunk);
+      const lines = chunk.split('\n');
+      
+      for (const line of lines) {
+        if (line.startsWith('data: ')) {
+          try {
+            const data = JSON.parse(line.slice(6));
+            
+            if (data.error) {
+              onError(new Error(data.error));
+              return;
+            }
+            
+            if (data.done) {
+              onComplete(fullResponse);
+              return;
+            }
+            
+            if (data.chunk) {
+              fullResponse += data.chunk;
+              onChunk(data.chunk);
+            }
+          } catch (e) {
+            // Ignore parsing errors for incomplete chunks
+            console.warn('Failed to parse chunk:', line);
+          }
+        }
+      }
     }
   } catch (error) {
-    console.error('Error calling OpenAI streaming API:', error);
+    console.error('Error calling backend streaming AI API:', error);
     onError(error instanceof Error ? error : new Error('Failed to generate streaming response'));
   }
 }; 

@@ -41,6 +41,7 @@
     "mapbox-gl": "^3.10.0",
     "match-sorter": "^6.3.1",
     "mobile-device-detect": "^0.4.3",
+    "openai-streams": "^6.2.0",
     "qrcode.react": "^4.2.0",
     "react": "^18.2.0",
     "react-apexcharts": "^1.4.1",

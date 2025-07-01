@@ -22,6 +22,8 @@ const InterviewerSection = () => {
     const [audioChunks, setAudioChunks] = React.useState<Blob[]>([]);
     const [isTranscribing, setIsTranscribing] = React.useState(false);
     const [transcribedText, setTranscribedText] = React.useState("");
+    const [recordingTimer, setRecordingTimer] = React.useState<number | null>(null);
+    const [countdownTimer, setCountdownTimer] = React.useState<number>(0);
 
     const [stripePromise, setStripePromise] = React.useState(null as any);
 
@@ -40,52 +42,123 @@ const InterviewerSection = () => {
         setIsPremium(state.user.isPremium);
     }, [state.user])
 
-    // Function to transcribe audio using Whisper
-    const transcribeAudio = async (audioBlob: Blob) => {
+    // Function to process accumulated audio after 10 seconds
+    const processAccumulatedAudio = async (chunks: Blob[]) => {
+        if (chunks.length === 0) return;
+
         try {
             setIsTranscribing(true);
 
+            // Show processing state
+            dispatch({ type: 'currentQuestion', payload: '🎤 Processing 10-second audio...' });
+            dispatch({ type: 'streamingResponse', payload: '🔄 Transcribing your speech...' });
+            dispatch({ type: 'isStreamingResponse', payload: true });
+
+            // Combine all audio chunks into one blob
+            const combinedBlob = new Blob(chunks, { type: 'audio/webm' });
+            console.log('Processing audio chunks:', chunks.length, 'Combined size:', combinedBlob.size);
+
             const formData = new FormData();
-            formData.append('audio', audioBlob, 'audio.wav');
+            formData.append('audio', combinedBlob, 'audio.webm');
 
             const response = await restApi.postRequest('ai/speech-to-text', formData);
 
-            if (response.data.success) {
+            if (response && response.data && response.data.success) {
                 const transcribedText = response.data.transcribed_text;
-                setTranscribedText(transcribedText);
-                console.log('Transcribed text:', transcribedText);
 
-                // Process the transcribed text as a question
-                await processTranscribedText(transcribedText);
+                if (transcribedText && transcribedText.trim().length > 0) {
+                    setTranscribedText(transcribedText);
+                    console.log('10-second transcription:', transcribedText);
+
+                    // Show transcribed text
+                    dispatch({ type: 'currentQuestion', payload: '🎙️ Speech Transcribed' });
+                    dispatch({ type: 'streamingResponse', payload: transcribedText });
+                    dispatch({ type: 'isStreamingResponse', payload: true });
+
+                    // Process as interview question after 2 seconds
+                    setTimeout(async () => {
+                        if (transcribedText.trim().length > 10) {
+                            await processTranscribedText(transcribedText);
+                        } else {
+                            startNextRecordingCycle();
+                        }
+                    }, 2000);
+                } else {
+                    // No speech detected, start next cycle
+                    dispatch({ type: 'streamingResponse', payload: '🔇 No speech detected, starting next cycle...' });
+                    setTimeout(startNextRecordingCycle, 2000);
+                }
+            } else {
+                console.error('API response error:', response);
+                dispatch({ type: 'streamingResponse', payload: '⚠️ Transcription failed, restarting...' });
+                setTimeout(startNextRecordingCycle, 2000);
             }
 
         } catch (error) {
             console.error('Error transcribing audio:', error);
+            dispatch({ type: 'streamingResponse', payload: '⚠️ Connection issue, restarting...' });
+            setTimeout(startNextRecordingCycle, 2000);
         } finally {
             setIsTranscribing(false);
         }
     };
 
+    // Start a new 10-second recording cycle
+    const startNextRecordingCycle = () => {
+        if (!screenStream) return;
+
+        // Clear previous chunks
+        setAudioChunks([]);
+        chunksRef.current = [];
+
+        // Start countdown
+        setCountdownTimer(10);
+        dispatch({ type: 'currentQuestion', payload: '🎧 Listening (10s)' });
+        dispatch({ type: 'streamingResponse', payload: '🎤 Speak now - recording for 10 seconds...' });
+        dispatch({ type: 'isStreamingResponse', payload: true });
+
+        // Update countdown every second
+        let countdown = 10;
+        const countdownInterval = setInterval(() => {
+            countdown--;
+            setCountdownTimer(countdown);
+            if (countdown > 0) {
+                dispatch({ type: 'currentQuestion', payload: `🎧 Listening (${countdown}s)` });
+                dispatch({ type: 'streamingResponse', payload: `🎤 Recording... ${countdown} seconds remaining` });
+            } else {
+                clearInterval(countdownInterval);
+            }
+        }, 1000);
+
+        // Process accumulated audio after 10 seconds
+        const timer = setTimeout(() => {
+            clearInterval(countdownInterval);
+            processAccumulatedAudio([...chunksRef.current]);
+        }, 10000);
+
+        setRecordingTimer(timer);
+    };
+
     // Process transcribed text and generate AI response
     const processTranscribedText = async (transcribedText: string) => {
         if (!transcribedText.trim()) {
+            dispatch({ type: 'isStreamingResponse', payload: false });
+            dispatch({ type: 'streamingResponse', payload: '' });
             return;
         }
 
         // Use the transcribed text as the question
         const question = transcribedText;
 
-        // Display the question first
-        dispatch({ type: 'currentQuestion', payload: question });
+        // Display the question first  
+        dispatch({ type: 'currentQuestion', payload: `🎤 Question: "${question}"` });
         dispatch({ type: 'currentResponse', payload: '' });
-        dispatch({ type: 'isLoadingResponse', payload: true });
+        dispatch({ type: 'isStreamingResponse', payload: true });
+
+        // Show processing message
+        dispatch({ type: 'streamingResponse', payload: '🤖 Generating AI response...' });
 
         try {
-            // Start streaming response
-            dispatch({ type: 'isLoadingResponse', payload: false });
-            dispatch({ type: 'isStreamingResponse', payload: true });
-            dispatch({ type: 'streamingResponse', payload: '' });
-
             // Generate streaming response using openai-streams with transcribed text as context
             let streamingText = '';
             await generateInterviewResponseStream(
@@ -139,27 +212,24 @@ const InterviewerSection = () => {
         }
     };
 
-    // Handle continuous audio recording and transcription
+    // Handle live audio capture status - Start 10-second cycles
     React.useEffect(() => {
         if (screenStream && mediaRecorderRef.current && !isProcessingQuestion) {
             setIsProcessingQuestion(true);
-
-            // Set up continuous audio processing
-            const processAudioChunks = () => {
-                if (chunksRef.current.length > 0) {
-                    const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-                    chunksRef.current = []; // Clear chunks after processing
-
-                    // Transcribe the audio
-                    transcribeAudio(audioBlob);
-                }
-            };
-
-            // Process audio chunks every 10 seconds
-            const audioProcessingInterval = setInterval(processAudioChunks, 10000);
+            // Start the first 10-second recording cycle
+            setTimeout(() => {
+                startNextRecordingCycle();
+            }, 1000); // Wait 1 second for setup
 
             return () => {
-                clearInterval(audioProcessingInterval);
+                // Clear timers and reset state when stopping
+                if (recordingTimer) {
+                    clearTimeout(recordingTimer);
+                    setRecordingTimer(null);
+                }
+                dispatch({ type: 'isStreamingResponse', payload: false });
+                dispatch({ type: 'streamingResponse', payload: '' });
+                dispatch({ type: 'currentQuestion', payload: '' });
             };
         }
     }, [screenStream, isProcessingQuestion]);
@@ -183,6 +253,17 @@ const InterviewerSection = () => {
                 // Reset processing state
                 setIsProcessingQuestion(false);
                 setCurrentQuestionIndex(0);
+                setTranscribedText("");
+                setIsTranscribing(false);
+                setAudioChunks([]);
+                setCountdownTimer(0);
+
+                // Clear any active timers
+                if (recordingTimer) {
+                    clearTimeout(recordingTimer);
+                    setRecordingTimer(null);
+                }
+
                 dispatch({ type: 'currentQuestion', payload: '' });
                 dispatch({ type: 'currentResponse', payload: '' });
                 dispatch({ type: 'streamingResponse', payload: '' });
@@ -214,21 +295,20 @@ const InterviewerSection = () => {
 
                 mediaRecorder.ondataavailable = (event) => {
                     if (event.data.size > 0) {
+                        console.log(`Audio chunk available: ${event.data.size} bytes`);
+                        // Collect chunks for 10-second processing
                         chunksRef.current.push(event.data);
+                        setAudioChunks(prev => [...prev, event.data]);
                     }
                 };
 
                 mediaRecorder.onstop = () => {
-                    // Final transcription when recording stops
-                    if (chunksRef.current.length > 0) {
-                        const audioBlob = new Blob(chunksRef.current, { type: 'audio/webm' });
-                        transcribeAudio(audioBlob);
-                    }
+                    console.log('Recording stopped');
                     chunksRef.current = [];
                 };
 
-                // Start recording with timeslice for continuous chunks
-                mediaRecorder.start(5000); // Get chunks every 5 seconds
+                // Start recording with smaller timeslice for real-time live caption
+                mediaRecorder.start(2000); // Get chunks every 2 seconds for live transcription
 
                 // Handle stream stop from browser UI
                 mediaStream.getVideoTracks()[0].onended = () => {
@@ -263,11 +343,17 @@ const InterviewerSection = () => {
                         </div>
                         <div className="flex items-center rounded-full border border-slate-100 px-2.5 py-1.5">
                             <span className="relative me-2 flex h-2 w-2">
-                                <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${isTranscribing ? 'bg-blue-500' : 'bg-green-500'}`} />
-                                <span className={`relative inline-flex h-2 w-2 rounded-full ${isTranscribing ? 'bg-blue-500' : 'bg-green-500'}`} />
+                                <span className={`absolute inline-flex h-full w-full animate-ping rounded-full opacity-75 ${isTranscribing ? 'bg-blue-500' :
+                                        screenStream ? 'bg-green-500' : 'bg-gray-400'
+                                    }`} />
+                                <span className={`relative inline-flex h-2 w-2 rounded-full ${isTranscribing ? 'bg-blue-500' :
+                                        screenStream ? 'bg-green-500' : 'bg-gray-400'
+                                    }`} />
                             </span>
                             <span className="text-sm font-medium text-slate-700">
-                                {isTranscribing ? 'Transcribing...' : screenStream ? 'Listening' : 'Ready'}
+                                {isTranscribing ? 'Processing Speech' :
+                                    countdownTimer > 0 ? `Recording (${countdownTimer}s)` :
+                                        screenStream ? 'Live Audio Capture' : 'Ready'}
                             </span>
                         </div>
                     </div>
@@ -311,12 +397,17 @@ const InterviewerSection = () => {
                                     {isTranscribing ? (
                                         <div className="flex items-center text-blue-600">
                                             <div className="animate-spin mr-2 h-4 w-4 border-2 border-blue-600 border-t-transparent rounded-full"></div>
-                                            Processing audio...
+                                            Processing 10-second audio...
+                                        </div>
+                                    ) : countdownTimer > 0 ? (
+                                        <div className="flex items-center text-green-600">
+                                            <div className="animate-pulse mr-2 h-3 w-3 bg-red-500 rounded-full"></div>
+                                            <span className="font-semibold">Recording: {countdownTimer} seconds remaining</span>
                                         </div>
                                     ) : transcribedText ? (
                                         <p className="text-sm text-slate-700">{transcribedText}</p>
                                     ) : (
-                                        <p className="text-sm text-slate-500 italic">Listening for speech...</p>
+                                        <p className="text-sm text-slate-500 italic">Starting 10-second recording cycle...</p>
                                     )}
                                 </div>
                             </div>

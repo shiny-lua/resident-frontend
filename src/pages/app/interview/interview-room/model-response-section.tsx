@@ -58,7 +58,6 @@ const ModelResponseSection = () => {
     }, [state.currentQuestion]);
 
     const renderContent = () => {
-        // Show initial message when no conversation has started
         if (state.conversationHistory.length === 0 && !state.currentQuestion) {
             return (
                 <div className="flex h-full flex-1 flex-col items-center justify-center text-slate-500 px-6">

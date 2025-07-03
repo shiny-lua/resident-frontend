@@ -17,11 +17,20 @@ axios.interceptors.request.use((config: any) => {
 const restApi = {
   postRequest: async (url: string, data?: any) => {
     try {
-      const res = await axios.post(url, data);
+      // For FormData, don't set Content-Type header - let axios handle it
+      const config: any = {};
+      
+      if (!(data instanceof FormData)) {
+        config.headers = {
+          'Content-Type': 'application/json'
+        };
+      }
+      
+      const res = await axios.post(url, data, config);
       return res
     } catch (error: any) {
       console.error("Error response:", error.response); 
-      return error.response.data;
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   }
 }

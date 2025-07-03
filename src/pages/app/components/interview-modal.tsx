@@ -8,6 +8,8 @@ import { Link, useNavigate } from "react-router-dom";
 import { timezones } from "./data.d";
 import { meetingId } from "../../../context/helper";
 import { useGlobalContext } from "../../../context";
+import { restApi } from "../../../context/restApi";
+
 type DropdownStatus = {
   resume: { value: string; data: string[]; prefix: string };
   role: { value: string; data: string[]; prefix: string };
@@ -33,7 +35,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
   const [status, setStatus] = React.useState<DropdownStatus>({
     resume: {
       value: "",
-      data: ["resume1.doc", "resume2.doc"],
+      data: [], // Will be populated with uploaded documents
       prefix: "Select your resume",
     },
     role: {
@@ -59,12 +61,50 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
   const [showTimeZoneDropdown, setShowTimeZoneDropdown] = React.useState(false);
 
   const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
+  const [uploadedDocs, setUploadedDocs] = React.useState<string[]>([]);
   const [tabIdx, setTabIdx] = React.useState(0)
   const [dateTime, setDateTime] = React.useState({
     date: "",
     time: "",
     timezone: "UTC+00:00 Europe/London"
   })
+
+  // Fetch uploaded documents when modal opens
+  React.useEffect(() => {
+    if (isOpen) {
+      fetchUploadedDocuments();
+    }
+  }, [isOpen]);
+
+  // Fetch function
+  const fetchUploadedDocuments = async () => {
+    try {
+      const response = await restApi.postRequest('get-documents');
+      if (response.status === 200 && response.data?.data) {
+        const docNames = response.data.data.map((doc: any) => doc.filename);
+        setUploadedDocs(docNames);
+        
+        // Update the resume dropdown data
+        setStatus(prev => ({
+          ...prev,
+          resume: {
+            ...prev.resume,
+            data: docNames.length > 0 ? docNames : ["No documents uploaded"]
+          }
+        }));
+      }
+    } catch (error) {
+      console.error('Error fetching documents:', error);
+      // Set fallback data if fetch fails
+      setStatus(prev => ({
+        ...prev,
+        resume: {
+          ...prev.resume,
+          data: ["No documents available"]
+        }
+      }));
+    }
+  };
 
   const onHandle = (v: string, obk: keyof DropdownStatus) => {
     setStatus((prevStatus) => ({
@@ -118,13 +158,30 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     };
   }, []);
 
-  const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-
+  const onFileUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
       setUploadedFile(file);
       setStatus({ ...status, resume: { ...status.resume, value: file.name } })
-      console.log("Uploaded file:", file);
+      console.log("Uploading file:", file.name);
+      
+      // Upload to backend
+      try {
+        const formData = new FormData();
+        formData.append('file', file);
+        
+        const response = await restApi.postRequest('upload-document', formData);
+        
+        if (response.status === 200) {
+          console.log("File uploaded successfully:", response.data);
+          // Refresh the documents list after successful upload
+          await fetchUploadedDocuments();
+        } else {
+          console.error("Upload failed:", response.data?.msg);
+        }
+      } catch (error) {
+        console.error("Upload error:", error);
+      }
     }
   };
 
@@ -198,13 +255,10 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
                     accept=".pdf,.docx,.doc,.DOC,.PDF,.DOCX"
                     type="file"
                     title="upload file"
-                    className="zIndex-10 absolute bottom-0 left-0 right-0 top-0 cursor-pointer overflow-hidden opacity-0"
+                    className="zIndex-10 absolute left-0 top-0 h-full w-full cursor-pointer overflow-hidden opacity-0"
                   />
-                  <Icon icon="Upload" className="text-sky-500" />
-                  <span className="text-[13px] font-medium text-slate-700">Click to Upload</span>
-                </div>
-                <div className="text-[13px] font-medium text-slate-400">
-                  Only PDF, DOC, or DOCX files up to 10 MB are accepted.
+                  <Icon className="text-slate-400" icon="Upload" />
+                  <span className="text-[13px] text-slate-400">Click to upload</span>
                 </div>
               </div>
             </div>
@@ -369,5 +423,5 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     </Modal >
   );
 };
- 
+
 export default InterviewModal;

@@ -30,3 +30,19 @@ type GlobalContextType = [
         storeData: (value: any) => void
     }
 ]
+
+interface UploadedDocument {
+    filename: string;
+    url: string;
+    type: string;
+    uploaded_at: string;
+}
+
+interface UploadDocumentResponse {
+    msg: string;
+    data?: UploadedDocument;
+}
+
+interface GetDocumentsResponse {
+    data: UploadedDocument[];
+}

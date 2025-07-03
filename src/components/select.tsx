@@ -1,7 +1,12 @@
+import React from "react"
 import { sliceText, textEllipsis } from "../context/helper"
 import Icon from "./icon"
 
-export const Select = ({ value, data, onHandle, optionPrefix, showDropdown, onDropdown, dropdownRef, obk }: { value: string, data: string[], optionPrefix?: string, onHandle: (i: string, p:any ) => void, showDropdown: boolean, onDropdown: VoidFunction, dropdownRef: any, obk:string}) => {
+export const Select = ({ value, data, onHandle, optionPrefix, showDropdown, onDropdown, dropdownRef, obk }:
+    {
+        value: string, data: string[], optionPrefix?: string, onHandle:
+        (i: string, p: any) => void, showDropdown: boolean, onDropdown: VoidFunction, dropdownRef: any, obk: string
+    }) => {
 
     return (
         <div className="relative  min-w-[150px]">

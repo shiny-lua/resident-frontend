@@ -84,3 +84,11 @@ yarn build
 # or
 npm run build
 ```
+
+### Preview Production Build
+
+```bash
+yarn preview
+# or
+npm run preview
+```

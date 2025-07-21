@@ -92,3 +92,10 @@ yarn preview
 # or
 npm run preview
 ```
+
+## Customization
+
+- **Tailwind CSS**: Customize styles in `tailwind.config.cjs`.
+- **Assets**: Replace images and logos in the `public/` directory.
+- **API Integration**: Update API endpoints in the context files as needed.
+

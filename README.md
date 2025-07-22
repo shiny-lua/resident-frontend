@@ -99,3 +99,6 @@ npm run preview
 - **Assets**: Replace images and logos in the `public/` directory.
 - **API Integration**: Update API endpoints in the context files as needed.
 
+## License
+
+This project is for educational and demonstration purposes. For commercial use, please contact the author.

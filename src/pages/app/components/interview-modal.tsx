@@ -6,7 +6,7 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link, useNavigate } from "react-router-dom";
 import { timezones } from "./data.d";
-import { meetingId } from "../../../context/helper";
+import { meetingId, showToast } from "../../../context/helper";
 import { useGlobalContext } from "../../../context";
 import { restApi } from "../../../context/restApi";
 
@@ -69,6 +69,80 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     timezone: "UTC+00:00 Europe/London"
   })
 
+  // Function to detect email provider and redirect to appropriate calendar
+  const redirectToCalendar = () => {
+    const userEmail = state.user.email;
+    
+    if (!userEmail) {
+      console.error("User email not available");
+      return;
+    }
+
+    const emailDomain = userEmail.split('@')[1]?.toLowerCase();
+    
+    // Gmail and Google Workspace domains
+    const googleDomains = [
+      'gmail.com', 
+      'googlemail.com'
+    ];
+    
+    // Microsoft/Outlook domains
+    const outlookDomains = [
+      'outlook.com', 
+      'hotmail.com', 
+      'live.com', 
+      'msn.com',
+      'outlook.co.uk',
+      'hotmail.co.uk',
+      'live.co.uk'
+    ];
+    
+    // Yahoo domains
+    const yahooDomains = [
+      'yahoo.com',
+      'yahoo.co.uk',
+      'yahoo.ca',
+      'yahoo.com.au',
+      'ymail.com',
+      'rocketmail.com'
+    ];
+    
+    let calendarUrl = '';
+    let providerName = '';
+    
+    if (googleDomains.includes(emailDomain)) {
+      // Redirect to Google Calendar
+      calendarUrl = 'https://calendar.google.com/calendar/u/0/r';
+      providerName = 'Google Calendar';
+    } else if (outlookDomains.includes(emailDomain)) {
+      // Redirect to Outlook Calendar
+      calendarUrl = 'https://outlook.live.com/calendar/0/view/month';
+      providerName = 'Outlook Calendar';
+    } else if (yahooDomains.includes(emailDomain)) {
+      // Redirect to Yahoo Calendar
+      calendarUrl = 'https://calendar.yahoo.com/';
+      providerName = 'Yahoo Calendar';
+    } else {
+      // For other email providers or corporate emails, default to Google Calendar
+      // Most people have access to Google Calendar even with corporate emails
+      calendarUrl = 'https://calendar.google.com/calendar/u/0/r';
+      providerName = 'Google Calendar';
+      showToast(`Email provider not recognized, opening Google Calendar as default`, 'info');
+    }
+    
+    // Show a brief notification to the user
+    showToast(`Opening ${providerName} for your calendar`, 'info');
+    
+    // Open calendar in a new tab
+    window.open(calendarUrl, '_blank', 'noopener,noreferrer');
+  };
+
+  // Handle Set Date and Time button click
+  const handleSetDateTime = () => {
+    setTabIdx(1);
+    redirectToCalendar();
+  };
+
   // Fetch uploaded documents when modal opens
   React.useEffect(() => {
     if (isOpen) {
@@ -83,7 +157,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       if (response.status === 200 && response.data?.data) {
         const docNames = response.data.data.map((doc: any) => doc.filename);
         setUploadedDocs(docNames);
-        
+
         // Update the resume dropdown data
         setStatus(prev => ({
           ...prev,
@@ -164,14 +238,14 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       setUploadedFile(file);
       setStatus({ ...status, resume: { ...status.resume, value: file.name } })
       console.log("Uploading file:", file.name);
-      
+
       // Upload to backend
       try {
         const formData = new FormData();
         formData.append('file', file);
-        
+
         const response = await restApi.postRequest('upload-document', formData);
-        
+
         if (response.status === 200) {
           console.log("File uploaded successfully:", response.data);
           // Refresh the documents list after successful upload
@@ -331,11 +405,11 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
                   <button onClick={() => setTabIdx(0)} className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-[13px] font-medium flex-1 ${tabIdx === 0 ? "bg-white" : "bg-transparent"}`}>
                     Immediately
                   </button>
-                  <button onClick={() => setTabIdx(1)} className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-[13px] font-medium flex-1 ${tabIdx !== 0 ? "bg-white" : "bg-transparent"}`}>
+                  <button onClick={handleSetDateTime} className={`inline-flex items-center justify-center whitespace-nowrap rounded-sm px-3 py-1.5 text-[13px] font-medium flex-1 ${tabIdx !== 0 ? "bg-white" : "bg-transparent"}`}>
                     Set Date and Time
                   </button>
                 </div>
-                {tabIdx === 1 && (
+                {/* {tabIdx === 1 && (
                   <div className="space-y-5 rounded-md border border-slate-200 p-6 mt-3">
                     <div className=" ">
                       <div className="mb-1 text-base font-medium">When</div>
@@ -404,7 +478,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
                       </div>
                     </div>
                   </div>
-                )}
+                )} */}
               </div>
             </div>
           </div>

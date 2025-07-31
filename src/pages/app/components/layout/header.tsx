@@ -91,13 +91,13 @@ const Header = () => {
                                     <Icon icon="MockInterview" />
                                     <span>Mock Interview</span>
                                 </Link>
-                                <Link
+                                {/* <Link
                                     to="/app/role"
                                     className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                                 >
                                     <Icon icon="PreparationHub" />
                                     <span>Preparation Hub</span>
-                                </Link>
+                                </Link> */}
                                 <Link
                                     to="/app/resume"
                                     className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
@@ -115,27 +115,6 @@ const Header = () => {
                             </div>
                             <div className={`border-t border-slate-100 px-2 py-3}`}>
                                 <div className="text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>
-                                <Link
-                                    to="/app/ai-generator"
-                                    className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
-                                >
-                                    <Icon icon="AiGenerator" />
-                                    <span>AI Material Generator</span>
-                                </Link>
-                                <Link
-                                    to="/app/interview-coach"
-                                    className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
-                                >
-                                    <Icon icon="AiMagic" />
-                                    <span>AI Career Coach</span>
-                                </Link>
-                                <Link
-                                    to="/app/chat-with-recruiters"
-                                    className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
-                                >
-                                    <Icon icon="Chat" />
-                                    <span>Speak with Recruiters</span>
-                                </Link>
                                 <Link
                                     to="/app/question"
                                     className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"

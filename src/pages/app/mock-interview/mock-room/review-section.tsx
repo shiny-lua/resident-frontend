@@ -28,7 +28,7 @@ const ReviewSection = () => {
                 link: ""
             }
         })
-        navigate('/app/live-interview')
+        navigate('/app/mock-interview')
     }
     const fillColorArray = [
         "#f17a45",

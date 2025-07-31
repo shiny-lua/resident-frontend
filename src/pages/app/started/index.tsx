@@ -12,18 +12,18 @@ import { useGlobalContext } from "../../../context";
 const Started = () => {
 
     const [state, { dispatch }]: GlobalContextType = useGlobalContext()
-    
+
     return (
         <Layout>
-            <div className="relative flex flex-1 flex-col gap-3 overflow-auto p-4 pb-8 lg:gap-4 lg:p-6 lg:pb-6 md:max-h-screen">
-                <div className="flex items-center">
-                    <h1 className="text-left text-2xl sm:text-3xl font-semibold leading-8">Get the most out of Theresidentguy</h1>
+            <div className="relative flex flex-1 flex-col gap-3 overflow-auto p-4 pb-8 lg:gap-4 lg:p-10 lg:pl-14 md:max-h-screen">
+                <div className="flex flex-col items-start justify-center border-b border-slate-100 pb-3">
+                    <h1 className="text-left text-3xl font-semibold leading-8">Get the most out of Theresidentguy</h1>
                 </div>
                 <div className="my-3 opacity-100 transition-all duration-200">
                     <h2 className="flex text-lg sm:text-xl pt-2 pb-4 font-semibold text-slate-900">
                         <span className="block flex-1">Start with the basics</span>
                     </h2>
-                    <div className="flex flex-col lg:flex-row items-center bg-[linear-gradient(180deg,_#54aef3_0%,_#00d9ff_100%)] text-white p-6 rounded-lg">
+                    <div className="flex flex-col gap-4 lg:flex-row items-center bg-[linear-gradient(180deg,_#54aef3_0%,_#00d9ff_100%)] text-white p-6 rounded-lg">
                         {steps.map((step, index) => (
                             <React.Fragment key={index}>
                                 <StepCard title={step.title} desc={step.desc} link={step.link} idx={step.idx} />

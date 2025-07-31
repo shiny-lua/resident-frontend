@@ -2,11 +2,10 @@ import React from "react";
 
 import Modal from "../../../components/modal";
 import Icon from "../../../components/icon";
-import { languages } from "./data.d";
 import { restApi } from "../../../context/restApi";
 import { showToast } from "../../../context/helper";
 
-const EndSessionModal = ({ isOpen, onClose, setEndInterview, interviewId }: { 
+const MockEndSessionModal = ({ isOpen, onClose, setEndInterview, interviewId }: { 
     isOpen: boolean; 
     onClose: VoidFunction; 
     setEndInterview: Function;
@@ -14,7 +13,7 @@ const EndSessionModal = ({ isOpen, onClose, setEndInterview, interviewId }: {
 }) => {
 
     const modalRef = React.useRef<HTMLDivElement>(null);
-    const [isLeavingInterview, setIsLeavingInterview] = React.useState(false);
+    const [isLeavingMockInterview, setIsLeavingMockInterview] = React.useState(false);
     
     React.useEffect(() => {
 
@@ -31,33 +30,33 @@ const EndSessionModal = ({ isOpen, onClose, setEndInterview, interviewId }: {
         };
     })
 
-    const handleEndInterview = async () => {
+    const handleEndMockInterview = async () => {
         if (!interviewId) {
-            console.error("No interview ID provided");
-            showToast("Error: No interview ID found", "error");
+            console.error("No mock interview ID provided");
+            showToast("Error: No mock interview ID found", "error");
             return;
         }
 
-        setIsLeavingInterview(true);
+        setIsLeavingMockInterview(true);
         
         try {
-            const response = await restApi.leaveInterview(interviewId, 'leave');
+            const response = await restApi.leaveMockInterview(interviewId, 'leave');
             
             if (response.status === 200) {
-              // Clear interview state from localStorage
+              // Clear mock interview state from localStorage
               localStorage.removeItem('currentInterview');
               
               onClose();
               setEndInterview(true);
             } else {
-                console.error('Failed to complete interview:', response.data?.msg || response.msg);
-                showToast(response.data?.msg || response.msg || 'Failed to complete interview', 'error');
+                console.error('Failed to complete mock interview:', response.data?.msg || response.msg);
+                showToast(response.data?.msg || response.msg || 'Failed to complete mock interview', 'error');
             }
         } catch (error) {
-            console.error('Error completing interview:', error);
-            showToast('An error occurred while completing the interview', 'error');
+            console.error('Error completing mock interview:', error);
+            showToast('An error occurred while completing the mock interview', 'error');
         } finally {
-            setIsLeavingInterview(false);
+            setIsLeavingMockInterview(false);
         }
     };
 
@@ -74,17 +73,17 @@ const EndSessionModal = ({ isOpen, onClose, setEndInterview, interviewId }: {
                             <Icon icon="Close" />
                         </button>
                         <div className="flex flex-col gap-2">
-                            <div className="text-2xl font-bold">End Session</div>
-                            <div className="text-lg text-gray-500">Are you sure you want to end this interview session?</div>
+                            <div className="text-2xl font-bold">End Mock Interview</div>
+                            <div className="text-lg text-gray-500">Are you sure you want to end this mock interview session?</div>
                             <div className="flex justify-end gap-4 mt-4">
                                 <button 
-                                    onClick={handleEndInterview}
-                                    disabled={isLeavingInterview}
+                                    onClick={handleEndMockInterview}
+                                    disabled={isLeavingMockInterview}
                                     className={`border border-slate-500 text-black font-semibold px-4 py-2 rounded-md ${
-                                        isLeavingInterview ? 'opacity-50 cursor-not-allowed' : ''
+                                        isLeavingMockInterview ? 'opacity-50 cursor-not-allowed' : ''
                                     }`}
                                 >
-                                    {isLeavingInterview ? 'Ending...' : 'Yes, End it'}
+                                    {isLeavingMockInterview ? 'Ending...' : 'Yes, End it'}
                                 </button>
                                 <button onClick={onClose} className="bg-sky-500 text-white font-semibold px-4 py-2 rounded-md">No, Continue this session</button>
                             </div>
@@ -96,4 +95,4 @@ const EndSessionModal = ({ isOpen, onClose, setEndInterview, interviewId }: {
     )
 }
 
-export default EndSessionModal;
+export default MockEndSessionModal; 

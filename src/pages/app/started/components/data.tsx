@@ -6,23 +6,23 @@ const steps = [
         link: "/app/resume",
         idx: 1,
     },
-    {
-        title: "Add your position",
-        desc: "Upload job description so that AI can provide customized answer",
-        link: "/app/role",
-        idx: 2,
-    },
+    // {
+    //     title: "Add your position",
+    //     desc: "Upload job description so that AI can provide customized answer",
+    //     link: "/app/role",
+    //     idx: 2,
+    // },
     {
         title: "Launch an interview",
         desc: "Launch your Interview Copilot™ for real-time interview support",
         link: "/app/live-interview",
-        idx: 3,
+        idx: 2,
     },
     {
         title: "View interview report",
         desc: "Review your interview notes and past interview performance",
         link: "/app/live-interview",
-        idx: 4,
+        idx: 3,
     },
 ];
 

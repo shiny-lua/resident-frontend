@@ -117,9 +117,6 @@ const Header = () => {
                                         <div className="mt-2 pb-2 text-md dt:mt-0 dt:w-[300px]">
                                             <div className="flex flex-row text-lg font-[700] text-black">Resume Optimization Tools</div>
                                             <div className="mt-3">
-                                                <Link to="/ai-tools/recruiters-hotline" className="flex h-[36px] cursor-pointer flex-row items-center text-slate-700 hover:text-sky-500">
-                                                    <div className="text-md font-medium">Recruiters Hotline</div>
-                                                </Link>
                                                 <Link to="/ai-tools/resume-optimizer" className="flex h-[36px] cursor-pointer flex-row items-center text-slate-700 hover:text-sky-500">
                                                     <div className="text-md font-medium">Resume Optimizor</div>
                                                 </Link>
@@ -253,9 +250,6 @@ const Header = () => {
                             Resume Optimization Tools
                         </div>
                         <div className="mt-3">
-                            <Link to="/ai-tools/recruiters-hotline" className="flex h-[36px] cursor-pointer flex-row items-center text-slate-700 hover:text-sky-500" >
-                                <div className="text-md font-medium">Recruiters Hotline</div>
-                            </Link>
                             <Link to="/ai-tools/resume-optimizer" className="flex h-[36px] cursor-pointer flex-row items-center text-slate-700 hover:text-sky-500" >
                                 <div className="text-md font-medium">Resume Optimizor</div>
                             </Link>

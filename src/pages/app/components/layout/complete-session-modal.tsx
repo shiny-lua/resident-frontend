@@ -1,10 +1,18 @@
 import React from "react";
 import Modal from "../../../../components/modal";
 import Icon from "../../../../components/icon";
+import { restApi } from "../../../../context/restApi";
+import { showToast } from "../../../../context/helper";
+import { useGlobalContext } from "../../../../context";
 
-const CompleteSessionModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFunction }) => {
-
+const CompleteSessionModal = ({ isOpen, onClose, interviewId }: { 
+    isOpen: boolean; 
+    onClose: VoidFunction;
+    interviewId?: string;
+}) => {
+    const [_, { dispatch }] = useGlobalContext();
     const modalRef = React.useRef<HTMLDivElement>(null);
+    const [isCompletingSession, setIsCompletingSession] = React.useState(false);
 
     React.useEffect(() => {
 
@@ -20,6 +28,30 @@ const CompleteSessionModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: V
             document.removeEventListener("mousedown", onModal);
         };
     })
+
+    const handleCompleteSession = async () => {
+        const currentInterview = localStorage.getItem('currentInterview');
+        if (currentInterview) {
+            const _currentInterview = JSON.parse(currentInterview);
+            let res;
+            if (_currentInterview.link.includes('mock')) {
+                res = await restApi.leaveMockInterview(_currentInterview.interviewId, 'leave');
+            } else if (_currentInterview.link.includes('live')) {
+                res = await restApi.leaveInterview(_currentInterview.interviewId, 'leave');
+            }
+            if (res.status === 200) {
+                localStorage.removeItem('currentInterview');
+                dispatch({
+                    type: "isLeaveInterview",
+                    payload: {
+                        status: false,
+                        link: ""
+                    }
+                });
+            }
+            window.location.reload();
+        }
+    };
 
     return (
         <Modal>
@@ -44,7 +76,15 @@ const CompleteSessionModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: V
                             <div className="text-lg text-gray-500">Are you sure you want to end this interview session?</div>
                             <div className="flex justify-end gap-4 mt-4">
                                 <button onClick={onClose} className="border border-slate-300 text-black text-md font-semibold px-4 py-3 rounded-md">Cancel</button>
-                                <button onClick={onClose} className="bg-sky-500 text-white text-md font-semibold px-4 py-3 rounded-md">Complete</button>
+                                <button 
+                                    onClick={handleCompleteSession}
+                                    disabled={isCompletingSession}
+                                    className={`bg-sky-500 text-white text-md font-semibold px-4 py-3 rounded-md ${
+                                        isCompletingSession ? 'opacity-50 cursor-not-allowed' : ''
+                                    }`}
+                                >
+                                    {isCompletingSession ? 'Completing...' : 'Complete'}
+                                </button>
                             </div>
                         </div>
                     </div>

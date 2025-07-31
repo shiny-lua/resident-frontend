@@ -6,8 +6,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link, useNavigate } from "react-router-dom";
 import { timezones } from "./data.d";
-import { meetingId } from "../../../context/helper";
 import { useGlobalContext } from "../../../context";
+import { showToast } from "../../../context/helper";
+import { restApi } from "../../../context/restApi";
 
 type DropdownStatus = {
   resume: { value: string; data: string[]; prefix: string };
@@ -17,7 +18,7 @@ type DropdownStatus = {
 };
 
 const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFunction }) => {
-  const [state] = useGlobalContext();
+  const [state, { dispatch }] = useGlobalContext();
   const navigate = useNavigate();
   const today = new Date();
   today.setDate(today.getDate());
@@ -65,6 +66,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     time: "",
     timezone: "UTC+00:00 Europe/London"
   })
+  const [isCreatingMockInterview, setIsCreatingMockInterview] = React.useState(false);
 
   const onHandle = (v: string, obk: keyof DropdownStatus) => {
     setStatus((prevStatus) => ({
@@ -128,13 +130,75 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     }
   };
 
-  const onLaunch = () => {
+  const onLaunch = async () => {
     if (state.isLeaveInterview.status) {
+      showToast('You already have an interview in progress. Please complete or leave the current interview first.', 'warning');
       return;
     }
 
-    onClose();
-    navigate(`/app/mock-interview/mock/${meetingId(12)}`);
+    setIsCreatingMockInterview(true);
+
+    try {
+      // Prepare mock interview data
+      const mockInterviewData: any = {
+        title: `Mock Interview - ${new Date().toLocaleDateString()}`
+      };
+
+      // Add optional fields if they have values
+      if (status.resume.value) {
+        mockInterviewData.resume = status.resume.value;
+      }
+      if (status.role.value) {
+        mockInterviewData.role = status.role.value;
+      }
+      if (status.domain.value && status.domain.value !== "General") {
+        mockInterviewData.domain = status.domain.value;
+      }
+      if (status.interviewType.value && status.interviewType.value !== "General") {
+        mockInterviewData.interview_type = status.interviewType.value;
+      }
+
+      // Add scheduled date/time if set
+      if (tabIdx === 1 && startDate && dateTime.time) {
+        const scheduledDate = new Date(startDate);
+        const [hours, minutes] = dateTime.time.split(':');
+        scheduledDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        mockInterviewData.scheduled_at = scheduledDate.toISOString();
+        mockInterviewData.timezone = dateTime.timezone;
+      }
+
+      // Create mock interview via API
+      const response = await restApi.createMockInterview(mockInterviewData);
+      console.log("response", response.data.data.interview_id);
+      if (response.status === 200) {
+        // Store mock interview state in localStorage
+        localStorage.setItem('currentInterview', JSON.stringify({
+          interviewId: response.data.data.interview_id,
+          link: `/app/mock-interview/mock/${response.data.data.interview_id}`,
+          status: true,
+          timestamp: new Date().toISOString()
+        }));
+
+        dispatch({
+          type: "isLeaveInterview",
+          payload: {
+            status: true,
+            link: `/app/mock-interview/mock/${response.data.data.interview_id}`
+          }
+        });
+        onClose();
+        navigate(`/app/mock-interview/mock/${response.data.data.interview_id}`);
+        return;
+      } else {
+        console.error('Failed to create mock interview:', response.data?.msg || response.msg);
+        showToast(response.data?.msg || response.msg || 'Failed to create mock interview', 'error');
+      }
+    } catch (error) {
+      console.error('Error creating mock interview:', error);
+      showToast('An error occurred while creating the mock interview', 'error');
+    } finally {
+      setIsCreatingMockInterview(false);
+    }
   }
 
   return (
@@ -359,8 +423,15 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
               Cancel
             </button>
             <span>
-              <button onClick={onLaunch} className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${state.isLeaveInterview.status ? "bg-slate-500" : "bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] "}`}>
-                Launch
+              <button
+                onClick={onLaunch}
+                disabled={state.isLeaveInterview.status || isCreatingMockInterview}
+                className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${state.isLeaveInterview.status || isCreatingMockInterview
+                    ? "bg-slate-500 cursor-not-allowed"
+                    : "bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)]"
+                  }`}
+              >
+                {isCreatingMockInterview ? 'Creating...' : state.isLeaveInterview.status ? 'Interview in Progress' : 'Launch'}
               </button>
             </span>
           </div>

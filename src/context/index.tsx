@@ -54,6 +54,7 @@ const GlobalContextProvider = ({ children }: any) => {
 
     React.useEffect(() => {
         initSessionSetting()
+        initInterviewState()
     }, [])
 
     const initSessionSetting = async () => {
@@ -80,6 +81,39 @@ const GlobalContextProvider = ({ children }: any) => {
 
         } catch (error: any) {
             console.error(error)
+        }
+    }
+
+    const initInterviewState = () => {
+        try {
+            const savedInterview = localStorage.getItem('currentInterview');
+            if (savedInterview) {
+                const interviewData = JSON.parse(savedInterview);
+                
+                // Check if the interview data is still valid (not too old)
+                const interviewTime = new Date(interviewData.timestamp);
+                const currentTime = new Date();
+                const timeDiff = currentTime.getTime() - interviewTime.getTime();
+                const hoursDiff = timeDiff / (1000 * 60 * 60);
+                
+                // If interview data is older than 24 hours, remove it
+                if (hoursDiff > 24) {
+                    localStorage.removeItem('currentInterview');
+                    return;
+                }
+                
+                dispatch({ 
+                    type: "isLeaveInterview", 
+                    payload: {
+                        status: interviewData.status,
+                        link: interviewData.link
+                    }
+                });
+            }
+        } catch (error) {
+            console.error('Error initializing interview state from localStorage:', error);
+            // Clear invalid data
+            localStorage.removeItem('currentInterview');
         }
     }
 

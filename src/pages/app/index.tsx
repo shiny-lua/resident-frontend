@@ -7,9 +7,6 @@ import MockInterview from "./mock-interview";
 import PermissionSetting from "./permission-setting";
 import Role from "./role";
 import Resume from "./resume";
-import AiGenerater from "./ai-generator";
-import InterviewCoach from "./interview-coach";
-import ChatWithRecruiters from "./chat-with-recruiters";
 import Question from "./question";
 import Subscription from "./subscription";
 import { useGlobalContext } from "../../context";
@@ -72,9 +69,6 @@ const AppIndex = () => {
             <Route path="/permission-setting" element={<PermissionSetting />} />
             <Route path="/role" element={<Role />} />
             <Route path="/resume" element={<Resume />} />
-            <Route path="/ai-generator" element={<AiGenerater />} />
-            <Route path="/interview-coach" element={<InterviewCoach />} />
-            <Route path="/chat-with-recruiters" element={<ChatWithRecruiters />} />
             <Route path="/question" element={<Question />} />
             <Route path="/subscription" element={<Subscription />} />
         </Routes>

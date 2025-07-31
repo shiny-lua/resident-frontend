@@ -5,13 +5,15 @@ import SettingModal from "../../components/setting-modal";
 import { useGlobalContext } from "../../../../context";
 import EndSessionModal from "../../components/end-sesion-modal";
 import { useLocation, useNavigate } from "react-router-dom";
+import { restApi } from "../../../../context/restApi";
+import { showToast } from "../../../../context/helper";
 
 interface AudioDevice {
     deviceId: string;
     label: string;
 }
 
-const HeaderSection = ({ setEndInterview }: { setEndInterview: Function }) => {
+const HeaderSection = ({ setEndInterview, interviewId }: { setEndInterview: Function; interviewId?: string }) => {
     const [state, { dispatch }] = useGlobalContext();
 
     const navigate = useNavigate();
@@ -61,16 +63,43 @@ const HeaderSection = ({ setEndInterview }: { setEndInterview: Function }) => {
     }, []);
 
 
-    const onLeaveRoom = () => {
+    const onLeaveRoom = async () => {
+        if (!interviewId) {
+            console.error("No interview ID provided");
+            return;
+        }
+
         setShowLeaveDropdown(false);
-        dispatch({
-            type: "isLeaveInterview",
-            payload: {
+        
+        try {
+            const response = await restApi.leaveInterview(interviewId, 'in_progress');
+            
+            if (response.status === 200) {
+              // Store interview state in localStorage
+              localStorage.setItem('currentInterview', JSON.stringify({
+                interviewId: interviewId,
+                link: `/app/live-interview/live/${interviewId}`,
                 status: true,
-                link: location.pathname
+                timestamp: new Date().toISOString()
+              }));
+              
+              dispatch({
+                  type: "isLeaveInterview",
+                  payload: {
+                      status: true,
+                      link: `/app/live-interview/live/${interviewId}`
+                  }
+              });
+              navigate("/app/live-interview");
+              return;
+            } else {
+                console.error('Failed to leave interview:', response.data?.msg || response.msg);
+                showToast(response.data?.msg || response.msg || 'Failed to leave interview', 'error');
             }
-        })
-        navigate("/app/live-interview")
+        } catch (error) {
+            console.error('Error leaving interview:', error);
+            showToast('An error occurred while leaving the interview', 'error');
+        }
     }
 
     const getAudioDevices = async () => {
@@ -108,61 +137,57 @@ const HeaderSection = ({ setEndInterview }: { setEndInterview: Function }) => {
     }, []);
 
     return (
-        <div className="flex flex-nowrap items-center justify-between bg-slate-50 p-4 md:p-6">
-            <div className="flex min-w-[150px] flex-col gap-1 items-start overflow-hidden md:h-full">
-                <div className="h-7 max-h-7 w-full overflow-hidden text-ellipsis whitespace-nowrap text-xl font-semibold text-slate-900">
-                    Live Interview
+        <div className="flex flex-row items-center justify-between bg-white border-b border-slate-200 px-6 py-4">
+            <div className="flex flex-row items-center gap-4">
+                <div className="flex flex-row items-center gap-2">
+                    <div className="w-2 h-2 bg-green-500 rounded-full"></div>
+                    <div className="text-sm font-medium text-slate-700">Live</div>
                 </div>
-                <div className="flex h-7 items-center text-sm text-slate-400">
-                    <div className="mr-2 flex items-center justify-center rounded-3xl text-sm text-white">
-                        <span className="text-sm font-medium leading-[26px] bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] text-white px-3 rounded-full">
-                            Premium
-                        </span>
-                    </div>
-                    <Icon icon="Timer" className="w-5 h-5 text-slate-700" />
-                    <span className="ml-1 font-normal text-slate-700">{formatTime(timer)}</span>
+                <div className="flex flex-row items-center gap-2">
+                    <Icon icon="Timer" className="w-4 h-4 text-slate-500" />
+                    <div className="text-sm font-medium text-slate-700">{formatTime(timer)}</div>
                 </div>
             </div>
-            <div className="z-20 inline-flex items-center gap-4 bg-slate-50">
-                <button onClick={() => setIsShowSettingModal(true)} className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium h-11 w-11 rounded-full border border-slate-300 bg-slate-50 p-0" >
-                    <Icon icon="Setting" className="w-6 h-6 text-slate-700" />
-                </button>
-                <div ref={audioDevicesDropdownRef} className="flex-col items-center hidden md:flex relative">
-                    <div
-                        className="flex gap-1 items-center justify-between rounded-3xl p-0 pr-1.5 shadow-s cursor-pointer"
+            <div className="flex flex-row items-center gap-2">
+                <div className="relative" ref={audioDevicesDropdownRef}>
+                    <button
                         onClick={() => setShowAudioDevices(!showAudioDevices)}
+                        className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md text-md font-medium px-4 py-2.5 bg-slate-100 text-slate-700 focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-0"
                     >
-                        <div className="flex h-10 w-10 items-center justify-center rounded-3xl bg-sky-400">
-                            <Icon icon="Microphone" />
-                        </div>
-                        <button className={`bg-slate-50 transition-transform duration-200 ${showAudioDevices ? 'rotate-180' : ''}`}>
-                            <Icon icon="ChevronDown" className="w-5 h-5 text-slate-700" />
-                        </button>
-                    </div>
-
-                    {/* Audio devices dropdown */}
+                        <Icon icon="Microphone" className="text-slate-700" />
+                        <div>Audio</div>
+                        <Icon
+                            icon="ChevronDown"
+                            className={`w-5 h-5 text-slate-500 transition-transform duration-200 ${showAudioDevices ? 'rotate-180' : ''}`}
+                        />
+                    </button>
                     {showAudioDevices && (
-                        <div className="absolute top-full mt-2 w-80 bg-white rounded-lg shadow-lg border border-slate-200 py-2">
-                            <div className="p-2 pl-8 text-sm text-slate-500">Select Microphone Source</div>
-                            {audioDevices.map((device) => (
+                        <div className="absolute top-full right-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
+                            {audioDevices.map((device, index) => (
                                 <button
-                                    key={device.deviceId}
-                                    className={`w-full px-2 py-1.5 text-left hover:bg-slate-50 ${selectedDevice?.deviceId === device.deviceId ? 'bg-slate-100' : ''
-                                        }`}
+                                    key={index}
+                                    className="w-full px-4 py-2 text-left hover:bg-slate-50 text-slate-700 flex items-center gap-2"
                                     onClick={() => {
                                         setSelectedDevice(device);
                                         setShowAudioDevices(false);
                                     }}
                                 >
-                                    <div className={`flex items-center gap-2 ${device.label === selectedDevice?.label ? 'text-sky-500' : ''}`}>
-                                        {device.label === selectedDevice?.label && <Icon icon="Check" className="w-4 h-4" />}
-                                        <span className={`text-sm truncate ${device.label === selectedDevice?.label ? '' : 'pl-6'}`}>{device.label}</span>
-                                    </div>
+                                    <span>{device.label}</span>
+                                    {selectedDevice?.deviceId === device.deviceId && (
+                                        <Icon icon="Check" className="text-sky-500" />
+                                    )}
                                 </button>
                             ))}
                         </div>
                     )}
                 </div>
+                <button
+                    onClick={() => setIsShowSettingModal(true)}
+                    className="inline-flex gap-1 items-center justify-center whitespace-nowrap rounded-md text-md font-medium px-4 py-2.5 bg-slate-100 text-slate-700 focus-visible:shadow-none focus-visible:outline-none focus-visible:ring-0"
+                >
+                    <Icon icon="Settings" className="text-slate-700" />
+                    <div>Settings</div>
+                </button>
                 <div className="flex flex-col items-center mr-0 relative" ref={leaveDropdownRef}>
                     <button
                         onClick={() => setShowLeaveDropdown(!showLeaveDropdown)}
@@ -172,11 +197,9 @@ const HeaderSection = ({ setEndInterview }: { setEndInterview: Function }) => {
                         <div>Leave</div>
                         <Icon
                             icon="ChevronDown"
-                            className={`w-5 h-5 text-white transition-transform duration-200 ${showLeaveDropdown ? 'rotate-180' : ''
-                                }`}
+                            className={`w-5 h-5 text-white transition-transform duration-200 ${showLeaveDropdown ? 'rotate-180' : ''}`}
                         />
                     </button>
-
                     {showLeaveDropdown && (
                         <div className="absolute top-full right-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
                             <button
@@ -200,7 +223,7 @@ const HeaderSection = ({ setEndInterview }: { setEndInterview: Function }) => {
                 </div>
             </div>
             {isShowSettingModal && <SettingModal isOpen={isShowSettingModal} onClose={() => setIsShowSettingModal(false)} />}
-            {isEndSession && <EndSessionModal isOpen={isEndSession} setEndInterview={setEndInterview} onClose={() => setIsEndSession(false)} />}
+            {isEndSession && <EndSessionModal isOpen={isEndSession} setEndInterview={setEndInterview} interviewId={interviewId} onClose={() => setIsEndSession(false)} />}
         </div>
     )
 }

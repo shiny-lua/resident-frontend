@@ -2,16 +2,23 @@ import { useState, useEffect, useRef } from "react";
 
 import Icon from "../../../../components/icon";
 import SettingModal from "../../components/setting-modal";
-import EndSessionModal from "../../components/end-sesion-modal";
+import MockEndSessionModal from "../../components/mock-end-session-modal";
 import { useGlobalContext } from "../../../../context";
 import { useLocation, useNavigate } from "react-router-dom";
+import { restApi } from "../../../../context/restApi";
+import { showToast } from "../../../../context/helper";
 
 interface AudioDevice {
     deviceId: string;
     label: string;
 }
 
-const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn }: { setEndInterview: Function, isCameraOn: boolean, setIsCameraOn: Function }) => {
+const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn, interviewId }: { 
+    setEndInterview: Function; 
+    isCameraOn: boolean; 
+    setIsCameraOn: Function;
+    interviewId?: string;
+}) => {
     const [_, { dispatch }] = useGlobalContext();
     const navigate = useNavigate();
     const location = useLocation();
@@ -90,16 +97,43 @@ const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn }: { setEndI
         };
     }, []);
 
-    const onLeaveRoom = () => {
+    const onLeaveRoom = async () => {
+        if (!interviewId) {
+            console.error("No interview ID provided");
+            return;
+        }
+
         setShowLeaveDropdown(false);
-        dispatch({
-            type: "isLeaveInterview",
-            payload: {
+        
+        try {
+            const response = await restApi.leaveMockInterview(interviewId, 'in_progress');
+            
+            if (response.status === 200) {
+              // Store mock interview state in localStorage
+              localStorage.setItem('currentInterview', JSON.stringify({
+                interviewId: interviewId,
+                link: `/app/mock-interview/mock/${interviewId}`,
                 status: true,
-                link: location.pathname
+                timestamp: new Date().toISOString()
+              }));
+              
+              dispatch({
+                  type: "isLeaveInterview",
+                  payload: {
+                      status: true,
+                      link: `/app/mock-interview/mock/${interviewId}`
+                  }
+              });
+              navigate("/app/mock-interview");
+              return;
+            } else {
+                console.error('Failed to leave mock interview:', response.data?.msg || response.msg);
+                showToast(response.data?.msg || response.msg || 'Failed to leave mock interview', 'error');
             }
-        })
-        navigate("/app/mock-interview")
+        } catch (error) {
+            console.error('Error leaving mock interview:', error);
+            showToast('An error occurred while leaving the mock interview', 'error');
+        }
     }
 
     return (
@@ -111,7 +145,7 @@ const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn }: { setEndI
                 <div className="flex h-7 items-center text-sm text-slate-400">
                     <div className="mr-2 flex items-center justify-center rounded-3xl text-sm text-white">
                         <span className="text-sm font-medium leading-[26px] bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] text-white px-3 rounded-full">
-                            Beta
+                            Free
                         </span>
                     </div>
                     <Icon icon="Timer" className="w-5 h-5 text-slate-700" />
@@ -119,10 +153,6 @@ const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn }: { setEndI
                 </div>
             </div>
             <div className="z-20 inline-flex items-center gap-4 bg-slate-50">
-                <button onClick={() => setIsCameraOn(!isCameraOn)} className={`inline-flex items-center justify-center whitespace-nowrap text-sm font-medium h-11 w-11 rounded-full p-0 ${!isCameraOn ? 'bg-white border border-slate-300' : 'bg-sky-400'}`} >
-                    <Icon icon={isCameraOn ? "CameraOn" : "CameraOff"} className={`${!isCameraOn ? 'text-slate-600' : 'text-white'}`} />
-                </button>
-
                 <button onClick={() => setIsShowSettingModal(true)} className="inline-flex items-center justify-center whitespace-nowrap text-sm font-medium h-11 w-11 rounded-full border border-slate-300 bg-slate-50 p-0" >
                     <Icon icon="Setting" className="w-6 h-6 text-slate-700" />
                 </button>
@@ -146,8 +176,7 @@ const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn }: { setEndI
                             {audioDevices.map((device) => (
                                 <button
                                     key={device.deviceId}
-                                    className={`w-full px-2 py-1.5 text-left hover:bg-slate-50 ${selectedDevice?.deviceId === device.deviceId ? 'bg-slate-100' : ''
-                                        }`}
+                                    className={`w-full px-2 py-1.5 text-left hover:bg-slate-50 ${selectedDevice?.deviceId === device.deviceId ? 'bg-slate-100' : ''}`}
                                     onClick={() => {
                                         setSelectedDevice(device);
                                         setShowAudioDevices(false);
@@ -171,11 +200,9 @@ const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn }: { setEndI
                         <div>Leave</div>
                         <Icon
                             icon="ChevronDown"
-                            className={`w-5 h-5 text-white transition-transform duration-200 ${showLeaveDropdown ? 'rotate-180' : ''
-                                }`}
+                            className={`w-5 h-5 text-white transition-transform duration-200 ${showLeaveDropdown ? 'rotate-180' : ''}`}
                         />
                     </button>
-
                     {showLeaveDropdown && (
                         <div className="absolute top-full right-0 mt-1 w-full bg-white rounded-lg shadow-lg border border-slate-200 py-1 z-50">
                             <button
@@ -199,7 +226,7 @@ const HeaderSection = ({ setEndInterview, isCameraOn, setIsCameraOn }: { setEndI
                 </div>
             </div>
             {isShowSettingModal && <SettingModal isOpen={isShowSettingModal} onClose={() => setIsShowSettingModal(false)} />}
-            {isEndSession && <EndSessionModal isOpen={isEndSession} setEndInterview={setEndInterview} onClose={() => setIsEndSession(false)} />}
+            {isEndSession && <MockEndSessionModal isOpen={isEndSession} setEndInterview={setEndInterview} interviewId={interviewId} onClose={() => setIsEndSession(false)} />}
         </div>
     )
 }

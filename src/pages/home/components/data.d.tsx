@@ -236,12 +236,6 @@ const tutorials = [
         "description": "A detailed instruction on the settings of AI Mock Interview. Theresidentguy helps you effectively prepare and practice interviews for your target job positions in a highly immersive manner....",
         "image": "https://uploads-ssl.webflow.com/664ed8170ea9a09ebb0c8a24/66600a2f3a18a3d052de1c06_tutor-4.webp",
     },
-    {
-        "title": "How to use AI Material Generator",
-        "date": "Feb 01, 2024",
-        "description": "A detailed instruction on the settings of AI Material Generator. Theresidentguy helps you automatically create job application materials such as resume, cover letters, and interview Q&A flashcards, tailored to the job yo...",
-        "image": "https://uploads-ssl.webflow.com/664ed8170ea9a09ebb0c8a24/66600a2aa990e4c75da6fe07_tutor-3.webp",
-    }
 ]
 
 const askedQuestion = [

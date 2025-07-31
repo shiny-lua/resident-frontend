@@ -6,9 +6,9 @@ import DatePicker from "react-datepicker";
 import "react-datepicker/dist/react-datepicker.css";
 import { Link, useNavigate } from "react-router-dom";
 import { timezones } from "./data.d";
-import { meetingId } from "../../../context/helper";
 import { useGlobalContext } from "../../../context";
 import { restApi } from "../../../context/restApi";
+import { showToast } from "../../../context/helper";
 
 type DropdownStatus = {
   resume: { value: string; data: string[]; prefix: string };
@@ -18,7 +18,7 @@ type DropdownStatus = {
 };
 
 const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFunction }) => {
-  const [state] = useGlobalContext();
+  const [state, { dispatch }] = useGlobalContext();
 
   const navigate = useNavigate();
   const today = new Date();
@@ -68,6 +68,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     time: "",
     timezone: "UTC+00:00 Europe/London"
   })
+  const [isCreatingInterview, setIsCreatingInterview] = React.useState(false);
 
   // Fetch uploaded documents when modal opens
   React.useEffect(() => {
@@ -83,7 +84,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       if (response.status === 200 && response.data?.data) {
         const docNames = response.data.data.map((doc: any) => doc.filename);
         setUploadedDocs(docNames);
-        
+
         // Update the resume dropdown data
         setStatus(prev => ({
           ...prev,
@@ -164,14 +165,14 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       setUploadedFile(file);
       setStatus({ ...status, resume: { ...status.resume, value: file.name } })
       console.log("Uploading file:", file.name);
-      
+
       // Upload to backend
       try {
         const formData = new FormData();
         formData.append('file', file);
-        
+
         const response = await restApi.postRequest('upload-document', formData);
-        
+
         if (response.status === 200) {
           console.log("File uploaded successfully:", response.data);
           // Refresh the documents list after successful upload
@@ -185,13 +186,75 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     }
   };
 
-  const onLaunch = () => {
+  const onLaunch = async () => {
     if (state.isLeaveInterview.status) {
+      showToast('You already have an interview in progress. Please complete or leave the current interview first.', 'warning');
       return;
     }
 
-    onClose();
-    navigate(`/app/live-interview/live/${meetingId(12)}`);
+    setIsCreatingInterview(true);
+    
+    try {
+      // Prepare interview data
+      const interviewData: any = {
+        title: `Interview - ${new Date().toLocaleDateString()}`
+      };
+
+      // Add optional fields if they have values
+      if (status.resume.value) {
+        interviewData.resume = status.resume.value;
+      }
+      if (status.role.value) {
+        interviewData.role = status.role.value;
+      }
+      if (status.domain.value && status.domain.value !== "General") {
+        interviewData.domain = status.domain.value;
+      }
+      if (status.interviewType.value && status.interviewType.value !== "General") {
+        interviewData.interview_type = status.interviewType.value;
+      }
+
+      // Add scheduled date/time if set
+      if (tabIdx === 1 && startDate && dateTime.time) {
+        const scheduledDate = new Date(startDate);
+        const [hours, minutes] = dateTime.time.split(':');
+        scheduledDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
+        interviewData.scheduled_at = scheduledDate.toISOString();
+        interviewData.timezone = dateTime.timezone;
+      }
+
+      // Create interview via API
+      const response = await restApi.postRequest('create-interview', interviewData);
+      
+      if (response.status === 200) {
+        // Store interview state in localStorage
+        localStorage.setItem('currentInterview', JSON.stringify({
+          interviewId: response.data.data.interview_id,
+          link: `/app/live-interview/live/${response.data.data.interview_id}`,
+          status: true,
+          timestamp: new Date().toISOString()
+        }));
+        
+        dispatch({
+          type: "isLeaveInterview",
+          payload: {
+            status: true,
+            link: `/app/live-interview/live/${response.data.data.interview_id}`
+          }
+        });
+        onClose();
+        navigate(`/app/live-interview/live/${response.data.data.interview_id}`);
+        return;
+      } else {
+        console.error('Failed to create interview:', response.data?.msg || response.msg);
+        showToast(response.data?.msg || response.msg || 'Failed to create interview', 'error');
+      }
+    } catch (error) {
+      console.error('Error creating interview:', error);
+      showToast('An error occurred while creating the interview', 'error');
+    } finally {
+      setIsCreatingInterview(false);
+    }
   }
 
   return (
@@ -413,8 +476,16 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
               Cancel
             </button>
             <span>
-              <button onClick={onLaunch} className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${state.isLeaveInterview.status ? "bg-slate-500" : "bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)] "}`}>
-                Launch
+              <button 
+                onClick={onLaunch} 
+                disabled={isCreatingInterview || state.isLeaveInterview.status}
+                className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${
+                  state.isLeaveInterview.status || isCreatingInterview 
+                    ? "bg-slate-500 cursor-not-allowed" 
+                    : "bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)]"
+                }`}
+              >
+                {isCreatingInterview ? 'Creating...' : state.isLeaveInterview.status ? 'Interview in Progress' : 'Launch'}
               </button>
             </span>
           </div>

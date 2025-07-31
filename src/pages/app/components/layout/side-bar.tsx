@@ -53,16 +53,16 @@ const SideBar = (props: SideBarProps) => {
     }, []);
 
     return (
-        <div className={`${smallSideBar ? "w-[55px]" : isMobile ? "w-full z-10 bg-black bg-opacity-75" : "w-[260px]"} z-1 sm:h-screen ${isMobile ? "absolute top-0 left-0" : "fixed"}`}>
-            <nav className="hidden sm:flex relative max-w-[260px] h-full w-full flex-col py-5 transition-[width] duration-300 bg-sky-100">
+        <div className={`${smallSideBar ? "w-[55px]" : isMobile ? "w-full z-10 bg-black bg-opacity-75" : "w-[280px]"} z-1 sm:h-screen ${isMobile ? "absolute top-0 left-0" : "fixed"}`}>
+            <nav className="hidden sm:flex relative max-w-[280px] h-full w-full flex-col pt-8 pb-5 transition-[width] duration-300 bg-sky-100">
                 {!smallSideBar && <span onClick={onSideBar} className="absolute right-4 border rounded-md p-1 border-sky-300 bg-white pr-1.5">
                     <Icon icon="ArrowLeft" className="text-sky-600" />
                 </span>}
 
                 {!smallSideBar ? (
-                    <Link to={"/"} className="flex w-full items-center gap-2 px-5 pb-3 cursor-pointer">
-                        <div className="text-lg md:text-xl text-primary" >Theresidentguy</div>
-                        <div><img src="/image/icons/logo.png" alt="logo" width={22} height={22} /></div>
+                    <Link to={"/"} className="flex w-full items-center gap-2 px-5 pb-5 cursor-pointer">
+                        <div className="text-lg md:text-2xl text-primary" >Theresidentguy</div>
+                        <div><img src="/image/icons/logo.png" alt="logo" width={30} height={30} /></div>
                     </Link>
                 ) : (!showArrowButton ? (
                     <div onMouseEnter={onShowArrowButton} className="mx-5 mb-2"><img src="/image/icons/logo.png" alt="logo" width={22} height={22} /></div>
@@ -73,77 +73,56 @@ const SideBar = (props: SideBarProps) => {
                 ))}
 
                 <div className="">
-                    <div className={`border-t border-slate-100 px-2 py-3}`}>
+                    <div className={`border-t border-slate-100 p-2`}>
                         {!smallSideBar && <div className="text-nowrap pl-3 font-medium text-slate-400">Interview</div>}
                         <Link
                             to="/app/live-interview"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("live-interview") ? "bg-sky-200" : "bg-transparent"}`}
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2 font-medium hover:bg-sky-200 ${pathname.includes("live-interview") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="LiveInterview" />
-                            {!smallSideBar && <span>Live Interview</span>}
+                            {!smallSideBar && <span className="text-lg">Live Interview</span>}
                         </Link>
                         <Link
                             to="/app/mock-interview"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("mock-interview") ? "bg-sky-200" : "bg-transparent"}`}
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2 font-medium hover:bg-sky-200 ${pathname.includes("mock-interview") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="MockInterview" />
-                            {!smallSideBar && <span>Mock Interview</span>}
+                            {!smallSideBar && <span className="text-lg">Mock Interview</span>}
                         </Link>
-                        <Link
+                        {/* <Link
                             to="/app/role"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("role") ? "bg-sky-200" : "bg-transparent"}`}
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2 font-medium hover:bg-sky-200 ${pathname.includes("role") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="PreparationHub" />
-                            {!smallSideBar && <span>Preparation Hub</span>}
-                        </Link>
+                            {!smallSideBar && <span className="text-lg">Preparation Hub</span>}
+                        </Link> */}
                         <Link
                             to="/app/resume"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("resume") ? "bg-sky-200" : "bg-transparent"}`}
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2  font-medium hover:bg-sky-200 ${pathname.includes("resume") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="DocumentCenter" />
-                            {!smallSideBar && <span>Document Center</span>}
+                            {!smallSideBar && <span className="text-lg">Document Center</span>}
                         </Link>
                     </div>
-                    <div className={`border-t border-slate-100 px-2 py-3}`}>
+                    <div className={`border-t border-slate-100 p-2`}>
                         {!smallSideBar && <div className="text-nowrap pb-3 pl-3 font-medium text-slate-400">Tools</div>}
                         <Link
-                            to="/app/ai-generator"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("generator") ? "bg-sky-200" : "bg-transparent"}`}
-                        >
-                            <Icon icon="AiGenerator" />
-                            {!smallSideBar && <span>AI Material Generator</span>}
-                        </Link>
-                        <Link
-                            to="/app/interview-coach"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("coach") ? "bg-sky-200" : "bg-transparent"}`}
-                        >
-                            <Icon icon="AiMagic" />
-                            {!smallSideBar && <span>AI Career Coach</span>}
-                        </Link>
-                        <Link
-                            to="/app/chat-with-recruiters"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("recruiters") ? "bg-sky-200" : "bg-transparent"}`}
-                        >
-                            <Icon icon="Chat" />
-                            {!smallSideBar && <span>Speak with Recruiters</span>}
-                        </Link>
-                        <Link
                             to="/app/question"
-                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-200 ${pathname.includes("question") ? "bg-sky-200" : "bg-transparent"}`}
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2 font-medium hover:bg-sky-200 ${pathname.includes("question") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="Question" />
-                            {!smallSideBar && <span>Interview Question Bank</span>}
+                            {!smallSideBar && <span className="text-lg">Interview Question Bank</span>}
                         </Link>
                     </div>
                     <div className="border-t border-slate-100 px-2 py-3">
                         {!smallSideBar && <div className="text-nowrap pb-3 pl-3 font-medium text-slate-400">Education</div>}
                         <Link
-                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium bg-sky-600 text-white hover:bg-primary/90"
+                            className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2 font-medium bg-sky-600 text-white hover:bg-primary/90"
                             data-state="closed"
                             to="/app/started"
                         >
                             <Icon icon="Rocket" />
-                            {!smallSideBar && <span>Get Started</span>}
+                            {!smallSideBar && <span className="text-lg">Get Started</span>}
                         </Link>
                     </div>
                 </div>

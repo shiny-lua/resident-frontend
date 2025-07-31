@@ -149,3 +149,21 @@ const nanoid = customAlphabet(
 export function meetingId(length = 12) {
     return nanoid(length);
 }
+
+
+// Utility function to format date string to readable format
+export const formatDate = (dateString: string): string => {
+    try {
+        const date = new Date(dateString);
+        return date.toLocaleDateString('en-US', {
+            year: 'numeric',
+            month: 'short',
+            day: 'numeric',
+            hour: '2-digit',
+            minute: '2-digit'
+        });
+    } catch (error) {
+        console.error('Error formatting date:', error);
+        return dateString; // Return original string if parsing fails
+    }
+};

@@ -183,9 +183,6 @@ const Footer = () => {
                         {/* <ul className="flex w-[240px] flex-col justify-center gap-3">
                             <li className="text-xl">AI Tools</li>
                             <li>
-                                <Link className="text-lg text-gray-500" to="/ai-tools/career-coach">AI Career Coach</Link>
-                            </li>
-                            <li>
                                 <Link className="text-lg text-gray-500" to="/ai-tools/chat-with-recruiters">Recruiters Hotline</Link>
                             </li>
                             <li>

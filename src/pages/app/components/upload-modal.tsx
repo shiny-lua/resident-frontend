@@ -3,17 +3,34 @@ import Icon from "../../../components/icon"
 import Modal from "../../../components/modal"
 import { Select } from "../../../components/select";
 import { Radio } from "../../../components/radio";
+import { restApi } from "../../../context/restApi";
+import { showToast } from "../../../context/helper";
 
-const UploadModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFunction }) => {
+const UploadModal = ({ isOpen, onClose, onUploadSuccess }: { isOpen: boolean; onClose: VoidFunction; onUploadSuccess?: () => void }) => {
 
     const modalRef = React.useRef<HTMLDivElement | null>(null)
-
+    const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
+    const [isUploading, setIsUploading] = React.useState(false);
     const documentTypes = ["Resume", "Cover Letter", "Other"]
     const [status, setStatus] = React.useState({
         documentType: "Resume",
-        fileName: ""
+        fileName: "",
     })
+
+    // Reset state when modal opens
     React.useEffect(() => {
+        if (isOpen) {
+            setUploadedFile(null);
+            setStatus({
+                documentType: "Resume",
+                fileName: "",
+            });
+            setIsUploading(false);
+        }
+    }, [isOpen]);
+
+    React.useEffect(() => {
+        if (!isOpen) return;
 
         const onModal = (event: MouseEvent) => {
             if (modalRef.current && !modalRef.current.contains(event.target as Node)) {
@@ -25,15 +42,52 @@ const UploadModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFuncti
         return () => {
             document.removeEventListener("mousedown", onModal);
         };
-    })
+    }, [isOpen, onClose])
 
-    const onFileUpload = (e: React.ChangeEvent<HTMLInputElement>) => {
-
+    const onFileSelect = (e: React.ChangeEvent<HTMLInputElement>) => {
         const file = e.target.files?.[0];
         if (file) {
+            setUploadedFile(file);
             setStatus({ ...status, fileName: file.name })
+            console.log("File selected:", file.name);
         }
     };
+
+    const handleUpload = async () => {
+        if (!uploadedFile) {
+            alert("Please select a file first");
+            return;
+        }
+
+        setIsUploading(true);
+        try {
+            const formData = new FormData();
+            formData.append('file', uploadedFile);
+            formData.append('documentType', status.documentType);
+
+            const response = await restApi.postRequest('upload-document', formData);
+            console.log("response", response);
+            if (response.status === 200) {
+                console.log("File uploaded successfully:", response.data);
+                onClose(); // Close modal after successful upload
+                // Call the callback to refresh documents list
+                if (onUploadSuccess) {
+                    onUploadSuccess();
+                }
+            } 
+            else {
+                console.error("Upload failed:", response.data?.msg);
+                showToast("Upload failed: " + (response.data?.msg || "Unknown error"), "error")
+            }
+        } catch (error) {
+            console.error("Upload error:", error);
+            showToast("Upload failed: " + (error instanceof Error ? error.message : "Unknown error"), "error")
+        } finally {
+            setIsUploading(false);
+        }
+    };
+
+    if (!isOpen) return null;
 
     return (
         <Modal>
@@ -72,7 +126,7 @@ const UploadModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFuncti
                                 status.fileName
                             )}
                             <input
-                                onChange={onFileUpload}
+                                onChange={onFileSelect}
                                 accept=".pdf,.docx,.doc,.DOC,.PDF,.DOCX"
                                 type="file"
                                 title="upload file"
@@ -85,11 +139,19 @@ const UploadModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFuncti
                     </div>
                     <div>
                         <div className="mt-2 flex justify-end gap-2">
-                            <button onClick={onClose} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold border hover:bg-sky-100 h-10 px-4 py-2">
+                            <button
+                                onClick={onClose}
+                                disabled={isUploading}
+                                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold border hover:bg-sky-100 h-10 px-4 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
                                 Cancel
                             </button>
-                            <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold bg-primary hover:bg-primary/90 bg-gradient-to-r from-[#0090FF] to-[#00F7FF] text-white h-10 px-6 py-2">
-                                Upload
+                            <button
+                                onClick={handleUpload}
+                                disabled={!uploadedFile || isUploading}
+                                className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-semibold bg-primary hover:bg-primary/90 bg-gradient-to-r from-[#0090FF] to-[#00F7FF] text-white h-10 px-6 py-2 disabled:opacity-50 disabled:cursor-not-allowed"
+                            >
+                                {isUploading ? "Uploading..." : "Upload"}
                             </button>
                         </div>
                     </div>

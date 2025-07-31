@@ -87,7 +87,7 @@ const ModelResponseSection = () => {
                     style={{ scrollBehavior: 'smooth' }}
                 >
                                         {/* Display conversation history */}
-                    {state.conversationHistory.map((conversation, index) => (
+                    {state.conversationHistory.map((conversation: any, index: number) => (
                         <ConversationItem
                             key={index}
                             question={conversation.question}
@@ -99,7 +99,7 @@ const ModelResponseSection = () => {
                     ))}
 
                     {/* Display current question being processed - only if not already in history */}
-                    {state.currentQuestion && !state.conversationHistory.some(conv => conv.question === state.currentQuestion) && (
+                    {state.currentQuestion && !state.conversationHistory.some((conv: any) => conv.question === state.currentQuestion) && (
                         <ConversationItem
                             question={state.currentQuestion}
                             answer={state.currentResponse}
@@ -117,7 +117,7 @@ const ModelResponseSection = () => {
                         <div className="flex items-center justify-between text-xs text-slate-500">
                             <span>
                                 {state.conversationHistory.length} completed •
-                                {(state.currentQuestion && !state.conversationHistory.some(conv => conv.question === state.currentQuestion)) || state.isStreamingResponse ? ' 1 in progress' : ' Ready for next question'}
+                                {(state.currentQuestion && !state.conversationHistory.some((conv: any) => conv.question === state.currentQuestion)) || state.isStreamingResponse ? ' 1 in progress' : ' Ready for next question'}
                             </span>
                             {isAutoScroll && (
                                 <span className="flex items-center space-x-1">
@@ -197,7 +197,7 @@ const ModelResponseSection = () => {
                     </div>
                 </div>
             </div>
-            <div
+            {/* <div
                 className="min-w-[0px] rounded-t-lg"
                 style={{ flex: "40 1 0px", overflow: "hidden" }}
             >
@@ -242,7 +242,7 @@ const ModelResponseSection = () => {
                         />
                     </div>
                 </div>
-            </div>
+            </div> */}
         </div>
     )
 }

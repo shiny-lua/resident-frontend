@@ -121,9 +121,10 @@ export const useInterviewSession = () => {
                         timestamp: new Date()
                     };
 
+                    // Use functional update to avoid dependency on state.conversationHistory
                     dispatch({
                         type: 'conversationHistory',
-                        payload: [...state.conversationHistory, conversationEntry]
+                        payload: (prevHistory: any[]) => [...prevHistory, conversationEntry]
                     });
 
                     setTimeout(() => {
@@ -140,7 +141,7 @@ export const useInterviewSession = () => {
         } catch (error) {
             setTimeout(resetToListening, TIMING.ERROR_RECOVERY_DELAY);
         }
-    }, [dispatch, state.conversationHistory, speechAccumulation, resetToListening]);
+    }, [dispatch, resetToListening]);
 
     // Use ref to store cleanup function and create stable reference
     const cleanupRef = useRef<() => void>();

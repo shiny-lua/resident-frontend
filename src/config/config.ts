@@ -3,7 +3,7 @@
 // }
 
 const config = {
-    BACKEND_URL: "http://localhost:10001"
+    BACKEND_URL: "http://93.127.216.57:20202"
 }
 
 

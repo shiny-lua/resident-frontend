@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useEffect, useRef } from 'react';
 import { loadStripe } from '@stripe/stripe-js';
 
 import Icon from '../../../../components/icon';
@@ -28,6 +28,9 @@ const InterviewerSection: React.FC = () => {
     const [isOpenModal, setIsOpenModal] = React.useState(false);
     const [isPremium, setIsPremium] = React.useState(false);
     const [stripePromise, setStripePromise] = React.useState<any>(null);
+    
+    // Video ref to prevent flickering
+    const videoRef = useRef<HTMLVideoElement>(null);
 
     // Main interview session hook that combines all functionality
     const {
@@ -62,6 +65,19 @@ const InterviewerSection: React.FC = () => {
     useEffect(() => {
         setIsPremium(state.user.isPremium);
     }, [state.user]);
+
+    // Handle video stream changes to prevent flickering
+    useEffect(() => {
+        if (videoRef.current && screenStream) {
+            // Only set srcObject if it's different from current
+            if (videoRef.current.srcObject !== screenStream) {
+                videoRef.current.srcObject = screenStream;
+            }
+        } else if (videoRef.current && !screenStream) {
+            // Clear srcObject when no stream
+            videoRef.current.srcObject = null;
+        }
+    }, [screenStream]);
 
     // Cleanup on unmount
     useEffect(() => {
@@ -145,13 +161,11 @@ const InterviewerSection: React.FC = () => {
                     {screenStream ? (
                         <div className="flex max-h-full w-full justify-center lg:h-44 lg:max-h-44 2xl:h-56 2xl:max-h-56">
                             <video
+                                ref={videoRef}
                                 className="max-h-full object-contain"
                                 autoPlay
-                                ref={video => {
-                                    if (video) {
-                                        video.srcObject = screenStream;
-                                    }
-                                }}
+                                muted
+                                playsInline
                             />
                         </div>
                     ) : (

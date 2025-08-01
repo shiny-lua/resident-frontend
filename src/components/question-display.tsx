@@ -1,4 +1,5 @@
 import React from "react";
+import ReactMarkdown from "react-markdown";
 
 interface QuestionDisplayProps {
     question: string;
@@ -16,7 +17,11 @@ const QuestionDisplay: React.FC<QuestionDisplayProps> = ({
             </div>
             <div className="flex-1 min-w-0">
                 <div className="bg-slate-50 rounded-lg p-3 border border-slate-200">
-                    <p className="text-sm text-slate-800 leading-relaxed">{question}</p>
+                    <div className="text-sm text-slate-800 leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>p]:mb-2 [&>p]:last:mb-0 [&>h1]:text-lg [&>h1]:font-bold [&>h1]:mb-2 [&>h2]:text-base [&>h2]:font-bold [&>h2]:mb-2 [&>h3]:text-sm [&>h3]:font-bold [&>h3]:mb-2 [&>ul]:list-disc [&>ul]:pl-4 [&>ul]:mb-2 [&>ol]:list-decimal [&>ol]:pl-4 [&>ol]:mb-2 [&>li]:mb-1 [&>code]:bg-gray-100 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>pre]:bg-gray-100 [&>pre]:p-2 [&>pre]:rounded [&>pre]:overflow-x-auto [&>blockquote]:border-l-4 [&>blockquote]:border-gray-300 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-gray-600">
+                        <ReactMarkdown>
+                            {question}
+                        </ReactMarkdown>
+                    </div>
                 </div>
             </div>
         </div>

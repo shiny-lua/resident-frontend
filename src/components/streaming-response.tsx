@@ -1,4 +1,5 @@
 import React from "react";
+import ReactMarkdown from "react-markdown";
 
 interface StreamingResponseProps {
     isLoading: boolean;
@@ -51,10 +52,12 @@ const StreamingResponse: React.FC<StreamingResponseProps> = ({
                 ) : isStreaming ? (
                     // Streaming State
                     <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
-                        <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">
-                            {streamingText}
+                        <div className="text-sm text-slate-700 leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>p]:mb-2 [&>p]:last:mb-0 [&>h1]:text-lg [&>h1]:font-bold [&>h1]:mb-2 [&>h2]:text-base [&>h2]:font-bold [&>h2]:mb-2 [&>h3]:text-sm [&>h3]:font-bold [&>h3]:mb-2 [&>ul]:list-disc [&>ul]:pl-4 [&>ul]:mb-2 [&>ol]:list-decimal [&>ol]:pl-4 [&>ol]:mb-2 [&>li]:mb-1 [&>code]:bg-gray-100 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>pre]:bg-gray-100 [&>pre]:p-2 [&>pre]:rounded [&>pre]:overflow-x-auto [&>blockquote]:border-l-4 [&>blockquote]:border-gray-300 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-gray-600">
+                            <ReactMarkdown>
+                                {streamingText}
+                            </ReactMarkdown>
                             <span className="inline-block w-2 h-5 bg-green-600 animate-pulse ml-1"></span>
-                        </p>
+                        </div>
                         <div className="mt-2 flex items-center justify-between">
                             <span className="text-xs text-green-600 font-medium flex items-center">
                                 <div className="flex space-x-1 mr-2">
@@ -69,7 +72,11 @@ const StreamingResponse: React.FC<StreamingResponseProps> = ({
                 ) : finalResponse ? (
                     // Completed State
                     <div className="bg-white rounded-lg p-3 border border-slate-200 shadow-sm">
-                        <p className="text-sm text-slate-700 leading-relaxed whitespace-pre-wrap">{finalResponse}</p>
+                        <div className="text-sm text-slate-700 leading-relaxed [&>*:first-child]:mt-0 [&>*:last-child]:mb-0 [&>p]:mb-2 [&>p]:last:mb-0 [&>h1]:text-lg [&>h1]:font-bold [&>h1]:mb-2 [&>h2]:text-base [&>h2]:font-bold [&>h2]:mb-2 [&>h3]:text-sm [&>h3]:font-bold [&>h3]:mb-2 [&>ul]:list-disc [&>ul]:pl-4 [&>ul]:mb-2 [&>ol]:list-decimal [&>ol]:pl-4 [&>ol]:mb-2 [&>li]:mb-1 [&>code]:bg-gray-100 [&>code]:px-1 [&>code]:py-0.5 [&>code]:rounded [&>pre]:bg-gray-100 [&>pre]:p-2 [&>pre]:rounded [&>pre]:overflow-x-auto [&>blockquote]:border-l-4 [&>blockquote]:border-gray-300 [&>blockquote]:pl-4 [&>blockquote]:italic [&>blockquote]:text-gray-600">
+                            <ReactMarkdown>
+                                {finalResponse}
+                            </ReactMarkdown>
+                        </div>
                         <div className="mt-2 flex items-center justify-end">
                             <span className="text-xs text-green-600 font-medium">AI Response</span>
                         </div>

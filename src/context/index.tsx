@@ -6,7 +6,7 @@ import { restApi } from "./restApi";
 
 export { config }
 
-const INIT_STATE: InitStateObject = {
+const INIT_STATE: any = {
     access_token: "",
     userEmail: "",
     verifyCodeType: "",
@@ -33,7 +33,15 @@ const INIT_STATE: InitStateObject = {
 }
 
 const GlobalContext = React.createContext<any>(null);
-const reducer = (state: InitStateObject, { type, payload }: ReducerObject) => {
+const reducer = (state: any, { type, payload }: any) => {
+    // Special handling for conversationHistory to ensure proper array updates
+    if (type === 'conversationHistory') {
+        // Handle both direct payloads and functional updates
+        const newHistory = typeof payload === 'function' ? payload(state.conversationHistory) : payload;
+        return { ...state, conversationHistory: newHistory };
+    }
+    
+    // For all other state updates, use the standard spread approach
     return { ...state, [type]: payload };
 }
 

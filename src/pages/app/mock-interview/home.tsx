@@ -29,6 +29,8 @@ const MockInterview = () => {
     const navigate = useNavigate();
     const [state, { dispatch }] = useGlobalContext();
     const [showMockInterviewModal, setShowMockInterviewModal] = React.useState(false)
+    const [showCreateSessionModal, setShowCreateSessionModal] = React.useState(false)
+    const [showJoinSessionModal, setShowJoinSessionModal] = React.useState(false)
     const [status, setStatus] = React.useState({
         status: "All Status"
     })
@@ -43,6 +45,15 @@ const MockInterview = () => {
         has_previous: false
     })
     const [loading, setLoading] = React.useState(false)
+    const [isCreatingSession, setIsCreatingSession] = React.useState(false)
+
+    // Session creation state
+    const [sessionData, setSessionData] = React.useState({
+        specialty: 'general',
+        session_type: 'examiner'
+    })
+    const [joinSessionCode, setJoinSessionCode] = React.useState('')
+    const [joinSessionRole, setJoinSessionRole] = React.useState<'examiner' | 'student'>('student')
 
     const showStatusDropdownRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -139,6 +150,56 @@ const MockInterview = () => {
         navigate(`/app/mock-interview/mock/${interviewId}`)
     }
 
+    const handleCreateSession = async () => {
+        setIsCreatingSession(true)
+        try {
+            const response = await restApi.postRequest('mock-interview-create-session', sessionData);
+
+            if (response.status === 200 && response.data?.data) {
+                const { session_code } = response.data.data;
+                showToast(`Session created! Code: ${session_code}`, 'success');
+                setShowCreateSessionModal(false);
+
+                // Navigate to the session room
+                navigate(`/app/mock-interview/session/${session_code}`);
+            } else {
+                showToast('Failed to create session', 'error');
+            }
+        } catch (error) {
+            console.error('Error creating session:', error);
+            showToast('An error occurred while creating the session', 'error');
+        } finally {
+            setIsCreatingSession(false)
+        }
+    };
+
+    const handleJoinSession = async () => {
+        if (!joinSessionCode.trim()) {
+            showToast('Please enter a session code', 'warning');
+            return;
+        }
+
+        try {
+            const response = await restApi.postRequest('mock-interview-join-session', {
+                session_code: joinSessionCode,
+                session_type: joinSessionRole
+            });
+
+            if (response.status === 200 && response.data?.data) {
+                showToast('Successfully joined session!', 'success');
+                setShowJoinSessionModal(false);
+
+                // Navigate to the session room
+                navigate(`/app/mock-interview/session/${joinSessionCode}`);
+            } else {
+                showToast(response.data?.msg || 'Failed to join session', 'error');
+            }
+        } catch (error) {
+            console.error('Error joining session:', error);
+            showToast('An error occurred while joining the session', 'error');
+        }
+    };
+
     React.useEffect(() => {
         document.addEventListener("mousedown", onShowStatusDropdown);
         return () => {
@@ -204,6 +265,24 @@ const MockInterview = () => {
                                 {state.isLeaveInterview.status ? 'Interview in Progress' : 'Start Mock Interview'}
                             </span>
                         </button>
+                        <button
+                            onClick={() => setShowCreateSessionModal(true)}
+                            className="whitespace-nowrap flex items-center gap-2 justify-center gap-y-3 rounded-md p-3 text-sm font-medium text-white bg-green-600 hover:opacity-80"
+                        >
+                            <Icon icon="New" />
+                            <span className="text-sm font-medium">
+                                Create Session
+                            </span>
+                        </button>
+                        <button
+                            onClick={() => setShowJoinSessionModal(true)}
+                            className="whitespace-nowrap flex items-center gap-2 justify-center gap-y-3 rounded-md p-3 text-sm font-medium text-white bg-purple-600 hover:opacity-80"
+                        >
+                            <Icon icon="MockInterview" />
+                            <span className="text-sm font-medium">
+                                Join Session
+                            </span>
+                        </button>
                     </div>
                     <div className="hidden gap-4 md:flex">
                         <Select
@@ -257,11 +336,13 @@ const MockInterview = () => {
                                 </tr>
                             </thead>
                             {mockInterviews.length === 0 ? (
-                                <tr className="border-b transition-colors hover:bg-slate-500/50">
-                                    <td colSpan={4} className="p-8 text-center text-slate-500">
-                                        No mock interviews found. Start your first mock interview!
-                                    </td>
-                                </tr>
+                                <tbody className="[&_tr:last-child]:border-0">
+                                    <tr className="border-b transition-colors hover:bg-slate-500/50">
+                                        <td colSpan={4} className="p-8 text-center text-slate-500">
+                                            No mock interviews found. Start your first mock interview!
+                                        </td>
+                                    </tr>
+                                </tbody>
                             ) : (
                                 <tbody className="[&_tr:last-child]:border-0">
                                     {mockInterviews.map((interview) => (
@@ -384,6 +465,115 @@ const MockInterview = () => {
                 )}
             </div>
             {showMockInterviewModal && (<MockInterviewModal isOpen={showMockInterviewModal} onClose={() => setShowMockInterviewModal(false)} />)}
+
+            {/* Create Session Modal */}
+            {showCreateSessionModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-96">
+                        <h3 className="text-lg font-semibold mb-4">Create Mock Interview Session</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Specialty
+                                </label>
+                                <select
+                                    value={sessionData.specialty}
+                                    onChange={(e) => setSessionData({ ...sessionData, specialty: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="general">General</option>
+                                    <option value="internal_medicine">Internal Medicine</option>
+                                    <option value="surgery">Surgery</option>
+                                    <option value="pediatrics">Pediatrics</option>
+                                    <option value="psychiatry">Psychiatry</option>
+                                    <option value="emergency_medicine">Emergency Medicine</option>
+                                </select>
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Your Role
+                                </label>
+                                <select
+                                    value={sessionData.session_type}
+                                    onChange={(e) => setSessionData({ ...sessionData, session_type: e.target.value })}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="examiner">Examiner</option>
+                                    <option value="student">Student</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex space-x-3 mt-6 justify-end">
+                            <button onClick={() => setShowCreateSessionModal(false)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-[13px] font-medium ring-offset-background transition-colors border bg-white hover:bg-sky-100 px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9">
+                                Cancel
+                            </button>
+                            <span>
+                                <button
+                                    onClick={handleCreateSession}
+                                    disabled={state.isLeaveInterview.status || isCreatingSession}
+                                    className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${state.isLeaveInterview.status || isCreatingSession
+                                        ? "bg-slate-500 cursor-not-allowed"
+                                        : "bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)]"
+                                        }`}
+                                >
+                                    {isCreatingSession ? 'Creating...' : state.isLeaveInterview.status ? 'Interview in Progress' : 'Launch'}
+                                </button>
+                            </span>
+                        </div>
+                    </div>
+                </div>
+            )}
+
+            {/* Join Session Modal */}
+            {showJoinSessionModal && (
+                <div className="fixed inset-0 bg-black bg-opacity-50 flex items-center justify-center z-50">
+                    <div className="bg-white rounded-lg p-6 w-96">
+                        <h3 className="text-lg font-semibold mb-4">Join Mock Interview Session</h3>
+                        <div className="space-y-4">
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Session Code
+                                </label>
+                                <input
+                                    type="text"
+                                    value={joinSessionCode}
+                                    onChange={(e) => setJoinSessionCode(e.target.value.toUpperCase())}
+                                    placeholder="Enter session code"
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                    maxLength={8}
+                                />
+                            </div>
+                            <div>
+                                <label className="block text-sm font-medium text-gray-700 mb-2">
+                                    Your Role
+                                </label>
+                                <select
+                                    value={joinSessionRole}
+                                    onChange={(e) => setJoinSessionRole(e.target.value as 'examiner' | 'student')}
+                                    className="w-full px-3 py-2 border border-gray-300 rounded-md"
+                                >
+                                    <option value="student">Student</option>
+                                    <option value="examiner">Examiner</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div className="flex space-x-3 mt-6">
+                            <button
+                                onClick={() => setShowJoinSessionModal(false)}
+                                className="flex-1 px-4 py-2 border border-gray-300 rounded hover:bg-gray-50"
+                            >
+                                Cancel
+                            </button>
+                            <button
+                                onClick={handleJoinSession}
+                                className="flex-1 px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700"
+                            >
+                                Join Session
+                            </button>
+                        </div>
+                    </div>
+                </div>
+            )}
         </Layout>
     )
 }

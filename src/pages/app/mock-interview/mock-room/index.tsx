@@ -1,31 +1,157 @@
-import { useState } from "react";
-import { useParams } from "react-router-dom";
+import React from "react";
+import { useParams, useNavigate } from "react-router-dom";
+import { useGlobalContext } from "../../../../context";
+import { restApi } from "../../../../context/restApi";
+import { showToast } from "../../../../context/helper";
+import MockInterviewRoom from "./mock-interview-room";
 
-import HeaderSection from "./header-section";
-import InterviewerSection from "./interviewer-section";
-import ModelResponseSection from "./model-response-section";
-import ReviewSection from "./review-section";
-
-const MockRoom = () => {
-    const { callId } = useParams();
-    const [isEndInterview, setEndInterview] = useState(false);
-    const [isCameraOn, setIsCameraOn] = useState(false);
-
-    return (
-        <div>
-            {isEndInterview ? <ReviewSection /> : (
-                <div className="h-dvh bg-design-light px-1">
-                    <HeaderSection setEndInterview={setEndInterview} isCameraOn={isCameraOn} setIsCameraOn={setIsCameraOn} interviewId={callId} />
-                    <div className="relative h-[calc(100dvh-142px)] w-full bg-slate-50 px-6">
-                        <div className="flex flex-row overflow-hidden gap-5 h-full w-full min-h-[500px] min-w-[1200px]">
-                            <InterviewerSection isCameraOn={isCameraOn} />
-                            <ModelResponseSection />
-                        </div>
-                    </div>
-                </div>
-            )}
-        </div>
-    )
+interface MockInterviewSession {
+    session_code: string;
+    session_id: string;
+    specialty: string;
+    status: string;
+    questions: Array<{
+        question: string;
+        category: string;
+        expected_keywords: string[];
+    }>;
+    current_question_index: number;
+    evaluations: Array<{
+        question_index: number;
+        question: string;
+        response: string;
+        evaluation: {
+            score: number;
+            feedback: string;
+            suggestions: string[];
+        };
+        timestamp: string;
+    }>;
+    examiner_email: string | null;
+    student_email: string | null;
+    created_at: string;
+    updated_at: string;
 }
 
-export default MockRoom
+const MockInterviewRoomIndex = () => {
+    const { sessionCode } = useParams<{ sessionCode: string }>();
+    const navigate = useNavigate();
+    const [state] = useGlobalContext();
+    const [session, setSession] = React.useState<MockInterviewSession | null>(null);
+    const [loading, setLoading] = React.useState(true);
+    const [userRole, setUserRole] = React.useState<'examiner' | 'student' | null>(null);
+
+    React.useEffect(() => {
+        if (sessionCode) {
+            fetchSessionDetails();
+        }
+    }, [sessionCode]);
+
+    const fetchSessionDetails = async () => {
+        try {
+            setLoading(true);
+            const response = await restApi.postRequest(`mock-interview-get-session`, { session_code: sessionCode });
+
+            if (response.status === 200 && response.data?.data) {
+                const sessionData = response.data.data;
+
+                if (!sessionData) {
+                    showToast('You are not authorized to join this session', 'error');
+                    navigate('/app/mock-interview');
+                    return;
+                }
+                
+                // Determine user role
+                const resp = await restApi.postRequest("get-user")
+                
+                if (resp.status === 200) {
+                    const data = resp.data.data
+                    const userEmail = data.email;
+                    if (sessionData.examiner_email === userEmail) {
+                        setUserRole('examiner');
+                        setSession(sessionData);
+                    } else if (sessionData.student_email === userEmail) {
+                        setUserRole('student');
+                        setSession(sessionData);
+                    } else {
+                        // User is not part of this session
+                        showToast('You are not authorized to join this session', 'error');
+                        navigate('/app/mock-interview');
+                    }
+                }
+            } else {
+                showToast('Failed to load session details', 'error');
+                navigate('/app/mock-interview');
+            }
+        } catch (error) {
+            console.error('Error fetching session details:', error);
+            showToast('An error occurred while loading the session', 'error');
+            navigate('/app/mock-interview');
+        } finally {
+            setLoading(false);
+        }
+    };
+
+    const handleEvaluateResponse = async (questionIndex: number, responseText: string) => {
+        try {
+            const response = await restApi.postRequest('mock-interview-evaluate-response', {
+                session_code: sessionCode,
+                question_index: questionIndex,
+                response_text: responseText
+            });
+
+            if (response.status === 200 && response.data?.data) {
+                // Update session with new evaluation
+                if (session) {
+                    const newEvaluation = {
+                        question_index: questionIndex,
+                        question: session.questions[questionIndex].question,
+                        response: responseText,
+                        evaluation: response.data.data.evaluation,
+                        timestamp: new Date().toISOString()
+                    };
+
+                    setSession({
+                        ...session,
+                        evaluations: [...session.evaluations, newEvaluation]
+                    });
+                }
+
+                showToast('Response evaluated successfully', 'success');
+                return response.data.data.evaluation;
+            } else {
+                showToast('Failed to evaluate response', 'error');
+                return null;
+            }
+        } catch (error) {
+            console.error('Error evaluating response:', error);
+            showToast('An error occurred while evaluating the response', 'error');
+            return null;
+        }
+    };
+
+    if (loading) {
+        return (
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <div className="animate-spin rounded-full h-12 w-12 border-b-2 border-blue-600 mx-auto"></div>
+                    <p className="mt-4 text-gray-600">Loading session...</p>
+                </div>
+            </div>
+        );
+    }
+
+
+    if (session && userRole) {
+        return (
+            <MockInterviewRoom
+                session={session}
+                userRole={userRole}
+                onEvaluateResponse={handleEvaluateResponse}
+                onSessionUpdate={fetchSessionDetails}
+            />
+        );
+    }
+};
+
+export default MockInterviewRoomIndex;

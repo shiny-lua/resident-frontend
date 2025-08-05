@@ -26,6 +26,7 @@
     "@stripe/stripe-js": "^6.1.0",
     "@tailwindcss/typography": "^0.5.16",
     "@types/js-cookie": "^3.0.6",
+    "@zegocloud/zego-uikit-prebuilt": "^2.15.0",
     "apexcharts": "^3.41.0",
     "bip32": "^5.0.0-rc.0",
     "bip39": "^3.1.0",

@@ -5,7 +5,6 @@ import Started from "./started";
 import Interview from "./interview";
 import MockInterview from "./mock-interview";
 import PermissionSetting from "./permission-setting";
-import Role from "./role";
 import Resume from "./resume";
 import Question from "./question";
 import Subscription from "./subscription";
@@ -67,7 +66,6 @@ const AppIndex = () => {
             <Route path="/live-interview/*" element={<Interview />} />
             <Route path="/mock-interview/*" element={<MockInterview />} />
             <Route path="/permission-setting" element={<PermissionSetting />} />
-            <Route path="/role" element={<Role />} />
             <Route path="/resume" element={<Resume />} />
             <Route path="/question" element={<Question />} />
             <Route path="/subscription" element={<Subscription />} />

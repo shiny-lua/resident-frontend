@@ -1,8 +1,7 @@
 import axios from "axios";
-import { config } from ".";
 import Cookies from "js-cookie";
 
-axios.defaults.baseURL = config.BACKEND_URL + '/api/';
+axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL + '/api/';
 axios.interceptors.request.use((config: any) => {
   const token = Cookies.get("access_token")
   if (token) {
@@ -64,24 +63,6 @@ const restApi = {
       return response;
     } catch (error: any) {
       console.error("Error getting interviews:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  createMockInterview: async (mockInterviewData: {
-    title?: string;
-    resume?: string;
-    role?: string;
-    domain?: string;
-    interview_type?: string;
-    scheduled_at?: string;
-    timezone?: string;
-  }) => {
-    try {
-      const response = await restApi.postRequest('create-mock-interview', mockInterviewData);
-      return response;
-    } catch (error: any) {
-      console.error("Error creating mock interview:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },

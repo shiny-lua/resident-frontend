@@ -31,6 +31,8 @@ interface MockInterviewSession {
     student_email: string | null;
     created_at: string;
     updated_at: string;
+    session_started: boolean;
+    session_completed: boolean;
 }
 
 const MockInterviewRoomIndex = () => {
@@ -46,6 +48,17 @@ const MockInterviewRoomIndex = () => {
             fetchSessionDetails();
         }
     }, [sessionCode]);
+
+    // Poll for session updates every 5 seconds
+    React.useEffect(() => {
+        if (session && session.status !== 'completed') {
+            const interval = setInterval(() => {
+                fetchSessionDetails();
+            }, 5000);
+
+            return () => clearInterval(interval);
+        }
+    }, [session]);
 
     const fetchSessionDetails = async () => {
         try {
@@ -89,6 +102,83 @@ const MockInterviewRoomIndex = () => {
             navigate('/app/mock-interview');
         } finally {
             setLoading(false);
+        }
+    };
+
+    const handleStartSession = async () => {
+        try {
+            const response = await restApi.postRequest('mock-interview-start-session', {
+                session_code: sessionCode
+            });
+
+            if (response.status === 200 && response.data?.data) {
+                // Update session with new status
+                if (session) {
+                    setSession({
+                        ...session,
+                        status: 'active',
+                        session_started: true
+                    });
+                }
+                return response.data.data;
+            } else {
+                throw new Error(response.data?.msg || 'Failed to start session');
+            }
+        } catch (error) {
+            console.error('Error starting session:', error);
+            throw error;
+        }
+    };
+
+    const handleNextQuestion = async () => {
+        try {
+            const response = await restApi.postRequest('mock-interview-next-question', {
+                session_code: sessionCode
+            });
+
+            if (response.status === 200 && response.data?.data) {
+                // Update session with new question index
+                if (session) {
+                    const newData = response.data.data;
+                    setSession({
+                        ...session,
+                        current_question_index: newData.current_question_index,
+                        status: newData.status,
+                        session_completed: newData.status === 'completed'
+                    });
+                }
+                return response.data.data;
+            } else {
+                throw new Error(response.data?.msg || 'Failed to move to next question');
+            }
+        } catch (error) {
+            console.error('Error moving to next question:', error);
+            throw error;
+        }
+    };
+
+    const handleEndSession = async () => {
+        try {
+            const response = await restApi.postRequest('mock-interview-end-session', {
+                session_code: sessionCode
+            });
+
+            if (response.status === 200 && response.data?.data) {
+                // Update session with completed status
+                if (session) {
+                    setSession({
+                        ...session,
+                        status: 'completed',
+                        session_completed: true
+                    });
+                }
+                return response.data.data;
+            } else {
+                throw new Error(response.data?.msg || 'Failed to end session');
+            }
+        } catch (error) {
+            console.error('Error ending session:', error);
+            throw error;
         }
     };
 
@@ -141,7 +231,6 @@ const MockInterviewRoomIndex = () => {
         );
     }
 
-
     if (session && userRole) {
         return (
             <MockInterviewRoom
@@ -149,9 +238,14 @@ const MockInterviewRoomIndex = () => {
                 userRole={userRole}
                 onEvaluateResponse={handleEvaluateResponse}
                 onSessionUpdate={fetchSessionDetails}
+                onStartSession={handleStartSession}
+                onNextQuestion={handleNextQuestion}
+                onEndSession={handleEndSession}
             />
         );
     }
+
+    return null;
 };
 
 export default MockInterviewRoomIndex;

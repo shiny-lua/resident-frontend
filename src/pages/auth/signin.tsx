@@ -1,12 +1,12 @@
 import React from "react";
-
 import { Link, useNavigate } from "react-router-dom";
+import Cookies from "js-cookie";
+
 import Icon from "../../components/icon";
 import { emailValidator, showToast, strongPasswordValidator } from "../../context/helper";
 import { restApi } from "../../context/restApi";
-import { config, useGlobalContext } from "../../context";
+import { useGlobalContext } from "../../context";
 import Loader from "../../components/loader";
-import Cookies from "js-cookie";
 
 const SignIn = () => {
 
@@ -73,12 +73,12 @@ const SignIn = () => {
 
     const onGoogle = () => {
         dispatch({type: "authType", payload: "signin"})
-        window.location.href = `${config.BACKEND_URL}/api/google-login`
+        window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/google-login`
     }
 
     const onFacebook = () => {
         dispatch({type: "authType", payload: "signin"})
-        window.location.href = `${config.BACKEND_URL}/api/facebook-login`
+        window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/facebook-login`
     }
 
     return (

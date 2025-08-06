@@ -1,5 +1,5 @@
 import { restApi } from '../context/restApi';
-import { config } from '../config/config';
+import { useState, useRef, useEffect } from 'react';
 
 export interface ChatResponse {
   question: string;
@@ -61,7 +61,7 @@ export const generateInterviewResponseStream = async (
       requestBody.transcribed_text = transcribedText;
     }
 
-    const response = await fetch(`${config.BACKEND_URL}/api/ai/stream`, {
+    const response = await fetch(`${import.meta.env.VITE_API_BASE_URL}/api/ai/stream`, {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',

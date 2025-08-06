@@ -1,10 +1,7 @@
 import React from "react";
 import Cookies from "js-cookie";
 
-import { config } from "../config/config";
 import { restApi } from "./restApi";
-
-export { config }
 
 const INIT_STATE: any = {
     access_token: "",

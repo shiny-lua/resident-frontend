@@ -168,31 +168,31 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       }
 
       // Create mock interview via API
-      const response = await restApi.createMockInterview(mockInterviewData);
-      console.log("response", response.data.data.interview_id);
-      if (response.status === 200) {
-        // Store mock interview state in localStorage
-        localStorage.setItem('currentInterview', JSON.stringify({
-          interviewId: response.data.data.interview_id,
-          link: `/app/mock-interview/mock/${response.data.data.interview_id}`,
-          status: true,
-          timestamp: new Date().toISOString()
-        }));
+      // const response = await restApi.createMockInterview(mockInterviewData);
+      // console.log("response", response.data.data.interview_id);
+      // if (response.status === 200) {
+      //   // Store mock interview state in localStorage
+      //   localStorage.setItem('currentInterview', JSON.stringify({
+      //     interviewId: response.data.data.interview_id,
+      //     link: `/app/mock-interview/mock/${response.data.data.interview_id}`,
+      //     status: true,
+      //     timestamp: new Date().toISOString()
+      //   }));
 
-        dispatch({
-          type: "isLeaveInterview",
-          payload: {
-            status: true,
-            link: `/app/mock-interview/mock/${response.data.data.interview_id}`
-          }
-        });
-        onClose();
-        navigate(`/app/mock-interview/mock/${response.data.data.interview_id}`);
-        return;
-      } else {
-        console.error('Failed to create mock interview:', response.data?.msg || response.msg);
-        showToast(response.data?.msg || response.msg || 'Failed to create mock interview', 'error');
-      }
+      //   dispatch({
+      //     type: "isLeaveInterview",
+      //     payload: {
+      //       status: true,
+      //       link: `/app/mock-interview/mock/${response.data.data.interview_id}`
+      //     }
+      //   });
+      //   onClose();
+      //   navigate(`/app/mock-interview/mock/${response.data.data.interview_id}`);
+      //   return;
+      // } else {
+      //   console.error('Failed to create mock interview:', response.data?.msg || response.msg);
+      //   showToast(response.data?.msg || response.msg || 'Failed to create mock interview', 'error');
+      // }
     } catch (error) {
       console.error('Error creating mock interview:', error);
       showToast('An error occurred while creating the mock interview', 'error');

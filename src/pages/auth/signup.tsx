@@ -1,9 +1,11 @@
 import React from "react";
 import { Link, useNavigate } from "react-router-dom";
+
 import { emailValidator, passwordMatch, showToast, strongPasswordValidator } from "../../context/helper";
 import { restApi } from "../../context/restApi";
 import Loader from "../../components/loader";
-import { config, useGlobalContext } from "../../context";
+import { useGlobalContext } from "../../context";
+
 
 const SiginUp = () => {
 
@@ -76,12 +78,12 @@ const SiginUp = () => {
     }
     const onGoogle = () => {
         dispatch({ type: "authType", payload: "signup" })
-        window.location.href = `${config.BACKEND_URL}/api/google-login`
+        window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/google-login`
     }
 
     const onFacebook = () => {
         dispatch({ type: "authType", payload: "signup" })
-        window.location.href = `${config.BACKEND_URL}/api/facebook-login`
+        window.location.href = `${import.meta.env.VITE_API_BASE_URL}/api/facebook-login`
     }
 
     return (

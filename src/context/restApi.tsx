@@ -105,6 +105,154 @@ const restApi = {
       console.error("Error getting mock interviews:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
+  },
+
+  createMockInterviewSession: async (sessionData: {
+    specialty: string;
+    question_count: number;
+    session_name: string;
+    description: string;
+    resume?: string;
+    scheduled_at?: string;
+    timezone?: string;
+  }) => {
+    try {
+      const response = await restApi.postRequest('mock-interview-create-session', sessionData);
+      return response;
+    } catch (error: any) {
+      console.error("Error creating mock interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  getMockInterviewSession: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('mock-interview-get-session', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting mock interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  startMockInterviewSession: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('mock-interview-start-session', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error starting mock interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  nextMockInterviewQuestion: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('mock-interview-next-question', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting next question:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  evaluateMockInterviewResponse: async (sessionCode: string, questionIndex: number, response_text: string) => {
+    try {
+      const responseData = await restApi.postRequest('mock-interview-evaluate-response', {
+        session_code: sessionCode,
+        question_index: questionIndex,
+        response_text: response_text
+      });
+      return responseData;
+    } catch (error: any) {
+      console.error("Error evaluating response:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  endMockInterviewSession: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('mock-interview-end-session', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error ending mock interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  // Voice Mock Interview APIs
+  getVoiceQuestionAudio: async (sessionId: string, questionIndex: number) => {
+    try {
+      const response = await restApi.postRequest('voice-mock-interview-get-question-audio', {
+        session_id: sessionId,
+        question_index: questionIndex
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting voice question audio:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  submitVoiceResponse: async (sessionId: string, questionIndex: number, audioBlob: Blob) => {
+    try {
+      const formData = new FormData();
+      formData.append('session_id', sessionId);
+      formData.append('question_index', questionIndex.toString());
+      formData.append('audio', audioBlob, 'response.wav');
+
+      const response = await restApi.postRequest('voice-mock-interview-submit-voice-response', formData);
+      return response;
+    } catch (error: any) {
+      console.error("Error submitting voice response:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  convertSpeechToText: async (audioBlob: Blob) => {
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioBlob, 'response.wav');
+
+      const response = await restApi.postRequest('voice-mock-interview-speech-to-text', formData);
+      return response;
+    } catch (error: any) {
+      console.error("Error converting speech to text:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  convertTextToSpeech: async (text: string) => {
+    try {
+      const response = await restApi.postRequest('voice-mock-interview-text-to-speech', {
+        text: text
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error converting text to speech:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  evaluateVoiceResponse: async (sessionId: string, questionIndex: number, responseText: string) => {
+    try {
+      const response = await restApi.postRequest('voice-mock-interview-evaluate-response', {
+        session_id: sessionId,
+        question_index: questionIndex,
+        response_text: responseText
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error evaluating voice response:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
   }
 }
 

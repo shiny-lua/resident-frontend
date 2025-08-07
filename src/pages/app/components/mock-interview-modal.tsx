@@ -26,7 +26,6 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
   const resumeDropdownRef = React.useRef<HTMLDivElement | null>(null);
   const roleDropdownRef = React.useRef<HTMLDivElement | null>(null);
   const domainDropdownRef = React.useRef<HTMLDivElement | null>(null);
-  const interviewTypeDropdownRef = React.useRef<HTMLDivElement | null>(null);
   const timeDropdownRef = React.useRef<HTMLDivElement | null>(null);
   const timeZoneDropdownRef = React.useRef<HTMLDivElement | null>(null);
 
@@ -44,18 +43,17 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     },
     domain: {
       value: "General",
-      data: ["General"],
+      data: ["General", "Cardiology", "Neurology", "Emergency Medicine", "Internal Medicine", "Surgery", "Pediatrics", "Psychiatry", "Radiology", "Anesthesiology"],
     },
     interviewType: {
-      value: "General",
-      data: ["General", "Phone Interview"],
+      value: "Voice Interview",
+      data: ["Voice Interview"],
     },
   });
 
   const [showResumeDropdown, setShowResumeDropdown] = React.useState(false);
   const [showRoleDropdown, setShowRoleDropdown] = React.useState(false);
   const [showDomainDropdown, setShowDomainDropdown] = React.useState(false);
-  const [showInterviewTypeDropdown, setShowInterviewTypeDropdown] = React.useState(false);
   const [showTimeDropdown, setShowTimeDropdown] = React.useState(false);
   const [showTimeZoneDropdown, setShowTimeZoneDropdown] = React.useState(false);
 
@@ -105,7 +103,6 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     document.addEventListener("mousedown", onDropdownClickOutside(resumeDropdownRef, setShowResumeDropdown));
     document.addEventListener("mousedown", onDropdownClickOutside(roleDropdownRef, setShowRoleDropdown));
     document.addEventListener("mousedown", onDropdownClickOutside(domainDropdownRef, setShowDomainDropdown));
-    document.addEventListener("mousedown", onDropdownClickOutside(interviewTypeDropdownRef, setShowInterviewTypeDropdown));
     document.addEventListener("mousedown", onDropdownClickOutside(timeDropdownRef, setShowTimeDropdown));
     document.addEventListener("mousedown", onDropdownClickOutside(timeZoneDropdownRef, setShowTimeZoneDropdown));
 
@@ -114,7 +111,6 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       document.removeEventListener("mousedown", onDropdownClickOutside(resumeDropdownRef, setShowResumeDropdown));
       document.removeEventListener("mousedown", onDropdownClickOutside(roleDropdownRef, setShowRoleDropdown));
       document.removeEventListener("mousedown", onDropdownClickOutside(domainDropdownRef, setShowDomainDropdown));
-      document.removeEventListener("mousedown", onDropdownClickOutside(interviewTypeDropdownRef, setShowInterviewTypeDropdown));
       document.removeEventListener("mousedown", onDropdownClickOutside(timeDropdownRef, setShowTimeDropdown));
       document.removeEventListener("mousedown", onDropdownClickOutside(timeZoneDropdownRef, setShowTimeZoneDropdown));
     };
@@ -139,23 +135,18 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
     setIsCreatingMockInterview(true);
 
     try {
-      // Prepare mock interview data
-      const mockInterviewData: any = {
-        title: `Mock Interview - ${new Date().toLocaleDateString()}`
+      // Prepare mock interview session data
+      const sessionData: any = {
+        specialty: status.domain.value.toLowerCase().replace(" ", "_"),
+        question_count: 10, // Default question count
+        session_name: `${status.domain.value} Mock Interview`,
+        description: `Mock interview session for ${status.domain.value} specialty`,
+        interview_type: "voice" // Always voice interview
       };
 
       // Add optional fields if they have values
       if (status.resume.value) {
-        mockInterviewData.resume = status.resume.value;
-      }
-      if (status.role.value) {
-        mockInterviewData.role = status.role.value;
-      }
-      if (status.domain.value && status.domain.value !== "General") {
-        mockInterviewData.domain = status.domain.value;
-      }
-      if (status.interviewType.value && status.interviewType.value !== "General") {
-        mockInterviewData.interview_type = status.interviewType.value;
+        sessionData.resume = status.resume.value;
       }
 
       // Add scheduled date/time if set
@@ -163,39 +154,49 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
         const scheduledDate = new Date(startDate);
         const [hours, minutes] = dateTime.time.split(':');
         scheduledDate.setHours(parseInt(hours), parseInt(minutes), 0, 0);
-        mockInterviewData.scheduled_at = scheduledDate.toISOString();
-        mockInterviewData.timezone = dateTime.timezone;
+        sessionData.scheduled_at = scheduledDate.toISOString();
+        sessionData.timezone = dateTime.timezone;
       }
 
-      // Create mock interview via API
-      // const response = await restApi.createMockInterview(mockInterviewData);
-      // console.log("response", response.data.data.interview_id);
-      // if (response.status === 200) {
-      //   // Store mock interview state in localStorage
-      //   localStorage.setItem('currentInterview', JSON.stringify({
-      //     interviewId: response.data.data.interview_id,
-      //     link: `/app/mock-interview/mock/${response.data.data.interview_id}`,
-      //     status: true,
-      //     timestamp: new Date().toISOString()
-      //   }));
+      // Create mock interview session via API
+      const response = await restApi.createMockInterviewSession(sessionData);
+      
+      if (response.status === 200 && response.data?.status === "success") {
+        const sessionInfo = response.data.data;
+        
+        // Store mock interview state in localStorage
+        localStorage.setItem('currentInterview', JSON.stringify({
+          interviewId: sessionInfo.session_id,
+          sessionCode: sessionInfo.session_code,
+          link: `/app/mock-interview/mock/${sessionInfo.session_code}`,
+          status: true,
+          timestamp: new Date().toISOString(),
+          interviewType: sessionData.interview_type,
+          role: "student"
+        }));
 
-      //   dispatch({
-      //     type: "isLeaveInterview",
-      //     payload: {
-      //       status: true,
-      //       link: `/app/mock-interview/mock/${response.data.data.interview_id}`
-      //     }
-      //   });
-      //   onClose();
-      //   navigate(`/app/mock-interview/mock/${response.data.data.interview_id}`);
-      //   return;
-      // } else {
-      //   console.error('Failed to create mock interview:', response.data?.msg || response.msg);
-      //   showToast(response.data?.msg || response.msg || 'Failed to create mock interview', 'error');
-      // }
+        dispatch({
+          type: "isLeaveInterview",
+          payload: {
+            status: true,
+            link: `/app/mock-interview/mock/${sessionInfo.session_code}`
+          }
+        });
+        
+        onClose();
+        
+        // Navigate to mock interview room
+        navigate(`/app/mock-interview/mock/${sessionInfo.session_code}`);
+        
+        showToast('Mock interview session created successfully!', 'success');
+        return;
+      } else {
+        console.error('Failed to create mock interview session:', response.data?.msg || response.msg);
+        showToast(response.data?.msg || response.msg || 'Failed to create mock interview session', 'error');
+      }
     } catch (error) {
-      console.error('Error creating mock interview:', error);
-      showToast('An error occurred while creating the mock interview', 'error');
+      console.error('Error creating mock interview session:', error);
+      showToast('An error occurred while creating the mock interview session', 'error');
     } finally {
       setIsCreatingMockInterview(false);
     }
@@ -298,7 +299,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
             <div className="flex flex-col">
               <div className="mb-2 flex flex-row justify-between">
                 <h4 className="font-medium text-[15px]">
-                  Select Knowledge Domain(Specialization){" "}
+                  Select Medical Specialty{" "}
                   <div className="inline-flex items-center rounded-md border py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-none bg-transparent px-1 font-normal text-slate-400">
                     Optional
                   </div>
@@ -312,24 +313,6 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
                 onDropdown={() => setShowDomainDropdown(true)}
                 dropdownRef={domainDropdownRef}
                 obk="domain"
-              />
-            </div>
-            <div className="flex flex-col">
-              <div className="mb-2 flex flex-row justify-between">
-                <h4 className="flex-1 font-medium">
-                  Interview Type{" "}
-                  <div className="inline-flex items-center rounded-md border py-0.5 text-xs transition-colors focus:outline-none focus:ring-2 focus:ring-ring focus:ring-offset-2 border-none bg-transparent px-1 font-normal text-slate-400">Optional</div>
-                </h4>
-                <Link className="flex flex-row text-[13px] text-sky-500" to="/app/subscription">Upgrade Now<Icon icon="ArrowUpRight" className="text-sky-500" /></Link>
-              </div>
-              <Select
-                value={status.interviewType.value}
-                data={status.interviewType.data}
-                onHandle={onHandle}
-                showDropdown={showInterviewTypeDropdown}
-                onDropdown={() => setShowInterviewTypeDropdown(true)}
-                dropdownRef={interviewTypeDropdownRef}
-                obk="interviewType"
               />
             </div>
             <div>

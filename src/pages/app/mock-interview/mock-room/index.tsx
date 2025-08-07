@@ -3,11 +3,15 @@ import { useParams, useNavigate } from "react-router-dom";
 import { useGlobalContext } from "../../../../context";
 import { restApi } from "../../../../context/restApi";
 import { showToast } from "../../../../context/helper";
-import MockInterviewRoom from "./mock-interview-room";
+import QuestionPanel from "./question-panel";
+import EvaluationPanel from "./evaluation-panel";
+import AIAvatarSection from "./ai-avatar-section";
+import ReviewSection from "./review-section";
 
 interface MockInterviewSession {
     session_code: string;
     session_id: string;
+    session_name: string;
     specialty: string;
     status: string;
     questions: Array<{
@@ -27,8 +31,7 @@ interface MockInterviewSession {
         };
         timestamp: string;
     }>;
-    examiner_email: string | null;
-    student_email: string | null;
+    email: string;
     created_at: string;
     updated_at: string;
     session_started: boolean;
@@ -38,60 +41,39 @@ interface MockInterviewSession {
 const MockInterviewRoomIndex = () => {
     const { sessionCode } = useParams<{ sessionCode: string }>();
     const navigate = useNavigate();
-    const [state] = useGlobalContext();
+    const [state, {dispatch}] = useGlobalContext();
     const [session, setSession] = React.useState<MockInterviewSession | null>(null);
     const [loading, setLoading] = React.useState(true);
-    const [userRole, setUserRole] = React.useState<'examiner' | 'student' | null>(null);
+    const [isEndInterview, setEndInterview] = React.useState(false);
+    const [transcribedText, setTranscribedText] = React.useState("");
+    const [isEvaluating, setIsEvaluating] = React.useState(false);
+    const [currentEvaluation, setCurrentEvaluation] = React.useState<any>(null);
+    const [isPlaying, setIsPlaying] = React.useState(false);
+    const [questionAudioUrl, setQuestionAudioUrl] = React.useState<string | null>(null);
 
-    React.useEffect(() => {
-        if (sessionCode) {
-            fetchSessionDetails();
-        }
-    }, [sessionCode]);
-
-    // Poll for session updates every 5 seconds
-    React.useEffect(() => {
-        if (session && session.status !== 'completed') {
-            const interval = setInterval(() => {
-                fetchSessionDetails();
-            }, 5000);
-
-            return () => clearInterval(interval);
-        }
-    }, [session]);
-
-    const fetchSessionDetails = async () => {
+    const fetchSessionDetails = React.useCallback(async () => {
         try {
             setLoading(true);
-            const response = await restApi.postRequest(`mock-interview-get-session`, { session_code: sessionCode });
+            const response = await restApi.getMockInterviewSession(sessionCode!);
 
             if (response.status === 200 && response.data?.data) {
                 const sessionData = response.data.data;
 
                 if (!sessionData) {
                     showToast('You are not authorized to join this session', 'error');
+                    localStorage.removeItem('currentInterview');
+                    dispatch({
+                        type: "isLeaveInterview",
+                        payload: {
+                            status: false,
+                            link: ""
+                        }
+                    });
+
                     navigate('/app/mock-interview');
                     return;
                 }
-                
-                // Determine user role
-                const resp = await restApi.postRequest("get-user")
-                
-                if (resp.status === 200) {
-                    const data = resp.data.data
-                    const userEmail = data.email;
-                    if (sessionData.examiner_email === userEmail) {
-                        setUserRole('examiner');
-                        setSession(sessionData);
-                    } else if (sessionData.student_email === userEmail) {
-                        setUserRole('student');
-                        setSession(sessionData);
-                    } else {
-                        // User is not part of this session
-                        showToast('You are not authorized to join this session', 'error');
-                        navigate('/app/mock-interview');
-                    }
-                }
+                setSession(sessionData);
             } else {
                 showToast('Failed to load session details', 'error');
                 navigate('/app/mock-interview');
@@ -103,13 +85,17 @@ const MockInterviewRoomIndex = () => {
         } finally {
             setLoading(false);
         }
-    };
+    }, [sessionCode, navigate, dispatch]);
+
+    React.useEffect(() => {
+        if (sessionCode) {
+            fetchSessionDetails();
+        }
+    }, [sessionCode, fetchSessionDetails]);
 
     const handleStartSession = async () => {
         try {
-            const response = await restApi.postRequest('mock-interview-start-session', {
-                session_code: sessionCode
-            });
+            const response = await restApi.startMockInterviewSession(sessionCode!);
 
             if (response.status === 200 && response.data?.data) {
                 // Update session with new status
@@ -120,21 +106,21 @@ const MockInterviewRoomIndex = () => {
                         session_started: true
                     });
                 }
+                showToast('Interview session started!', 'success');
                 return response.data.data;
             } else {
                 throw new Error(response.data?.msg || 'Failed to start session');
             }
         } catch (error) {
             console.error('Error starting session:', error);
+            showToast('Failed to start session', 'error');
             throw error;
         }
     };
 
     const handleNextQuestion = async () => {
         try {
-            const response = await restApi.postRequest('mock-interview-next-question', {
-                session_code: sessionCode
-            });
+            const response = await restApi.nextMockInterviewQuestion(sessionCode!);
 
             if (response.status === 200 && response.data?.data) {
                 // Update session with new question index
@@ -147,21 +133,23 @@ const MockInterviewRoomIndex = () => {
                         session_completed: newData.status === 'completed'
                     });
                 }
+                setTranscribedText("");
+                setCurrentEvaluation(null);
+                setQuestionAudioUrl(null);
                 return response.data.data;
             } else {
                 throw new Error(response.data?.msg || 'Failed to move to next question');
             }
         } catch (error) {
             console.error('Error moving to next question:', error);
+            showToast('Failed to move to next question', 'error');
             throw error;
         }
     };
 
     const handleEndSession = async () => {
         try {
-            const response = await restApi.postRequest('mock-interview-end-session', {
-                session_code: sessionCode
-            });
+            const response = await restApi.endMockInterviewSession(sessionCode!);
 
             if (response.status === 200 && response.data?.data) {
                 // Update session with completed status
@@ -172,32 +160,43 @@ const MockInterviewRoomIndex = () => {
                         session_completed: true
                     });
                 }
+                showToast('Interview session completed!', 'success');
                 return response.data.data;
             } else {
                 throw new Error(response.data?.msg || 'Failed to end session');
             }
         } catch (error) {
             console.error('Error ending session:', error);
+            showToast('Failed to end session', 'error');
             throw error;
         }
     };
 
-    const handleEvaluateResponse = async (questionIndex: number, responseText: string) => {
+    const handleEvaluateResponse = async () => {
+        if (!session || !transcribedText.trim()) {
+            showToast('Please provide a response before evaluating', 'warning');
+            return;
+        }
+
         try {
-            const response = await restApi.postRequest('mock-interview-evaluate-response', {
-                session_code: sessionCode,
-                question_index: questionIndex,
-                response_text: responseText
-            });
+            setIsEvaluating(true);
+            const response = await restApi.evaluateMockInterviewResponse(
+                sessionCode!,
+                session.current_question_index,
+                transcribedText
+            );
 
             if (response.status === 200 && response.data?.data) {
+                const evaluation = response.data.data.evaluation;
+                setCurrentEvaluation(evaluation);
+
                 // Update session with new evaluation
                 if (session) {
                     const newEvaluation = {
-                        question_index: questionIndex,
-                        question: session.questions[questionIndex].question,
-                        response: responseText,
-                        evaluation: response.data.data.evaluation,
+                        question_index: session.current_question_index,
+                        question: session.questions[session.current_question_index].question,
+                        response: transcribedText,
+                        evaluation: evaluation,
                         timestamp: new Date().toISOString()
                     };
 
@@ -208,7 +207,7 @@ const MockInterviewRoomIndex = () => {
                 }
 
                 showToast('Response evaluated successfully', 'success');
-                return response.data.data.evaluation;
+                return evaluation;
             } else {
                 showToast('Failed to evaluate response', 'error');
                 return null;
@@ -217,7 +216,25 @@ const MockInterviewRoomIndex = () => {
             console.error('Error evaluating response:', error);
             showToast('An error occurred while evaluating the response', 'error');
             return null;
+        } finally {
+            setIsEvaluating(false);
         }
+    };
+
+    const handleTranscriptionUpdate = (text: string) => {
+        setTranscribedText(text);
+    };
+
+    const handleQuestionAudioReady = (audioUrl: string) => {
+        setQuestionAudioUrl(audioUrl);
+    };
+
+    const handleVoiceResponseReceived = (transcribedText: string) => {
+        setTranscribedText(transcribedText);
+    };
+
+    const handlePlayStateChange = (isPlaying: boolean) => {
+        setIsPlaying(isPlaying);
     };
 
     if (loading) {
@@ -231,21 +248,100 @@ const MockInterviewRoomIndex = () => {
         );
     }
 
-    if (session && userRole) {
+    if (!session) {
         return (
-            <MockInterviewRoom
-                session={session}
-                userRole={userRole}
-                onEvaluateResponse={handleEvaluateResponse}
-                onSessionUpdate={fetchSessionDetails}
-                onStartSession={handleStartSession}
-                onNextQuestion={handleNextQuestion}
-                onEndSession={handleEndSession}
-            />
+            <div className="flex items-center justify-center min-h-screen">
+                <div className="text-center">
+                    <p className="text-gray-600">Session not found</p>
+                </div>
+            </div>
         );
     }
 
-    return null;
+    if (isEndInterview) {
+        return <ReviewSection />;
+    }
+
+    const currentQuestion = session.questions[session.current_question_index];
+    const isLastQuestion = session.current_question_index === session.questions.length - 1;
+
+    return (
+        <div className="h-dvh bg-gray-50">
+            {/* Header */}
+            <div className="bg-white border-b px-6 py-4">
+                <div className="flex items-center justify-between">
+                    <div>
+                        <h1 className="text-xl font-semibold text-gray-900">
+                            {session.session_name}
+                        </h1>
+                        <p className="text-sm text-gray-600">
+                            {session.specialty} • Question {session.current_question_index + 1} of {session.questions.length}
+                        </p>
+                    </div>
+                    <div className="flex items-center space-x-4">
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
+                            session.status === 'active' ? 'bg-green-100 text-green-800' :
+                            session.status === 'completed' ? 'bg-blue-100 text-blue-800' :
+                            'bg-yellow-100 text-yellow-800'
+                        }`}>
+                            {session.status}
+                        </span>
+                        <button
+                            onClick={() => setEndInterview(true)}
+                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                        >
+                            End Interview
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            {/* Main Content */}
+            <div className="flex h-[calc(100vh-80px)]">
+                {/* AI Avatar Section - Always shown for voice interviews */}
+                <div className="w-1/4 border-r">
+                    <AIAvatarSection
+                        currentQuestion={currentQuestion.question}
+                        sessionCode={sessionCode!}
+                        questionIndex={session.current_question_index}
+                        onQuestionAudioReady={handleQuestionAudioReady}
+                        onVoiceResponseReceived={handleVoiceResponseReceived}
+                        isPlaying={isPlaying}
+                        onPlayStateChange={handlePlayStateChange}
+                    />
+                </div>
+
+                {/* Question Panel */}
+                <div className="w-1/4 border-r bg-white">
+                    <QuestionPanel
+                        currentQuestion={currentQuestion}
+                        currentQuestionIndex={session.current_question_index}
+                        totalQuestions={session.questions.length}
+                        transcribedText={transcribedText}
+                        userRole="student"
+                        isEvaluating={isEvaluating}
+                        onEvaluate={handleEvaluateResponse}
+                        onNextQuestion={handleNextQuestion}
+                    />
+                </div>
+
+                {/* Evaluation Panel */}
+                <div className="w-1/2 bg-white">
+                    <EvaluationPanel
+                        currentEvaluation={currentEvaluation}
+                        evaluations={session.evaluations}
+                        onTranscriptionUpdate={handleTranscriptionUpdate}
+                        onStartSession={handleStartSession}
+                        onNextQuestion={handleNextQuestion}
+                        onEndSession={handleEndSession}
+                        sessionStarted={session.session_started}
+                        isLastQuestion={isLastQuestion}
+                        sessionCompleted={session.session_completed}
+                    />
+                </div>
+            </div>
+        </div>
+    );
 };
 
 export default MockInterviewRoomIndex;

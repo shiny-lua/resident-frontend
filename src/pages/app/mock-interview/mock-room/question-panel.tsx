@@ -61,7 +61,68 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
 
             {/* Content */}
             <div className="flex-1 p-4 overflow-y-auto">
-                {userRole === 'examiner' ? (
+                {userRole === 'student' ? (
+                    <div className="space-y-4">
+                        <div className="bg-blue-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-blue-900 mb-2">Instructions</h4>
+                            <ul className="text-sm text-blue-800 space-y-1">
+                                <li>• Listen to the AI question using the avatar controls</li>
+                                <li>• Think about your response</li>
+                                <li>• Use the AI Avatar to record your voice answer</li>
+                                <li>• Click "Evaluate Response" when ready</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-gray-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-gray-900 mb-2">Question Type: {currentQuestion.category}</h4>
+                            <div className="text-sm text-gray-700">
+                                {currentQuestion.category.toLowerCase() === 'behavioral' && (
+                                    <p>This is a behavioral question. Use the STAR method (Situation, Task, Action, Result) to structure your response with specific examples from your experience.</p>
+                                )}
+                                {currentQuestion.category.toLowerCase() === 'clinical' && (
+                                    <p>This is a clinical question. Demonstrate your clinical reasoning, systematic thinking, and consideration of patient safety and outcomes.</p>
+                                )}
+                                {currentQuestion.category.toLowerCase() === 'personal' && (
+                                    <p>This is a personal question. Be authentic and genuine, connecting your experiences to your goals and showing passion for your chosen specialty.</p>
+                                )}
+                                {currentQuestion.category.toLowerCase() === 'ethical' && (
+                                    <p>This is an ethical question. Consider multiple perspectives, balance competing values, and show your ethical reasoning process.</p>
+                                )}
+                            </div>
+                        </div>
+
+                        <div className="bg-yellow-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-yellow-900 mb-2">Tips for Success</h4>
+                            <ul className="text-sm text-yellow-800 space-y-1">
+                                <li>• Be specific and provide concrete examples</li>
+                                <li>• Show your thought process and reasoning</li>
+                                <li>• Demonstrate self-awareness and reflection</li>
+                                <li>• Connect your experiences to your future goals</li>
+                                <li>• Be honest about challenges and what you learned</li>
+                            </ul>
+                        </div>
+
+                        <div className="bg-green-50 p-4 rounded-lg">
+                            <h4 className="font-medium text-green-900 mb-2">Voice Response</h4>
+                            <div className="bg-white p-3 rounded border min-h-[100px]">
+                                {transcribedText ? (
+                                    <p className="text-sm text-gray-700">{transcribedText}</p>
+                                ) : (
+                                    <p className="text-sm text-gray-500 italic">Use the AI Avatar to record your voice response...</p>
+                                )}
+                            </div>
+                            {transcribedText && (
+                                <button
+                                    onClick={onEvaluate}
+                                    disabled={isEvaluating}
+                                    className="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
+                                >
+                                    {isEvaluating ? 'Evaluating...' : 'Evaluate Response'}
+                                </button>
+                            )}
+                        </div>
+                    </div>
+                ) : (
                     <div className="space-y-4">
                         <div className="bg-blue-50 p-4 rounded-lg">
                             <h4 className="font-medium text-blue-900 mb-2">Examiner Instructions</h4>
@@ -97,61 +158,6 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
                                 )}
                             </div>
                         </div>
-                    </div>
-                ) : (
-                    <div className="space-y-4">
-                        <div className="bg-green-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-green-900 mb-2">Student Instructions</h4>
-                            <ul className="text-sm text-green-800 space-y-1">
-                                <li>• Listen to the examiner's question</li>
-                                <li>• Provide a clear, structured response</li>
-                                <li>• Use specific examples when possible</li>
-                                <li>• Speak clearly and at a good pace</li>
-                            </ul>
-                        </div>
-
-                        <div className="bg-gray-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-gray-900 mb-2">Your Response</h4>
-                            <div className="bg-white p-3 rounded border min-h-[100px]">
-                                {transcribedText ? (
-                                    <p className="text-sm text-gray-700">{transcribedText}</p>
-                                ) : (
-                                    <p className="text-sm text-gray-500 italic">Your response will appear here...</p>
-                                )}
-                            </div>
-                        </div>
-
-                        <div className="bg-blue-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-blue-900 mb-2">Tips for This Question</h4>
-                            <ul className="text-sm text-blue-800 space-y-1">
-                                <li>• Structure your answer (STAR method for behavioral)</li>
-                                <li>• Be specific and provide examples</li>
-                                <li>• Show your reasoning and thought process</li>
-                                <li>• Demonstrate professionalism and empathy</li>
-                            </ul>
-                        </div>
-                    </div>
-                )}
-            </div>
-
-            {/* Actions */}
-            <div className="p-4 border-t bg-gray-50">
-                {userRole === 'examiner' && transcribedText && (
-                    <div className="space-y-2">
-                        <button
-                            onClick={onEvaluate}
-                            disabled={isEvaluating || !transcribedText.trim()}
-                            className="w-full px-4 py-2 bg-blue-600 text-white rounded hover:bg-blue-700 disabled:bg-gray-400 disabled:cursor-not-allowed"
-                        >
-                            {isEvaluating ? (
-                                <div className="flex items-center justify-center">
-                                    <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-white mr-2"></div>
-                                    Evaluating...
-                                </div>
-                            ) : (
-                                'Evaluate Response'
-                            )}
-                        </button>
                     </div>
                 )}
             </div>

@@ -270,13 +270,8 @@ const MockInterviewRoomIndex = () => {
             {/* Header */}
             <div className="bg-white border-b px-6 py-4">
                 <div className="flex items-center justify-between">
-                    <div>
-                        <h1 className="text-xl font-semibold text-gray-900">
-                            {session.session_name}
-                        </h1>
-                        <p className="text-sm text-gray-600">
-                            {session.specialty} • Question {session.current_question_index + 1} of {session.questions.length}
-                        </p>
+                    <div className="text-xl font-semibold text-gray-900">
+                        Mock Interview
                     </div>
                     <div className="flex items-center space-x-4">
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${
@@ -297,9 +292,9 @@ const MockInterviewRoomIndex = () => {
             </div>
 
             {/* Main Content */}
-            <div className="flex h-[calc(100vh-80px)]">
+            <div className="flex flex-col md:flex-row h-[calc(100vh-80px)]">
                 {/* AI Avatar Section - Always shown for voice interviews */}
-                <div className="w-1/4 border-r">
+                <div className="w-full md:w-1/4 border-r">
                     <AIAvatarSection
                         currentQuestion={currentQuestion.question}
                         sessionCode={sessionCode!}
@@ -312,7 +307,7 @@ const MockInterviewRoomIndex = () => {
                 </div>
 
                 {/* Question Panel */}
-                <div className="w-1/4 border-r bg-white">
+                <div className="w-full md:w-1/2 border-r bg-white">
                     <QuestionPanel
                         currentQuestion={currentQuestion}
                         currentQuestionIndex={session.current_question_index}
@@ -326,7 +321,7 @@ const MockInterviewRoomIndex = () => {
                 </div>
 
                 {/* Evaluation Panel */}
-                <div className="w-1/2 bg-white">
+                <div className="w-full md:w-1/2 bg-white">
                     <EvaluationPanel
                         currentEvaluation={currentEvaluation}
                         evaluations={session.evaluations}

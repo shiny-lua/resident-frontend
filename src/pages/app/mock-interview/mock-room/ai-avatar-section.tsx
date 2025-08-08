@@ -26,7 +26,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
     const [audioUrl, setAudioUrl] = useState<string | null>(null);
     const [recordingTime, setRecordingTime] = useState(0);
     const [isProcessingResponse, setIsProcessingResponse] = useState(false);
-    
+
     const audioRef = useRef<HTMLAudioElement | null>(null);
     const mediaRecorderRef = useRef<MediaRecorder | null>(null);
     const audioChunksRef = useRef<Blob[]>([]);
@@ -58,16 +58,16 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
 
             if (response?.data?.success) {
                 const { audio_data } = response.data;
-                
+
                 // Convert base64 to blob and create URL
                 const audioBlob = base64ToBlob(audio_data, 'audio/wav');
                 const newAudioUrl = URL.createObjectURL(audioBlob);
-                
+
                 // Cleanup previous audio URL
                 if (audioUrl) {
                     URL.revokeObjectURL(audioUrl);
                 }
-                
+
                 setAudioUrl(newAudioUrl);
                 onQuestionAudioReady(newAudioUrl);
             } else {
@@ -129,7 +129,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             mediaRecorderRef.current.onstop = async () => {
                 const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
                 await processVoiceResponse(audioBlob);
-                
+
                 // Stop all tracks
                 stream.getTracks().forEach(track => track.stop());
             };
@@ -153,7 +153,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         if (mediaRecorderRef.current && isRecording) {
             mediaRecorderRef.current.stop();
             setIsRecording(false);
-            
+
             if (recordingIntervalRef.current) {
                 clearInterval(recordingIntervalRef.current);
                 recordingIntervalRef.current = null;
@@ -164,7 +164,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
     const processVoiceResponse = async (audioBlob: Blob) => {
         try {
             setIsProcessingResponse(true);
-            
+
             const response = await restApi.convertSpeechToText(audioBlob);
 
             if (response?.data?.success) {
@@ -190,7 +190,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full bg-gradient-to-br from-blue-50 to-indigo-100">
+        <div className="flex flex-col justify-between h-full bg-gradient-to-br from-blue-50 to-indigo-100">
             {/* AI Avatar Header */}
             <div className="p-4 border-b bg-white">
                 <div className="flex items-center space-x-3">
@@ -207,45 +207,15 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             </div>
 
             {/* AI Avatar Visual */}
-            <div className="flex-1 flex items-center justify-center p-6">
-                <div className="text-center">
-                    <div className={`w-32 h-32 mx-auto mb-4 rounded-full flex items-center justify-center transition-all duration-300 ${
-                        isPlaying ? 'bg-gradient-to-r from-blue-500 to-purple-600 scale-110' :
-                        isRecording ? 'bg-gradient-to-r from-red-500 to-pink-600 scale-110' :
-                        'bg-gradient-to-r from-gray-400 to-gray-600'
-                    }`}>
-                        {isPlaying ? (
-                            <svg className="w-16 h-16 text-white animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M8 5v14l11-7z"/>
-                            </svg>
-                        ) : isRecording ? (
-                            <svg className="w-16 h-16 text-white animate-pulse" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C13.1 2 14 2.9 14 4V6.24C15.81 6.92 17 8.5 17 10.5V16C17 17.1 16.1 18 15 18H9C7.9 18 7 17.1 7 16V10.5C7 8.5 8.19 6.92 10 6.24V4C10 2.9 10.9 2 12 2M12 4V6H10V4H12M12 8C10.9 8 10 8.9 10 10V16H14V10C14 8.9 13.1 8 12 8Z"/>
-                            </svg>
-                        ) : (
-                            <svg className="w-16 h-16 text-white" fill="currentColor" viewBox="0 0 24 24">
-                                <path d="M12 2C13.1 2 14 2.9 14 4V6.24C15.81 6.92 17 8.5 17 10.5V16C17 17.1 16.1 18 15 18H9C7.9 18 7 17.1 7 16V10.5C7 8.5 8.19 6.92 10 6.24V4C10 2.9 10.9 2 12 2M12 4V6H10V4H12M12 8C10.9 8 10 8.9 10 10V16H14V10C14 8.9 13.1 8 12 8Z"/>
-                            </svg>
-                        )}
-                    </div>
-                    
-                    <div className="text-center">
-                        {isPlaying && (
-                            <p className="text-blue-600 font-medium">AI is asking the question...</p>
-                        )}
-                        {isRecording && (
-                            <div className="text-red-600 font-medium">
-                                <p>Recording your response...</p>
-                                <p className="text-lg">{formatTime(recordingTime)}</p>
-                            </div>
-                        )}
-                        {isProcessingResponse && (
-                            <p className="text-purple-600 font-medium">Processing your response...</p>
-                        )}
-                        {!isPlaying && !isRecording && !isProcessingResponse && (
-                            <p className="text-gray-600">Ready for voice interaction</p>
-                        )}
-                    </div>
+            <div className="min-w-[150px] flex-1">
+                <div className="relative flex h-full flex-1 flex-col justify-center items-center bg-slate-900">
+                    <video
+                        src="/video/avatar.mp4"
+                        className="w-full h-full rounded-xl"
+                        autoPlay={true}
+                        playsInline={true}
+                        loop={true}
+                    />
                 </div>
             </div>
 
@@ -258,11 +228,10 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                         <button
                             onClick={playQuestionAudio}
                             disabled={isLoadingAudio || isPlaying || !audioUrl}
-                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                                isPlaying || isLoadingAudio || !audioUrl
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : 'bg-blue-600 text-white hover:bg-blue-700'
-                            }`}
+                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${isPlaying || isLoadingAudio || !audioUrl
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : 'bg-blue-600 text-white hover:bg-blue-700'
+                                }`}
                         >
                             {isLoadingAudio ? 'Loading...' : isPlaying ? 'Playing...' : 'Play Question'}
                         </button>
@@ -274,13 +243,12 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                         <button
                             onClick={isRecording ? stopRecording : startRecording}
                             disabled={isPlaying || isProcessingResponse}
-                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${
-                                isPlaying || isProcessingResponse
-                                    ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
-                                    : isRecording
+                            className={`px-4 py-2 rounded-md text-sm font-medium transition-colors ${isPlaying || isProcessingResponse
+                                ? 'bg-gray-300 text-gray-500 cursor-not-allowed'
+                                : isRecording
                                     ? 'bg-red-600 text-white hover:bg-red-700'
                                     : 'bg-green-600 text-white hover:bg-green-700'
-                            }`}
+                                }`}
                         >
                             {isRecording ? 'Stop Recording' : 'Start Recording'}
                         </button>

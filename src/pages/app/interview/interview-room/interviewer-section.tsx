@@ -13,6 +13,7 @@ import VoiceDetectionStatus from './components/VoiceDetectionStatus';
 import AudioSourcesPanel from './components/AudioSourcesPanel';
 import ConversationHistory from './components/ConversationHistory';
 import CreateStripePaymentModal from './create-stripe-payment-modal';
+import MacScreenShareGuide from './components/MacScreenShareGuide';
 
 /**
  * Optimized InterviewerSection component following senior developer practices:
@@ -28,6 +29,7 @@ const InterviewerSection: React.FC = () => {
     const [isOpenModal, setIsOpenModal] = React.useState(false);
     const [isPremium, setIsPremium] = React.useState(false);
     const [stripePromise, setStripePromise] = React.useState<any>(null);
+    const [showMacGuide, setShowMacGuide] = React.useState(false);
     
     // Video ref to prevent flickering
     const videoRef = useRef<HTMLVideoElement>(null);
@@ -86,6 +88,10 @@ const InterviewerSection: React.FC = () => {
         };
     }, [cleanup]); // Now safe to include cleanup dependency since it's stable
 
+    // Mac detection
+    const isMacOS = navigator.platform.toLowerCase().includes('mac') || 
+                   navigator.userAgent.toLowerCase().includes('mac');
+
     // Get status display configuration
     const getStatusDisplay = () => {
         const statusConfig = {
@@ -125,13 +131,39 @@ const InterviewerSection: React.FC = () => {
             return;
         }
 
+        // Check HTTPS requirement
+        if (!window.isSecureContext && location.protocol !== 'https:') {
+            alert('Screen sharing requires HTTPS. Please use a secure connection.');
+            return;
+        }
+
+        // Mac-specific guidance
+        
+        if (isMacOS) {
+            const isChrome = navigator.userAgent.toLowerCase().includes('chrome');
+            if (!isChrome) {
+                const useChrome = confirm(
+                    'For best screen sharing experience on Mac, we recommend using Chrome. ' +
+                    'Would you like to continue anyway?'
+                );
+                if (!useChrome) return;
+            }
+        }
+
         try {
             console.log('🚀 Calling handleScreenShare...');
             await handleScreenShare();
             console.log('✅ handleScreenShare completed');
         } catch (error) {
             console.error('❌ Error handling screen share:', error);
-            alert(`Screen sharing failed: ${error.message}`);
+            
+            // Enhanced error display for Mac users
+            const errorMessage = error instanceof Error ? error.message : String(error);
+            if (isMacOS && errorMessage.includes('permission')) {
+                setShowMacGuide(true);
+            } else {
+                alert(`Screen sharing failed: ${errorMessage}`);
+            }
         }
     };
 
@@ -176,15 +208,26 @@ const InterviewerSection: React.FC = () => {
                             <p className="text-center text-sm text-slate-300">
                                 Screen sharing (with audio if available) for voice detection
                             </p>
-                            <button
-                                className="flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium text-white px-5 py-2.5 bg-sky-600 hover:bg-sky-700"
-                                onClick={handleScreenShareClick}
-                            >
-                                <Icon icon={screenStream ? "Close" : "Cursor"} className="w-5 h-5 text-white" />
-                                <span className="text-[#f8fafc]">
-                                    {screenStream ? 'Stop Sharing' : 'Start'}
-                                </span>
-                            </button>
+                            <div className="flex flex-col gap-2">
+                                <button
+                                    className="flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium text-white px-5 py-2.5 bg-sky-600 hover:bg-sky-700"
+                                    onClick={handleScreenShareClick}
+                                >
+                                    <Icon icon={screenStream ? "Close" : "Cursor"} className="w-5 h-5 text-white" />
+                                    <span className="text-[#f8fafc]">
+                                        {screenStream ? 'Stop Sharing' : 'Start'}
+                                    </span>
+                                </button>
+                                {isMacOS && (
+                                    <button
+                                        className="flex items-center justify-center gap-2 whitespace-nowrap rounded-md text-sm font-medium text-slate-300 px-3 py-1.5 border border-slate-300 hover:bg-slate-700"
+                                        onClick={() => setShowMacGuide(true)}
+                                    >
+                                        <Icon icon="Help" className="w-4 h-4" />
+                                        <span>Mac Setup Help</span>
+                                    </button>
+                                )}
+                            </div>
                         </div>
                     )}
                 </div>
@@ -234,6 +277,12 @@ const InterviewerSection: React.FC = () => {
                     stripePromise={stripePromise}
                 />
             )}
+
+            {/* Mac Screen Share Guide Modal */}
+            <MacScreenShareGuide 
+                isVisible={showMacGuide}
+                onClose={() => setShowMacGuide(false)}
+            />
         </div>
     );
 };

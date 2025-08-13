@@ -117,26 +117,6 @@ const EvaluationPanel: React.FC<EvaluationPanelProps> = ({
                     </div>
                 )}
 
-                {/* Response Input - Voice Only */}
-                {sessionStarted && !sessionCompleted && (
-                    <div className="bg-white border rounded-lg p-4">
-                        <h4 className="font-medium text-gray-900 mb-2">Voice Response</h4>
-                        <div className="bg-gray-50 p-4 rounded-lg border-2 border-dashed border-gray-300">
-                            <div className="text-center">
-                                <svg className="w-12 h-12 mx-auto mb-3 text-gray-400" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                                    <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M19 11a7 7 0 01-7 7m0 0a7 7 0 01-7-7m7 7v4m0 0H8m4 0h4m-4-8a3 3 0 01-3-3V5a3 3 0 116 0v6a3 3 0 01-3 3z" />
-                                </svg>
-                                <p className="text-sm text-gray-600 mb-2">
-                                    Use the AI Avatar section to record your voice response
-                                </p>
-                                <p className="text-xs text-gray-500">
-                                    Click "Start Recording" in the AI Avatar panel to begin
-                                </p>
-                            </div>
-                        </div>
-                    </div>
-                )}
-
                 {/* Current Evaluation */}
                 {currentEvaluation && (
                     <div className="bg-white border rounded-lg p-4 space-y-4">

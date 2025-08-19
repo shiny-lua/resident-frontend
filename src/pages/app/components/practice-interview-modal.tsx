@@ -17,7 +17,7 @@ type DropdownStatus = {
   interviewType: { value: string; data: string[] };
 };
 
-const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFunction }) => {
+const PracticeInterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFunction }) => {
   const [state, { dispatch }] = useGlobalContext();
   const navigate = useNavigate();
   const today = new Date();
@@ -58,14 +58,14 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
   const [showTimeZoneDropdown, setShowTimeZoneDropdown] = React.useState(false);
 
   const [uploadedFile, setUploadedFile] = React.useState<File | null>(null);
+  const [uploadedDocs, setUploadedDocs] = React.useState<string[]>([]);
   const [tabIdx, setTabIdx] = React.useState(0)
   const [dateTime, setDateTime] = React.useState({
     date: "",
     time: "",
     timezone: "UTC+00:00 Europe/London"
   })
-  const [isCreatingMockInterview, setIsCreatingMockInterview] = React.useState(false);
-  const [uploadedDocs, setUploadedDocs] = React.useState<string[]>([]);
+  const [isCreatingPracticeInterview, setIsCreatingPracticeInterview] = React.useState(false);
 
   // Fetch uploaded documents when modal opens
   React.useEffect(() => {
@@ -73,7 +73,8 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       fetchUploadedDocuments();
     }
   }, [isOpen]);
-  
+
+  // Fetch function
   const fetchUploadedDocuments = async () => {
     try {
       const response = await restApi.postRequest('get-documents');
@@ -102,7 +103,6 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       }));
     }
   };
-
   const onHandle = (v: string, obk: keyof DropdownStatus) => {
     setStatus((prevStatus) => ({
       ...prevStatus,
@@ -169,7 +169,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       return;
     }
 
-    setIsCreatingMockInterview(true);
+    setIsCreatingPracticeInterview(true);
 
     try {
       // Prepare mock interview session data
@@ -196,7 +196,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       }
 
       // Create mock interview session via API
-      const response = await restApi.createMockInterviewSession(sessionData);
+      const response = await restApi.createPracticeInterviewSession(sessionData);
       
       if (response.status === 200 && response.data?.status === "success") {
         const sessionInfo = response.data.data;
@@ -205,7 +205,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
         localStorage.setItem('currentInterview', JSON.stringify({
           interviewId: sessionInfo.session_id,
           sessionCode: sessionInfo.session_code,
-          link: `/app/mock-interview/mock/${sessionInfo.session_code}`,
+          link: `/app/practice-interview/practice/${sessionInfo.session_code}`,
           status: true,
           timestamp: new Date().toISOString(),
           interviewType: sessionData.interview_type,
@@ -216,14 +216,14 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
           type: "isLeaveInterview",
           payload: {
             status: true,
-            link: `/app/mock-interview/mock/${sessionInfo.session_code}`
+            link: `/app/practice-interview/practice/${sessionInfo.session_code}`
           }
         });
         
         onClose();
         
         // Navigate to mock interview room
-        navigate(`/app/mock-interview/mock/${sessionInfo.session_code}`);
+        navigate(`/app/practice-interview/practice/${sessionInfo.session_code}`);
         
         showToast('Mock interview session created successfully!', 'success');
         return;
@@ -235,7 +235,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       console.error('Error creating mock interview session:', error);
       showToast('An error occurred while creating the mock interview session', 'error');
     } finally {
-      setIsCreatingMockInterview(false);
+      setIsCreatingPracticeInterview(false);
     }
   }
 
@@ -445,13 +445,13 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
             <span>
               <button
                 onClick={onLaunch}
-                disabled={state.isLeaveInterview.status || isCreatingMockInterview}
-                className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${state.isLeaveInterview.status || isCreatingMockInterview
+                disabled={state.isLeaveInterview.status || isCreatingPracticeInterview}
+                className={`inline-flex justify-center items-center text-center text-white px-4 py-2 mt-2 sm:mt-0 h-[42px] md:h-9 rounded-md ${state.isLeaveInterview.status || isCreatingPracticeInterview
                     ? "bg-slate-500 cursor-not-allowed"
                     : "bg-[linear-gradient(90deg,_#0090FF_0%,_#00F7FF_100%)] hover:bg-[linear-gradient(90deg,_#0091ffa2_0%,_#00f7ff7f_100%)]"
                   }`}
               >
-                {isCreatingMockInterview ? 'Creating...' : state.isLeaveInterview.status ? 'Interview in Progress' : 'Launch'}
+                {isCreatingPracticeInterview ? 'Creating...' : state.isLeaveInterview.status ? 'Interview in Progress' : 'Launch'}
               </button>
             </span>
           </div>
@@ -461,4 +461,4 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
   );
 };
 
-export default InterviewModal;
+export default PracticeInterviewModal;

@@ -18,17 +18,17 @@ const restApi = {
     try {
       // For FormData, don't set Content-Type header - let axios handle it
       const config: any = {};
-      
+
       if (!(data instanceof FormData)) {
         config.headers = {
           'Content-Type': 'application/json'
         };
       }
-      
+
       const res = await axios.post(url, data, config);
       return res
     } catch (error: any) {
-      console.error("Error response:", error.response); 
+      console.error("Error response:", error.response);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },
@@ -73,11 +73,11 @@ const restApi = {
         interview_id: mockInterviewId,
         action: action
       };
-      
+
       if (feedback) {
         requestData.feedback = feedback;
       }
-      
+
       const response = await restApi.postRequest('leave-mock-interview', requestData);
       return response;
     } catch (error: any) {
@@ -197,6 +197,195 @@ const restApi = {
       return response;
     } catch (error: any) {
       console.error("Error getting voice question audio:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+  getPracticeInterviewQuestionAudio: async (sessionCode: string, questionIndex: number) => {
+    try {
+      const response = await restApi.postRequest('voice-practice-interview-get-question-audio', {
+        session_code: sessionCode, 
+        question_index: questionIndex
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting voice question audio:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+  getPracticeInterviews: async (params?: {
+    page?: number;
+    per_page?: number;
+    status?: 'active' | 'completed' | 'cancelled';
+  }) => {
+    try {
+      const queryParams = new URLSearchParams();
+      if (params?.page) queryParams.append('page', params.page.toString());
+      if (params?.per_page) queryParams.append('per_page', params.per_page.toString());
+      if (params?.status) queryParams.append('status', params.status);
+
+      const url = `get-practice-interviews${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
+      const response = await restApi.postRequest(url);
+      return response;
+    } catch (error: any) {
+      console.error("Error getting practice interviews:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  createPracticeInterviewSession: async (sessionData: {
+    specialty: string;
+    question_count: number;
+    session_name: string;
+    description: string;
+    resume?: string;
+    scheduled_at?: string;
+    timezone?: string;
+  }) => {
+    try {
+      const response = await restApi.postRequest('practice-interview-create-session', sessionData);
+      return response;
+    } catch (error: any) {
+      console.error("Error creating practice interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  getPracticeInterviewSession: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('practice-interview-get-session', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting practice interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  startPracticeInterviewSession: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('practice-interview-start-session', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error starting practice interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  nextPracticeInterviewQuestion: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('practice-interview-next-question', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting next practice question:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  evaluatePracticeInterviewResponse: async (sessionCode: string, questionIndex: number, response_text: string) => {
+    try {
+      const responseData = await restApi.postRequest('practice-interview-evaluate-response', {
+        session_code: sessionCode,
+        question_index: questionIndex,
+        response_text: response_text
+      });
+      return responseData;
+    } catch (error: any) {
+      console.error("Error evaluating practice response:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  endPracticeInterviewSession: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('practice-interview-end-session', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error ending practice interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  leavePracticeInterview: async (interviewId: string, action: string) => {
+    try {
+      const requestData = {
+        interview_id: interviewId,
+        action: action
+      };
+      const response = await restApi.postRequest('leave-practice-interview', requestData);
+      return response;
+    } catch (error: any) {
+      console.error("Error leaving practice interview:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  // Real-time Mock Interview APIs
+  startRealtimeMockInterview: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-start', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error starting realtime mock interview:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  processRealtimeAudioChunk: async (sessionCode: string, audioFile: File) => {
+    try {
+      const formData = new FormData();
+      formData.append('audio', audioFile);
+      formData.append('session_code', sessionCode);
+
+      const response = await restApi.postRequest('realtime-mock-interview-process-chunk', formData);
+      return response;
+    } catch (error: any) {
+      console.error("Error processing realtime audio chunk:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  getRealtimeFeedback: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-get-feedback', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting realtime feedback:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  generateRealtimeNextQuestion: async (sessionCode: string, context: string) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-next-question', {
+        session_code: sessionCode,
+        context: context
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error generating realtime next question:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  endRealtimeMockInterview: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-end', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error ending realtime mock interview:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },

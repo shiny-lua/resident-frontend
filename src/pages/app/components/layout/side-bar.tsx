@@ -87,7 +87,14 @@ const SideBar = (props: SideBarProps) => {
                             className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2 font-medium hover:bg-sky-200 ${pathname.includes("mock-interview") ? "bg-sky-200" : "bg-transparent"}`}
                         >
                             <Icon icon="MockInterview" />
-                            {!smallSideBar && <span className="text-lg">Mock Interview</span>}
+                            {!smallSideBar && <span className="text-lg">Real-time Mock Interview</span>}
+                        </Link>
+                        <Link
+                            to="/app/practice-interview"
+                            className={`flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 py-2 font-medium hover:bg-sky-200 ${pathname.includes("practice-interview") ? "bg-sky-200" : "bg-transparent"}`}
+                        >
+                            <Icon icon="MockInterview" />
+                            {!smallSideBar && <span className="text-lg">Practice Interview</span>}
                         </Link>
                         {/* <Link
                             to="/app/role"

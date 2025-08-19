@@ -4,6 +4,7 @@ import Onboarding from "./onboarding"
 import Started from "./started";
 import Interview from "./interview";
 import MockInterview from "./mock-interview";
+import PracticeInterview from "./practice-interview";
 import PermissionSetting from "./permission-setting";
 import Resume from "./resume";
 import Question from "./question";
@@ -65,6 +66,7 @@ const AppIndex = () => {
             <Route path="/started" element={<Started />} />
             <Route path="/live-interview/*" element={<Interview />} />
             <Route path="/mock-interview/*" element={<MockInterview />} />
+            <Route path="/practice-interview/*" element={<PracticeInterview />} />
             <Route path="/permission-setting" element={<PermissionSetting />} />
             <Route path="/resume" element={<Resume />} />
             <Route path="/question" element={<Question />} />

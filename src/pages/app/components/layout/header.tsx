@@ -89,7 +89,14 @@ const Header = () => {
                                     className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
                                 >
                                     <Icon icon="MockInterview" />
-                                    <span>Mock Interview</span>
+                                    <span>Real-time Mock Interview</span>
+                                </Link>
+                                <Link
+                                    to="/app/practice-interview"
+                                    className="flex min-h-10 items-center gap-3 text-nowrap rounded-md px-3 font-medium hover:bg-sky-100"
+                                >
+                                    <Icon icon="MockInterview" />
+                                    <span>Practice Interview</span>
                                 </Link>
                                 {/* <Link
                                     to="/app/role"

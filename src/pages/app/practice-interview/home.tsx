@@ -3,12 +3,13 @@ import React from "react"
 import Icon from "../../../components/icon"
 import Layout from "../components/layout"
 import { Select } from "../../../components/select"
-import MockInterviewModal from "../components/mock-interview-modal"
+import PracticeInterviewModal from "../components/practice-interview-modal"
 import { useGlobalContext } from "../../../context"
 import { restApi } from "../../../context/restApi"
 import { showToast } from "../../../context/helper"
 import { useNavigate } from "react-router-dom"
-interface MockInterview {
+
+interface PracticeInterview {
     interview_id: string;
     title: string;
     status: string;
@@ -19,25 +20,25 @@ interface MockInterview {
 interface PaginationInfo {
     current_page: number;
     per_page: number;
-    total_mock_interviews: number;
+    total_practice_interviews: number;
     total_pages: number;
     has_next: boolean;
     has_previous: boolean;
 }
 
-const MockInterview = () => {
+const PracticeInterview = () => {
     const navigate = useNavigate();
     const [state, { dispatch }] = useGlobalContext();
-    const [showMockInterviewModal, setShowMockInterviewModal] = React.useState(false)
+    const [showPracticeInterviewModal, setShowPracticeInterviewModal] = React.useState(false)
     const [status, setStatus] = React.useState({
         status: "All Status"
     })
     const [showStatusDropdown, setShowStatusDropdown] = React.useState(false)
-    const [mockInterviews, setMockInterviews] = React.useState<MockInterview[]>([])
+    const [practiceInterviews, setPracticeInterviews] = React.useState<PracticeInterview[]>([])
     const [pagination, setPagination] = React.useState<PaginationInfo>({
         current_page: 1,
         per_page: 10,
-        total_mock_interviews: 0,
+        total_practice_interviews: 0,
         total_pages: 0,
         has_next: false,
         has_previous: false
@@ -50,7 +51,7 @@ const MockInterview = () => {
         setShowStatusDropdown(false)
         // Fetch interviews with new status filter
         const statusFilter = v === "All Status" ? undefined : v.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled';
-        fetchMockInterviews(1, statusFilter);
+        fetchPracticeInterviews(1, statusFilter);
     }
 
     const onShowStatusDropdown = (event: MouseEvent) => {
@@ -59,7 +60,7 @@ const MockInterview = () => {
         }
     };
 
-    const fetchMockInterviews = React.useCallback(async (page: number = 1, statusFilter?: 'active' | 'completed' | 'cancelled') => {
+    const fetchPracticeInterviews = React.useCallback(async (page: number = 1, statusFilter?: 'active' | 'completed' | 'cancelled') => {
         setLoading(true);
         try {
             const params: any = {
@@ -71,20 +72,20 @@ const MockInterview = () => {
                 params.status = statusFilter;
             }
 
-            const response = await restApi.getMockInterviews(params);
+            const response = await restApi.getPracticeInterviews(params);
 
             if (response.status === 200 && response.data?.data) {
-                setMockInterviews(response.data.data);
+                setPracticeInterviews(response.data.data);
                 if (response.data.pagination) {
                     setPagination(response.data.pagination);
                 }
             } else {
-                console.error('Failed to fetch mock interviews:', response.data?.msg || response.msg);
-                showToast(response.data?.msg || response.msg || 'Failed to fetch mock interviews', 'error');
+                console.error('Failed to fetch practice interviews:', response.data?.msg || response.msg);
+                showToast(response.data?.msg || response.msg || 'Failed to fetch practice interviews', 'error');
             }
         } catch (error) {
-            console.error('Error fetching mock interviews:', error);
-            showToast('An error occurred while fetching mock interviews', 'error');
+            console.error('Error fetching practice interviews:', error);
+            showToast('An error occurred while fetching practice interviews', 'error');
         } finally {
             setLoading(false);
         }
@@ -93,23 +94,23 @@ const MockInterview = () => {
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= pagination.total_pages) {
             const statusFilter = status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled';
-            fetchMockInterviews(newPage, statusFilter);
+            fetchPracticeInterviews(newPage, statusFilter);
         }
     };
 
-    const handleEndMockInterview = async (interviewId: string) => {
+    const handleEndPracticeInterview = async (interviewId: string) => {
         if (!interviewId) {
-            console.error("No mock interview ID provided");
-            showToast("Error: No mock interview ID found", "error");
+            console.error("No practice interview ID provided");
+            showToast("Error: No practice interview ID found", "error");
             return;
         }
 
         try {
-            const response = await restApi.leaveMockInterview(interviewId, 'leave');
+            const response = await restApi.leavePracticeInterview(interviewId, 'leave');
 
             if (response.status === 200) {
-                // Clear mock interview state from localStorage
-                localStorage.removeItem('currentInterview');
+                // Clear practice interview state from localStorage
+                localStorage.removeItem('currentPracticeInterview');
                 dispatch({
                     type: "isLeaveInterview",
                     payload: {
@@ -117,25 +118,25 @@ const MockInterview = () => {
                         link: ""
                     }
                 })
-                fetchMockInterviews(pagination.current_page)
+                fetchPracticeInterviews(pagination.current_page)
             } else {
-                console.error('Failed to complete mock interview:', response.data?.msg || response.msg);
-                showToast(response.data?.msg || response.msg || 'Failed to complete mock interview', 'error');
+                console.error('Failed to complete practice interview:', response.data?.msg || response.msg);
+                showToast(response.data?.msg || response.msg || 'Failed to complete practice interview', 'error');
             }
         } catch (error) {
-            console.error('Error completing mock interview:', error);
-            showToast('An error occurred while completing the mock interview', 'error');
+            console.error('Error completing practice interview:', error);
+            showToast('An error occurred while completing the practice interview', 'error');
         }
     };
 
-    const handleJoinMockInterview = (interviewId: string) => {
-        localStorage.setItem('currentInterview', JSON.stringify({
+    const handleJoinPracticeInterview = (interviewId: string) => {
+        localStorage.setItem('currentPracticeInterview', JSON.stringify({
             interviewId: interviewId,
-            link: `/app/mock-interview/mock/${interviewId}`,
+            link: `/app/practice-interview/practice/${interviewId}`,
             status: true,
             timestamp: new Date().toISOString()
         }));
-        navigate(`/app/mock-interview/mock/${interviewId}`)
+        navigate(`/app/practice-interview/practice/${interviewId}`)
     }
 
     React.useEffect(() => {
@@ -145,10 +146,10 @@ const MockInterview = () => {
         };
     }, []);
 
-    // Load mock interviews on component mount
+    // Load practice interviews on component mount
     React.useEffect(() => {
-        fetchMockInterviews(1);
-    }, [fetchMockInterviews]);
+        fetchPracticeInterviews(1);
+    }, [fetchPracticeInterviews]);
 
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
@@ -182,16 +183,16 @@ const MockInterview = () => {
             <div className="w-full relative flex flex-1 flex-col gap-3 p-4 pb-16 lg:gap-4 lg:p-10 lg:pl-14 md:max-h-screen">
                 <div>
                     <h1 className="text-left text-3xl font-semibold leading-8">
-                        Real-time Mock Interview
+                        Practice Interview
                     </h1>
                     <div className="mt-4 max-w-[640px] text-lg font-medium leading-6 text-slate-700">
-                        Experience real-time interview simulation with instant feedback and adaptive questions.
+                        Practice your interview skills with structured questions and get detailed feedback.
                     </div>
                 </div>
                 <div className="mb-4 flex-col justify-between gap-4 sm:flex md:flex-row">
                     <div className="hidden gap-4 md:flex">
                         <button
-                            onClick={() => setShowMockInterviewModal(!showMockInterviewModal)}
+                            onClick={() => setShowPracticeInterviewModal(!showPracticeInterviewModal)}
                             disabled={state.isLeaveInterview.status}
                             className={`whitespace-nowrap flex items-center gap-2 justify-center gap-y-3 rounded-md p-3 text-sm font-medium text-white ${state.isLeaveInterview.status
                                 ? "bg-slate-500 cursor-not-allowed"
@@ -200,7 +201,7 @@ const MockInterview = () => {
                         >
                             <Icon icon="MockInterview" />
                             <span className="text-sm font-medium">
-                                {state.isLeaveInterview.status ? 'Interview in Progress' : 'Start Real-time Mock Interview'}
+                                {state.isLeaveInterview.status ? 'Interview in Progress' : 'Start Practice Interview'}
                             </span>
                         </button>
                     </div>
@@ -217,7 +218,7 @@ const MockInterview = () => {
                     </div>
                     <div className="flex flex-1 gap-2 md:hidden">
                         <button
-                            onClick={() => setShowMockInterviewModal(true)}
+                            onClick={() => setShowPracticeInterviewModal(true)}
                             disabled={state.isLeaveInterview.status}
                             className={`items-center justify-center whitespace-nowrap rounded-md text-md font-medium bg h-[50px] flex-1 flex-col px-4 py-2.5 ${state.isLeaveInterview.status
                                 ? "bg-slate-500 cursor-not-allowed"
@@ -226,7 +227,7 @@ const MockInterview = () => {
                         >
                             <Icon icon="New" className="text-white" />
                             <span className="text-lg font-medium text-slate-50">
-                                {state.isLeaveInterview.status ? 'Interview in Progress' : 'Real-time Mock Interview'}
+                                {state.isLeaveInterview.status ? 'Interview in Progress' : 'Practice Interview'}
                             </span>
                         </button>
                     </div>
@@ -255,22 +256,22 @@ const MockInterview = () => {
                                     </th>
                                 </tr>
                             </thead>
-                            {mockInterviews.length === 0 ? (
+                            {practiceInterviews.length === 0 ? (
                                 <tbody className="[&_tr:last-child]:border-0">
                                     <tr className="border-b transition-colors hover:bg-slate-500/50">
                                         <td colSpan={4} className="p-8 text-center text-slate-500">
-                                            No real-time mock interviews found. Start your first real-time mock interview!
+                                            No practice interviews found. Start your first practice interview!
                                         </td>
                                     </tr>
                                 </tbody>
                             ) : (
                                 <tbody className="[&_tr:last-child]:border-0">
-                                    {mockInterviews.map((interview) => (
+                                    {practiceInterviews.map((interview) => (
                                         <tr key={interview.interview_id} className="border-b transition-colors hover:bg-sky-100/50">
                                             <td className="p-2 align-middle">
                                                 <span className="inline-block max-w-64 truncate">
                                                     <div className="font-semibold">{interview.title || 'Untitled Interview'}</div>
-                                                    <div className="text-[11px] text-slate-500">Real-time Mock Interview</div>
+                                                    <div className="text-[11px] text-slate-500">Practice Interview</div>
                                                 </span>
                                             </td>
                                             <td className="p-2 align-middle hidden sm:table-cell">
@@ -284,12 +285,12 @@ const MockInterview = () => {
                                             </td>
                                             <td className="p-2 align-middle flex items-center gap-3">
                                                 {interview.status.toLowerCase() === 'in_progress' && (
-                                                    <button onClick={() => handleJoinMockInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
+                                                    <button onClick={() => handleJoinPracticeInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
                                                         Join
                                                     </button>
                                                 )}
                                                 {interview.status.toLowerCase() === 'in_progress' && (
-                                                    <button onClick={() => handleEndMockInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
+                                                    <button onClick={() => handleEndPracticeInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
                                                         End
                                                     </button>
                                                 )}
@@ -308,16 +309,16 @@ const MockInterview = () => {
                     )}
                 </div>
 
-                {/* Mobile view for mock interviews */}
-                {!loading && mockInterviews.length > 0 && (
+                {/* Mobile view for practice interviews */}
+                {!loading && practiceInterviews.length > 0 && (
                     <div className="flex flex-col gap-3 md:hidden">
-                        {mockInterviews.map((interview) => (
+                        {practiceInterviews.map((interview) => (
                             <div key={interview.interview_id} className="flex flex-col rounded-lg border border-slate-200">
                                 <div className="p-4">
                                     <div className="font-base truncate font-semibold text-slate-900">
                                         {interview.title || 'Untitled Interview'}
                                     </div>
-                                    <div className="font-base text-slate-400">Real-time Mock Interview</div>
+                                    <div className="font-base text-slate-400">Practice Interview</div>
                                     <div className="font-base text-slate-400">{formatDate(interview.created_at)}</div>
                                     <div className="mt-2">
                                         <span className="inline-flex items-center rounded-xl border border-slate-100 bg-white px-2.5 py-1.5">
@@ -351,7 +352,7 @@ const MockInterview = () => {
                 )}
 
                 {/* Pagination */}
-                {!loading && mockInterviews.length > 0 && (
+                {!loading && practiceInterviews.length > 0 && (
                     <div className="my-4 flex h-8 items-center justify-center gap-6">
                         <div className="flex items-center space-x-2 antialiased">
                             <h4>
@@ -360,7 +361,7 @@ const MockInterview = () => {
                             </h4>
                             <h4>
                                 <span className="text-xs font-medium text-[#6B7280]"> Total </span>
-                                <span className="text-xs font-medium text-slate-900">{pagination.total_mock_interviews}</span>
+                                <span className="text-xs font-medium text-slate-900">{pagination.total_practice_interviews}</span>
                             </h4>
                         </div>
                         <div className="flex items-center space-x-2">
@@ -383,10 +384,10 @@ const MockInterview = () => {
                         </div>
                     </div>
                 )}
+            {showPracticeInterviewModal && (<PracticeInterviewModal isOpen={showPracticeInterviewModal} onClose={() => setShowPracticeInterviewModal(false)} />)}
             </div>
-            {showMockInterviewModal && (<MockInterviewModal isOpen={showMockInterviewModal} onClose={() => setShowMockInterviewModal(false)} />)}
         </Layout>
     )
 }
 
-export default MockInterview
+export default PracticeInterview

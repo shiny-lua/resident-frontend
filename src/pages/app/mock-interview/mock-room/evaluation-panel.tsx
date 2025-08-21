@@ -100,20 +100,25 @@ const EvaluationPanel: React.FC<EvaluationPanelProps> = ({
 
             {/* Content */}
             <div className="flex-1 p-4 overflow-y-auto space-y-4">
-                {/* Session Controls */}
-                {!sessionStarted && (
+                {/* Real-time Interview Progress */}
+                {sessionStarted && (
                     <div className="bg-blue-50 p-4 rounded-lg">
-                        <h4 className="font-medium text-blue-900 mb-2">Start Interview</h4>
-                        <p className="text-sm text-blue-800 mb-3">
-                            Click the button below to begin your mock interview session.
+                        <h4 className="font-medium text-blue-900 mb-2">Real-time Interview Progress</h4>
+                        <div className="flex items-center justify-between mb-2">
+                            <span className="text-sm text-blue-800">Question {evaluations.length + 1} of 10</span>
+                            <span className="text-sm text-blue-800 font-medium">
+                                {Math.round(((evaluations.length) / 10) * 100)}% Complete
+                            </span>
+                        </div>
+                        <div className="w-full bg-blue-200 rounded-full h-2">
+                            <div 
+                                className="bg-blue-600 h-2 rounded-full transition-all duration-300"
+                                style={{ width: `${Math.min(((evaluations.length) / 10) * 100, 100)}%` }}
+                            ></div>
+                        </div>
+                        <p className="text-xs text-blue-700 mt-2">
+                            AI automatically processes responses when you say "That is all"
                         </p>
-                        <button
-                            onClick={handleStartSession}
-                            disabled={isStarting}
-                            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isStarting ? 'Starting...' : 'Start Interview'}
-                        </button>
                     </div>
                 )}
 
@@ -161,25 +166,14 @@ const EvaluationPanel: React.FC<EvaluationPanelProps> = ({
                             </div>
                         )}
 
-                        {/* Navigation */}
-                        <div className="flex space-x-3">
-                            {!isLastQuestion ? (
-                                <button
-                                    onClick={handleNextQuestion}
-                                    disabled={isMovingNext}
-                                    className="flex-1 bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isMovingNext ? 'Loading...' : 'Next Question'}
-                                </button>
-                            ) : (
-                                <button
-                                    onClick={handleEndSession}
-                                    disabled={isEnding}
-                                    className="flex-1 bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isEnding ? 'Ending...' : 'Complete Interview'}
-                                </button>
-                            )}
+                        {/* Auto-Progress Notice */}
+                        <div className="bg-green-50 p-3 rounded-lg">
+                            <div className="flex items-center">
+                                <div className="animate-spin rounded-full h-4 w-4 border-b-2 border-green-600 mr-2"></div>
+                                <span className="text-sm text-green-800 font-medium">
+                                    Automatically progressing to next question...
+                                </span>
+                            </div>
                         </div>
                     </div>
                 )}

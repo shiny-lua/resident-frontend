@@ -200,6 +200,20 @@ const restApi = {
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },
+
+  // Real-time Mock Interview APIs
+  getRealtimeVoiceQuestionAudio: async (sessionCode: string, questionIndex: number) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-get-voice-json', {
+        session_code: sessionCode,
+        question_index: questionIndex
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting realtime voice question audio:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
   getPracticeInterviewQuestionAudio: async (sessionCode: string, questionIndex: number) => {
     try {
       const response = await restApi.postRequest('voice-practice-interview-get-question-audio', {
@@ -339,41 +353,28 @@ const restApi = {
     }
   },
 
-  processRealtimeAudioChunk: async (sessionCode: string, audioFile: File) => {
+  processRealtimeResponse: async (sessionCode: string, audioFile: File) => {
     try {
       const formData = new FormData();
       formData.append('audio', audioFile);
       formData.append('session_code', sessionCode);
 
-      const response = await restApi.postRequest('realtime-mock-interview-process-chunk', formData);
+      const response = await restApi.postRequest('realtime-mock-interview-process-response', formData);
       return response;
     } catch (error: any) {
-      console.error("Error processing realtime audio chunk:", error);
+      console.error("Error processing realtime response:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },
 
-  getRealtimeFeedback: async (sessionCode: string) => {
+  getRealtimeStatus: async (sessionCode: string) => {
     try {
-      const response = await restApi.postRequest('realtime-mock-interview-get-feedback', {
+      const response = await restApi.postRequest('realtime-mock-interview-get-status', {
         session_code: sessionCode
       });
       return response;
     } catch (error: any) {
-      console.error("Error getting realtime feedback:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  generateRealtimeNextQuestion: async (sessionCode: string, context: string) => {
-    try {
-      const response = await restApi.postRequest('realtime-mock-interview-next-question', {
-        session_code: sessionCode,
-        context: context
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error generating realtime next question:", error);
+      console.error("Error getting realtime status:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },

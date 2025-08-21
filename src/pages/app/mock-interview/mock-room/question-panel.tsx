@@ -48,7 +48,7 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
             <div className="p-4 border-b bg-gray-50">
                 <div className="flex items-center justify-between mb-2">
                     <span className="text-sm font-medium text-gray-600">
-                        Question {currentQuestionIndex + 1} of {totalQuestions}
+                        Question {currentQuestionIndex + 1} of 10
                     </span>
                     <span className={`px-2 py-1 rounded-full text-xs font-medium ${getCategoryColor(currentQuestion.category)}`}>
                         {currentQuestion.category}
@@ -66,10 +66,12 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
                         <div className="bg-blue-50 p-4 rounded-lg">
                             <h4 className="font-medium text-blue-900 mb-2">Instructions</h4>
                             <ul className="text-sm text-blue-800 space-y-1">
-                                <li>• Listen to the AI question using the avatar controls</li>
-                                <li>• Think about your response</li>
-                                <li>• Use the AI Avatar to record your voice answer</li>
-                                <li>• Click "Evaluate Response" when ready</li>
+                                <li>• AI question will be spoken automatically</li>
+                                <li>• Recording will start automatically after the question</li>
+                                <li>• Speak your answer clearly and naturally</li>
+                                <li>• Say "That is all" when you finish your answer</li>
+                                <li>• Your response will be automatically processed</li>
+                                <li>• AI will move to the next question automatically</li>
                             </ul>
                         </div>
 
@@ -99,27 +101,33 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
                                 <li>• Demonstrate self-awareness and reflection</li>
                                 <li>• Connect your experiences to your future goals</li>
                                 <li>• Be honest about challenges and what you learned</li>
+                                <li>• Speak clearly and at a good pace</li>
+                                <li>• The AI will automatically process your response</li>
                             </ul>
                         </div>
 
                         <div className="bg-green-50 p-4 rounded-lg">
-                            <h4 className="font-medium text-green-900 mb-2">Voice Response</h4>
+                            <h4 className="font-medium text-green-900 mb-2">Interview Status</h4>
                             <div className="bg-white p-3 rounded border min-h-[100px]">
-                                {transcribedText ? (
-                                    <p className="text-sm text-gray-700">{transcribedText}</p>
+                                {isEvaluating ? (
+                                    <div className="flex items-center justify-center h-full">
+                                        <div className="text-center">
+                                            <div className="animate-spin rounded-full h-8 w-8 border-b-2 border-blue-600 mx-auto mb-2"></div>
+                                            <p className="text-sm text-blue-600 font-medium">Processing your response...</p>
+                                            <p className="text-xs text-gray-500 mt-1">AI is analyzing your answer and generating the next question</p>
+                                        </div>
+                                    </div>
                                 ) : (
-                                    <p className="text-sm text-gray-500 italic">Use the AI Avatar to record your voice response...</p>
+                                    <div className="text-center">
+                                        <div className="flex items-center justify-center mb-2">
+                                            <div className="animate-pulse w-4 h-4 bg-red-500 rounded-full mr-2"></div>
+                                            <span className="text-sm font-medium text-red-600">Recording in progress</span>
+                                        </div>
+                                        <p className="text-sm text-gray-600">Speak your answer clearly and naturally</p>
+                                        <p className="text-xs text-gray-500 mt-1">Say "That is all" when you finish your answer</p>
+                                    </div>
                                 )}
                             </div>
-                            {transcribedText && (
-                                <button
-                                    onClick={onEvaluate}
-                                    disabled={isEvaluating}
-                                    className="mt-3 w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                                >
-                                    {isEvaluating ? 'Evaluating...' : 'Evaluate Response'}
-                                </button>
-                            )}
                         </div>
                     </div>
                 ) : (

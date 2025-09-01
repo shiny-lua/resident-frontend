@@ -139,6 +139,16 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
 
     const vad = useMockInterviewVAD(vadCallbacks, { isPlaying });
 
+    // Clear processing timeout when interview is completed
+    useEffect(() => {
+        if (isInterviewCompleted && processingTimeoutRef.current) {
+            console.log('🧹 Interview completed - clearing processing timeout');
+            clearTimeout(processingTimeoutRef.current);
+            processingTimeoutRef.current = null;
+            setIsProcessingResponse(false);
+        }
+    }, [isInterviewCompleted]);
+
     // Process VAD audio
     const processVADAudio = async (vadAudio: Float32Array) => {
         console.log('🎵 processVADAudio called with audio length:', vadAudio.length);
@@ -226,8 +236,6 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             vad.cleanup();
         };
     }, [audioUrl]);
-
-
 
     // Load question audio when question changes
     useEffect(() => {

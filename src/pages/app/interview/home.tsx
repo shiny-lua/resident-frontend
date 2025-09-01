@@ -151,7 +151,6 @@ const HomeIndex = () => {
         try {
             const response = await restApi.leaveInterview(interviewId, 'leave');
             if (response.status === 200) {
-                showToast('Interview ended successfully', 'success');
                 localStorage.removeItem('currentInterview');
                 dispatch({
                     type: "isLeaveInterview",

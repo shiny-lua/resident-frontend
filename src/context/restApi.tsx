@@ -1,7 +1,17 @@
 import axios from "axios";
 import Cookies from "js-cookie";
 
-axios.defaults.baseURL = import.meta.env.VITE_API_BASE_URL + '/api/';
+// Helper function to convert ArrayBuffer to base64 safely
+const arrayBufferToBase64 = (buffer: Uint8Array): string => {
+  let binary = '';
+  const len = buffer.byteLength;
+  for (let i = 0; i < len; i++) {
+    binary += String.fromCharCode(buffer[i]);
+  }
+  return btoa(binary);
+};
+
+axios.defaults.baseURL = (import.meta as any).env.VITE_API_BASE_URL + '/api/';
 axios.interceptors.request.use((config: any) => {
   const token = Cookies.get("access_token")
   if (token) {
@@ -127,24 +137,12 @@ const restApi = {
 
   getMockInterviewSession: async (sessionCode: string) => {
     try {
-      const response = await restApi.postRequest('mock-interview-get-session', {
+      const response = await restApi.postRequest('realtime-mock-interview-get-session', {
         session_code: sessionCode
       });
       return response;
     } catch (error: any) {
       console.error("Error getting mock interview session:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  startMockInterviewSession: async (sessionCode: string) => {
-    try {
-      const response = await restApi.postRequest('mock-interview-start-session', {
-        session_code: sessionCode
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error starting mock interview session:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },
@@ -202,18 +200,31 @@ const restApi = {
   },
 
   // Real-time Mock Interview APIs
-  getRealtimeVoiceQuestionAudio: async (sessionCode: string, questionIndex: number) => {
+  startRealtimeMockInterview: async (sessionCode: string) => {
     try {
-      const response = await restApi.postRequest('realtime-mock-interview-get-voice-json', {
-        session_code: sessionCode,
-        question_index: questionIndex
+      const response = await restApi.postRequest('realtime-mock-interview-start', {
+        session_code: sessionCode
       });
       return response;
     } catch (error: any) {
-      console.error("Error getting realtime voice question audio:", error);
+      console.error("Error starting realtime mock interview:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },
+
+  getRealtimeMockInterviewStatus: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-get-status', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting realtime mock interview status:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+
   getPracticeInterviewQuestionAudio: async (sessionCode: string, questionIndex: number) => {
     try {
       const response = await restApi.postRequest('voice-practice-interview-get-question-audio', {
@@ -340,19 +351,6 @@ const restApi = {
     }
   },
 
-  // Real-time Mock Interview APIs
-  startRealtimeMockInterview: async (sessionCode: string) => {
-    try {
-      const response = await restApi.postRequest('realtime-mock-interview-start', {
-        session_code: sessionCode
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error starting realtime mock interview:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
   processRealtimeResponse: async (sessionCode: string, audioFile: File) => {
     try {
       const formData = new FormData();
@@ -387,6 +385,39 @@ const restApi = {
       return response;
     } catch (error: any) {
       console.error("Error ending realtime mock interview:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  autoProcessSilence: async (sessionCode: string, audioFile: File) => {
+    try {
+      // Convert audio file to base64 for JSON transmission using a proper binary-safe method
+      const arrayBuffer = await audioFile.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
+      
+      // Use a proper base64 encoding function for binary data
+      const base64Audio = arrayBufferToBase64(uint8Array);
+      
+      const response = await restApi.postRequest('realtime-mock-interview-auto-process-silence', {
+        session_code: sessionCode,
+        audio_file: base64Audio
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error auto-processing silence:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  getRealtimeMockInterviewVoice: async (sessionCode: string, questionIndex: number) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-get-voice', {
+        session_code: sessionCode,
+        question_index: questionIndex
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting realtime mock interview voice:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },

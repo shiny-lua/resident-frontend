@@ -1,4 +1,4 @@
-import { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect, useRef } from "react";
 
 import Icon from "../../../../components/icon";
 import SettingModal from "../../components/setting-modal";

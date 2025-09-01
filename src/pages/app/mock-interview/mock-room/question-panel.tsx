@@ -69,7 +69,7 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
                                 <li>• AI question will be spoken automatically</li>
                                 <li>• Recording will start automatically after the question</li>
                                 <li>• Speak your answer clearly and naturally</li>
-                                <li>• Say "That is all" when you finish your answer</li>
+                                <li>• Recording will stop automatically when you pause</li>
                                 <li>• Your response will be automatically processed</li>
                                 <li>• AI will move to the next question automatically</li>
                             </ul>
@@ -124,7 +124,7 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
                                             <span className="text-sm font-medium text-red-600">Recording in progress</span>
                                         </div>
                                         <p className="text-sm text-gray-600">Speak your answer clearly and naturally</p>
-                                        <p className="text-xs text-gray-500 mt-1">Say "That is all" when you finish your answer</p>
+                                        <p className="text-xs text-gray-500 mt-1">Recording will stop automatically when you pause</p>
                                     </div>
                                 )}
                             </div>

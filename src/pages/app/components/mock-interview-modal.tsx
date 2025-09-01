@@ -196,7 +196,7 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       }
 
       // Create mock interview session via API
-      const response = await restApi.createMockInterviewSession(sessionData);
+      const response = await restApi.startRealtimeMockInterview(sessionData);
       
       if (response.status === 200 && response.data?.status === "success") {
         const sessionInfo = response.data.data;
@@ -225,7 +225,6 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
         // Navigate to mock interview room
         navigate(`/app/mock-interview/mock/${sessionInfo.session_code}`);
         
-        showToast('Mock interview session created successfully!', 'success');
         return;
       } else {
         console.error('Failed to create mock interview session:', response.data?.msg || response.msg);

@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Icon from "../../../../components/icon";
 import { Rating } from 'react-simple-star-rating'
 import { useNavigate } from "react-router-dom";
@@ -178,12 +178,6 @@ const ReviewSection = () => {
                             )}
                         </div>
                     )}
-                </div>
-                <div className="flex items-center gap-x-1 rounded-md bg-green-200 px-2 py-2 leading-[14px] absolute bottom-4">
-                    <Icon icon="Lock" className="text-green-900" />
-                    <span className="text-sm text-green-900">
-                        Secured by 256-bit AES and 256-bit SSL/TLS encryption
-                    </span>
                 </div>
             </main>
         </div>

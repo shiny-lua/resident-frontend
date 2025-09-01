@@ -225,7 +225,6 @@ const PracticeInterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose:
         // Navigate to mock interview room
         navigate(`/app/practice-interview/practice/${sessionInfo.session_code}`);
         
-        showToast('Mock interview session created successfully!', 'success');
         return;
       } else {
         console.error('Failed to create mock interview session:', response.data?.msg || response.msg);

@@ -4,7 +4,6 @@ import { useGlobalContext } from "../../../../context";
 import { restApi } from "../../../../context/restApi";
 import { showToast } from "../../../../context/helper";
 import QuestionPanel from "./question-panel";
-import EvaluationPanel from "./evaluation-panel";
 import AIAvatarSection from "./ai-avatar-section";
 import ReviewSection from "./review-section";
 import FinalFeedbackSection from "./final-feedback-section";
@@ -62,10 +61,10 @@ const MockInterviewRoomIndex = () => {
     const [isEndInterview, setEndInterview] = React.useState(false);
     const [transcribedText, setTranscribedText] = React.useState("");
     const [isEvaluating, setIsEvaluating] = React.useState(false);
-    const [currentEvaluation, setCurrentEvaluation] = React.useState<any>(null);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [questionAudioUrl, setQuestionAudioUrl] = React.useState<string | null>(null);
     const [isStartingInterview, setIsStartingInterview] = React.useState(false);
+    const [hasStartedSession, setHasStartedSession] = React.useState(false); // Add flag to prevent duplicate starts
 
     const fetchSessionDetails = React.useCallback(async () => {
         try {
@@ -90,6 +89,11 @@ const MockInterviewRoomIndex = () => {
                     return;
                 }
                 setSession(sessionData);
+                
+                // Check if session is already started to prevent duplicate calls
+                if (sessionData.session_started) {
+                    setHasStartedSession(true);
+                }
             } else {
                 showToast('Failed to load session details', 'error');
                 navigate('/app/mock-interview');
@@ -109,6 +113,23 @@ const MockInterviewRoomIndex = () => {
         }
     }, [sessionCode, fetchSessionDetails]);
 
+    // Add beforeunload event listener to prevent accidental page refresh during interview
+    React.useEffect(() => {
+        const handleBeforeUnload = (e: BeforeUnloadEvent) => {
+            if (session && session.session_started && !session.session_completed) {
+                e.preventDefault();
+                e.returnValue = 'You are currently in an interview session. Are you sure you want to leave?';
+                return e.returnValue;
+            }
+        };
+
+        window.addEventListener('beforeunload', handleBeforeUnload);
+
+        return () => {
+            window.removeEventListener('beforeunload', handleBeforeUnload);
+        };
+    }, [session]);
+
     // Debug session changes
     React.useEffect(() => {
         if (session) {
@@ -122,24 +143,25 @@ const MockInterviewRoomIndex = () => {
         }
     }, [session]);
 
-    // Auto-start real-time interview when session is loaded
+    // Auto-start real-time interview when session is loaded - FIXED to prevent duplicates
     React.useEffect(() => {
-        if (session && !session.session_started && session.status !== 'completed') {
-            // Automatically start the real-time interview
+        if (session && !session.session_started && session.status !== 'completed' && !hasStartedSession && !isStartingInterview) {
+            console.log('🚀 Auto-starting real-time interview session...');
+            setHasStartedSession(true); // Set flag immediately to prevent duplicate calls
             handleStartSession();
         }
-    }, [session]);
+    }, [session, hasStartedSession, isStartingInterview]);
 
     const handleStartSession = async () => {
         try {
             setIsStartingInterview(true);
+            console.log('🎯 Starting real-time mock interview session...');
             const response = await restApi.startRealtimeMockInterview(sessionCode!);
 
             if (response.status === 200 && response.data?.data) {
-                const { all_questions, first_question, total_questions } = response.data.data;
                 
                 // Ensure we have questions, with fallback if needed
-                const questions = all_questions || [first_question] || [
+                const questions = response.data.data.questions || [
                     {
                         question: "Tell me about yourself and why you chose medicine as a career.",
                         category: "personal",
@@ -158,12 +180,9 @@ const MockInterviewRoomIndex = () => {
                         current_question_index: 0
                     };
                     setSession(updatedSession);
-                    
-                    // Debug log to verify the update
-                    console.log('Session updated with questions:', updatedSession.questions);
-                    console.log('First question:', updatedSession.questions[0]);
                 }
-                showToast('Real-time interview started with all 10 questions!', 'success');
+                console.log('✅ Real-time interview session started successfully');
+                console.log(`📝 Loaded ${questions.length} questions:`, questions.map((q, i) => `Q${i + 1}: ${q.question.substring(0, 30)}...`));
                 return response.data.data;
             } else {
                 throw new Error(response.data?.msg || 'Failed to start session');
@@ -171,6 +190,7 @@ const MockInterviewRoomIndex = () => {
         } catch (error) {
             console.error('Error starting session:', error);
             showToast('Failed to start session', 'error');
+            setHasStartedSession(false); // Reset flag on error to allow retry
             throw error;
         } finally {
             setIsStartingInterview(false);
@@ -193,7 +213,6 @@ const MockInterviewRoomIndex = () => {
                     });
                 }
                 setTranscribedText("");
-                setCurrentEvaluation(null);
                 setQuestionAudioUrl(null);
                 return response.data.data;
             } else {
@@ -247,7 +266,6 @@ const MockInterviewRoomIndex = () => {
 
             if (response.status === 200 && response.data?.data) {
                 const evaluation = response.data.data.evaluation;
-                setCurrentEvaluation(evaluation);
 
                 // Update session with new evaluation
                 if (session) {
@@ -289,8 +307,7 @@ const MockInterviewRoomIndex = () => {
     };
 
     const handleVoiceResponseReceived = async (transcribedText: string, responseData?: any) => {
-        console.log('Voice response received:', transcribedText);
-        console.log('Response data:', responseData);
+        console.log('🎯 handleVoiceResponseReceived called with:', { transcribedText, responseData });
         setTranscribedText(transcribedText);
         setIsEvaluating(true);
         
@@ -305,16 +322,18 @@ const MockInterviewRoomIndex = () => {
                     final_feedback: responseData.final_feedback
                 });
                 setEndInterview(true);
-            } else if (responseData.status === 'success' && responseData.next_question) {
-                console.log('Moving to next question:', responseData.next_question);
+            } else if (responseData.status === 'success') {
+                console.log(`Moving to question ${responseData.question_index + 1}`);
+                // Just update the question index, don't modify the questions array
+                // The backend already has all questions stored
                 setSession({
                     ...session!,
-                    current_question_index: responseData.question_index,
-                    questions: [...session!.questions, responseData.next_question]
+                    current_question_index: responseData.question_index
                 });
                 setTranscribedText("");
-                setCurrentEvaluation(null);
                 setQuestionAudioUrl(null);
+                setIsPlaying(false); // Reset playing state for new question
+                console.log(`✅ Session updated to question ${responseData.question_index + 1}`);
             }
         } else {
             // Fallback: Check session status after voice response
@@ -337,17 +356,17 @@ const MockInterviewRoomIndex = () => {
                             final_feedback: statusData.final_feedback
                         });
                         setEndInterview(true);
-                    } else if (statusData.current_question) {
-                        // Update with new question
-                        console.log('Moving to next question:', statusData.current_question);
+                    } else if (statusData.current_question_index !== undefined) {
+                        // Update question index only, don't modify questions array
+                        console.log(`Moving to question ${statusData.current_question_index + 1} (fallback)`);
                         setSession({
                             ...session!,
-                            current_question_index: statusData.current_question_index,
-                            questions: [...session!.questions, statusData.current_question]
+                            current_question_index: statusData.current_question_index
                         });
                         setTranscribedText("");
-                        setCurrentEvaluation(null);
                         setQuestionAudioUrl(null);
+                        setIsPlaying(false); // Reset playing state for new question
+                        console.log(`✅ Session updated to question ${statusData.current_question_index + 1} (fallback)`);
                     } else {
                         // Just update the current question index if no new question
                         console.log('Updating question index to:', statusData.current_question_index);
@@ -356,8 +375,8 @@ const MockInterviewRoomIndex = () => {
                             current_question_index: statusData.current_question_index
                         });
                         setTranscribedText("");
-                        setCurrentEvaluation(null);
                         setQuestionAudioUrl(null);
+                        setIsPlaying(false); // Reset playing state for new question
                     }
                 } else {
                     console.error('Invalid status response:', statusResponse);
@@ -375,6 +394,16 @@ const MockInterviewRoomIndex = () => {
     const handlePlayStateChange = (isPlaying: boolean) => {
         setIsPlaying(isPlaying);
     };
+
+    // Debug: Log current question details (must be before any early returns)
+    React.useEffect(() => {
+        if (session && session.questions && session.current_question_index !== undefined) {
+            const currentQ = session.questions[session.current_question_index];
+            console.log(`📋 Current Question Index: ${session.current_question_index}`);
+            console.log(`📋 Total Questions: ${session.questions.length}`);
+            console.log(`📋 Current Question: ${currentQ?.question?.substring(0, 50) || 'Not found'}...`);
+        }
+    }, [session?.current_question_index, session?.questions]);
 
     if (loading || isStartingInterview) {
         return (
@@ -409,12 +438,15 @@ const MockInterviewRoomIndex = () => {
     const currentQuestion = session.questions?.[session.current_question_index] || null;
     const isLastQuestion = session.current_question_index === (session.questions?.length || 0) - 1;
 
-    // Debug logs
-    console.log('MockRoom render - Session status:', session.status);
-    console.log('Current question index:', session.current_question_index);
-    console.log('Total questions:', session.questions?.length || 0);
-    console.log('Current question object:', currentQuestion);
-    console.log('Current question text:', currentQuestion?.question || 'No question text');
+    console.log({
+        session,
+        currentQuestion,
+        isLastQuestion,
+        isEvaluating,
+        isPlaying,
+        questionAudioUrl,
+        transcribedText,
+    })
 
     return (
         <div className="h-dvh bg-gray-50">
@@ -455,6 +487,7 @@ const MockInterviewRoomIndex = () => {
                             onVoiceResponseReceived={handleVoiceResponseReceived}
                             isPlaying={isPlaying}
                             onPlayStateChange={handlePlayStateChange}
+                            isInterviewCompleted={session.session_completed || session.status === 'completed'}
                         />
                     </div>
                 ) : (
@@ -467,7 +500,7 @@ const MockInterviewRoomIndex = () => {
                 )}
 
                 {/* Question Panel */}
-                <div className="w-full md:w-1/2 border-r bg-white">
+                <div className="w-full md:w-3/4 bg-white">
                     <QuestionPanel
                         currentQuestion={currentQuestion}
                         currentQuestionIndex={session.current_question_index}
@@ -477,21 +510,6 @@ const MockInterviewRoomIndex = () => {
                         isEvaluating={isEvaluating}
                         onEvaluate={handleEvaluateResponse}
                         onNextQuestion={handleNextQuestion}
-                    />
-                </div>
-
-                {/* Evaluation Panel */}
-                <div className="w-full md:w-1/2 bg-white">
-                    <EvaluationPanel
-                        currentEvaluation={currentEvaluation}
-                        evaluations={session.evaluations}
-                        onTranscriptionUpdate={handleTranscriptionUpdate}
-                        onStartSession={handleStartSession}
-                        onNextQuestion={handleNextQuestion}
-                        onEndSession={handleEndSession}
-                        sessionStarted={session.session_started}
-                        isLastQuestion={isLastQuestion}
-                        sessionCompleted={session.session_completed}
                     />
                 </div>
             </div>

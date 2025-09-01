@@ -1,5 +1,5 @@
+import React, { useState } from 'react'
 import { CardCvcElement, CardExpiryElement, CardNumberElement, useStripe, useElements } from '@stripe/react-stripe-js'
-import { useState } from 'react'
 import Loader from '../../../../components/loader';
 import Icon from '../../../../components/icon';
 import { restApi } from '../../../../context/restApi';

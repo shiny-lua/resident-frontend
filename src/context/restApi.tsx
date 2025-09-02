@@ -240,13 +240,15 @@ const restApi = {
   getPracticeInterviews: async (params?: {
     page?: number;
     per_page?: number;
-    status?: 'active' | 'completed' | 'cancelled';
+    status?: 'active' | 'completed' | 'cancelled' | 'waiting';
+    interview_type?: 'text' | 'voice';
   }) => {
     try {
       const queryParams = new URLSearchParams();
       if (params?.page) queryParams.append('page', params.page.toString());
       if (params?.per_page) queryParams.append('per_page', params.per_page.toString());
       if (params?.status) queryParams.append('status', params.status);
+      if (params?.interview_type) queryParams.append('interview_type', params.interview_type);
 
       const url = `get-practice-interviews${queryParams.toString() ? `?${queryParams.toString()}` : ''}`;
       const response = await restApi.postRequest(url);

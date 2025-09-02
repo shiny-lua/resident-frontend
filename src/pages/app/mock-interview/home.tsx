@@ -9,11 +9,24 @@ import { restApi } from "../../../context/restApi"
 import { showToast } from "../../../context/helper"
 import { useNavigate } from "react-router-dom"
 interface MockInterview {
-    interview_id: string;
-    title: string;
+    _id: string;
+    session_code: string;
+    session_name: string;
+    specialty: string;
     status: string;
+    interview_type: string;
+    description: string;
+    examiner_email: string;
+    student_email: string;
     created_at: string;
     updated_at: string;
+    session_started: boolean;
+    session_completed: boolean;
+    responses: Array<{
+        question_index: number;
+        response_text: string;
+        timestamp: string;
+    }>;
 }
 
 interface PaginationInfo {
@@ -138,6 +151,10 @@ const MockInterview = () => {
         navigate(`/app/mock-interview/mock/${interviewId}`)
     }
 
+    const handleViewResults = (interviewId: string) => {
+        navigate(`/app/mock-interview/results/${interviewId}`);
+    };
+
     React.useEffect(() => {
         document.addEventListener("mousedown", onShowStatusDropdown);
         return () => {
@@ -241,16 +258,19 @@ const MockInterview = () => {
                         <table className="w-full caption-bottom text-sm hidden md:table">
                             <thead className="[&_tr]:border-0">
                                 <tr className="border-b transition-colors hover:bg-sky-100/50 h-12 bg-slate-50">
-                                    <th className="h-10 px-2 text-left align-middle w-3/12 font-semibold text-slate-900">
+                                    <th className="h-10 px-2 text-left align-middle w-2/12 font-semibold text-slate-900">
                                         Interview
+                                    </th>
+                                    <th className="h-10 px-2 text-left align-middle w-2/12 font-semibold text-slate-900">
+                                        Specialty
                                     </th>
                                     <th className="h-10 px-2 text-left align-middle hidden w-2/12 font-semibold text-slate-900 sm:table-cell">
                                         Status
                                     </th>
-                                    <th className="h-10 px-2 text-left align-middle hidden w-3/12 cursor-pointer font-semibold text-slate-900 md:table-cell">
+                                    <th className="h-10 px-2 text-left align-middle hidden w-2/12 cursor-pointer font-semibold text-slate-900 md:table-cell">
                                         Created
                                     </th>
-                                    <th className="h-10 px-2 text-left align-middle w-3/12 font-semibold text-slate-900">
+                                    <th className="h-10 px-2 text-left align-middle w-2/12 font-semibold text-slate-900">
                                         Action
                                     </th>
                                 </tr>
@@ -258,7 +278,7 @@ const MockInterview = () => {
                             {mockInterviews.length === 0 ? (
                                 <tbody className="[&_tr:last-child]:border-0">
                                     <tr className="border-b transition-colors hover:bg-slate-500/50">
-                                        <td colSpan={4} className="p-8 text-center text-slate-500">
+                                        <td colSpan={6} className="p-8 text-center text-slate-500">
                                             No real-time mock interviews found. Start your first real-time mock interview!
                                         </td>
                                     </tr>
@@ -266,35 +286,40 @@ const MockInterview = () => {
                             ) : (
                                 <tbody className="[&_tr:last-child]:border-0">
                                     {mockInterviews.map((interview) => (
-                                        <tr key={interview.interview_id} className="border-b transition-colors hover:bg-sky-100/50">
+                                        <tr key={interview._id} className="border-b transition-colors hover:bg-sky-100/50">
                                             <td className="p-2 align-middle">
                                                 <span className="inline-block max-w-64 truncate">
-                                                    <div className="font-semibold">{interview.title || 'Untitled Interview'}</div>
+                                                    <div className="font-semibold">{interview.session_name || 'Untitled Interview'}</div>
                                                     <div className="text-[11px] text-slate-500">Real-time Mock Interview</div>
+                                                </span>
+                                            </td>
+                                            <td className="p-2 align-middle">
+                                                <span className="inline-flex items-center rounded-lg bg-blue-50 px-2 py-1 text-xs font-medium text-blue-700">
+                                                    {interview.specialty || 'General'}
                                                 </span>
                                             </td>
                                             <td className="p-2 align-middle hidden sm:table-cell">
                                                 <span className="inline-flex items-center rounded-xl border border-slate-100 bg-white px-2.5 py-1.5">
                                                     <span className={`inline-block w-2 h-2 rounded-full mr-2 ${getStatusColor(interview.status)}`} />
-                                                    <span className={`text-xs text-slate-700 capitalize ${interview.status.toLowerCase() === 'in_progress' ? 'text-green-500' : 'text-slate-700'}`}>{interview.status}</span>
+                                                    <span className={`text-xs text-slate-700 capitalize ${interview.status.toLowerCase() === 'active' ? 'text-green-500' : 'text-slate-700'}`}>{interview.status}</span>
                                                 </span>
                                             </td>
                                             <td className="p-2 align-middle hidden md:table-cell">
                                                 {formatDate(interview.created_at)}
                                             </td>
                                             <td className="p-2 align-middle flex items-center gap-3">
-                                                {interview.status.toLowerCase() === 'in_progress' && (
-                                                    <button onClick={() => handleJoinMockInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
+                                                {interview.status.toLowerCase() === 'active' && (
+                                                    <button onClick={() => handleJoinMockInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
                                                         Join
                                                     </button>
                                                 )}
-                                                {interview.status.toLowerCase() === 'in_progress' && (
-                                                    <button onClick={() => handleEndMockInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
+                                                {interview.status.toLowerCase() === 'active' && (
+                                                    <button onClick={() => handleEndMockInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
                                                         End
                                                     </button>
                                                 )}
                                                 {interview.status.toLowerCase() === 'completed' && (
-                                                    <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
+                                                    <button onClick={() => handleViewResults(interview.session_code)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
                                                         View Results
                                                     </button>
                                                 )}
@@ -312,10 +337,10 @@ const MockInterview = () => {
                 {!loading && mockInterviews.length > 0 && (
                     <div className="flex flex-col gap-3 md:hidden">
                         {mockInterviews.map((interview) => (
-                            <div key={interview.interview_id} className="flex flex-col rounded-lg border border-slate-200">
+                            <div key={interview._id} className="flex flex-col rounded-lg border border-slate-200">
                                 <div className="p-4">
                                     <div className="font-base truncate font-semibold text-slate-900">
-                                        {interview.title || 'Untitled Interview'}
+                                        {interview.session_name || 'Untitled Interview'}
                                     </div>
                                     <div className="font-base text-slate-400">Real-time Mock Interview</div>
                                     <div className="font-base text-slate-400">{formatDate(interview.created_at)}</div>
@@ -339,7 +364,7 @@ const MockInterview = () => {
                                             </>
                                         )}
                                         {interview.status.toLowerCase() === 'completed' && (
-                                            <button className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
+                                            <button onClick={() => handleViewResults(interview.session_code)} className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
                                                 View Results
                                             </button>
                                         )}

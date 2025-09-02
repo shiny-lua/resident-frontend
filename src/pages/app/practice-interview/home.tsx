@@ -10,11 +10,22 @@ import { showToast } from "../../../context/helper"
 import { useNavigate } from "react-router-dom"
 
 interface PracticeInterview {
-    interview_id: string;
-    title: string;
+    _id: string;
+    session_code: string;
+    session_name: string;
+    description: string;
+    specialty: string;
+    interview_type: string;
     status: string;
+    email: string;
     created_at: string;
     updated_at: string;
+    session_started: boolean;
+    session_completed: boolean;
+    responses: any[];
+    questions?: any[];
+    evaluations?: any[];
+    current_question_index?: number;
 }
 
 interface PaginationInfo {
@@ -33,7 +44,11 @@ const PracticeInterview = () => {
     const [status, setStatus] = React.useState({
         status: "All Status"
     })
+    const [interviewType, setInterviewType] = React.useState({
+        type: "All Types"
+    })
     const [showStatusDropdown, setShowStatusDropdown] = React.useState(false)
+    const [showTypeDropdown, setShowTypeDropdown] = React.useState(false)
     const [practiceInterviews, setPracticeInterviews] = React.useState<PracticeInterview[]>([])
     const [pagination, setPagination] = React.useState<PaginationInfo>({
         current_page: 1,
@@ -45,13 +60,22 @@ const PracticeInterview = () => {
     })
     const [loading, setLoading] = React.useState(false)
     const showStatusDropdownRef = React.useRef<HTMLDivElement | null>(null);
+    const showTypeDropdownRef = React.useRef<HTMLDivElement | null>(null);
 
     const onHandleStatus = (v: string, obk: string) => {
         setStatus({ ...status, [obk]: v });
         setShowStatusDropdown(false)
         // Fetch interviews with new status filter
-        const statusFilter = v === "All Status" ? undefined : v.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled';
-        fetchPracticeInterviews(1, statusFilter);
+        const statusFilter = v === "All Status" ? undefined : v.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled' | 'waiting';
+        fetchPracticeInterviews(1, statusFilter, interviewType.type === "All Types" ? undefined : interviewType.type.toLowerCase() as 'text' | 'voice');
+    }
+
+    const onHandleInterviewType = (v: string, obk: string) => {
+        setInterviewType({ ...interviewType, [obk]: v });
+        setShowTypeDropdown(false)
+        // Fetch interviews with new type filter
+        const typeFilter = v === "All Types" ? undefined : v.toLowerCase() as 'text' | 'voice';
+        fetchPracticeInterviews(1, status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled' | 'waiting', typeFilter);
     }
 
     const onShowStatusDropdown = (event: MouseEvent) => {
@@ -60,7 +84,13 @@ const PracticeInterview = () => {
         }
     };
 
-    const fetchPracticeInterviews = React.useCallback(async (page: number = 1, statusFilter?: 'active' | 'completed' | 'cancelled') => {
+    const onShowTypeDropdown = (event: MouseEvent) => {
+        if (showTypeDropdownRef.current && !showTypeDropdownRef.current.contains(event.target as Node)) {
+            setShowTypeDropdown(false);
+        }
+    };
+
+    const fetchPracticeInterviews = React.useCallback(async (page: number = 1, statusFilter?: 'active' | 'completed' | 'cancelled' | 'waiting', typeFilter?: 'text' | 'voice') => {
         setLoading(true);
         try {
             const params: any = {
@@ -70,6 +100,10 @@ const PracticeInterview = () => {
 
             if (statusFilter) {
                 params.status = statusFilter;
+            }
+
+            if (typeFilter) {
+                params.interview_type = typeFilter;
             }
 
             const response = await restApi.getPracticeInterviews(params);
@@ -93,8 +127,9 @@ const PracticeInterview = () => {
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= pagination.total_pages) {
-            const statusFilter = status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled';
-            fetchPracticeInterviews(newPage, statusFilter);
+            const statusFilter = status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled' | 'waiting';
+            const typeFilter = interviewType.type === "All Types" ? undefined : interviewType.type.toLowerCase() as 'text' | 'voice';
+            fetchPracticeInterviews(newPage, statusFilter, typeFilter);
         }
     };
 
@@ -141,8 +176,10 @@ const PracticeInterview = () => {
 
     React.useEffect(() => {
         document.addEventListener("mousedown", onShowStatusDropdown);
+        document.addEventListener("mousedown", onShowTypeDropdown);
         return () => {
             document.removeEventListener("mousedown", onShowStatusDropdown);
+            document.removeEventListener("mousedown", onShowTypeDropdown);
         };
     }, []);
 
@@ -153,14 +190,31 @@ const PracticeInterview = () => {
 
     const getStatusColor = (status: string) => {
         switch (status.toLowerCase()) {
-            case 'in_progress':
-                return 'bg-blue-500';
+            case 'active':
+                return 'bg-green-500';
+            case 'waiting':
+                return 'bg-yellow-500';
             case 'completed':
                 return 'bg-slate-500';
             case 'cancelled':
                 return 'bg-red-500';
             default:
                 return 'bg-slate-500';
+        }
+    };
+
+    const getStatusText = (status: string) => {
+        switch (status.toLowerCase()) {
+            case 'active':
+                return 'Active';
+            case 'waiting':
+                return 'Waiting';
+            case 'completed':
+                return 'Completed';
+            case 'cancelled':
+                return 'Cancelled';
+            default:
+                return status;
         }
     };
 
@@ -175,6 +229,17 @@ const PracticeInterview = () => {
             });
         } catch (error) {
             return 'N/A';
+        }
+    };
+
+    const getInterviewTypeText = (type: string) => {
+        switch (type.toLowerCase()) {
+            case 'text':
+                return 'Text Interview';
+            case 'voice':
+                return 'Voice Interview';
+            default:
+                return type;
         }
     };
 
@@ -212,8 +277,17 @@ const PracticeInterview = () => {
                             value={status.status}
                             obk="status"
                             onHandle={onHandleStatus}
-                            data={["All Status", "Active", "Completed", "Cancelled"]}
+                            data={["All Status", "Active", "Waiting", "Completed", "Cancelled"]}
                             dropdownRef={showStatusDropdownRef}
+                        />
+                        <Select
+                            onDropdown={() => setShowTypeDropdown(true)}
+                            showDropdown={showTypeDropdown}
+                            value={interviewType.type}
+                            obk="type"
+                            onHandle={onHandleInterviewType}
+                            data={["All Types", "Text", "Voice"]}
+                            dropdownRef={showTypeDropdownRef}
                         />
                     </div>
                     <div className="flex flex-1 gap-2 md:hidden">
@@ -248,6 +322,12 @@ const PracticeInterview = () => {
                                     <th className="h-10 px-2 text-left align-middle hidden w-2/12 font-semibold text-slate-900 sm:table-cell">
                                         Status
                                     </th>
+                                    <th className="h-10 px-2 text-left align-middle hidden w-2/12 font-semibold text-slate-900 sm:table-cell">
+                                        Type
+                                    </th>
+                                    <th className="h-10 px-2 text-left align-middle hidden w-2/12 font-semibold text-slate-900 sm:table-cell">
+                                        Specialty
+                                    </th>
                                     <th className="h-10 px-2 text-left align-middle hidden w-3/12 cursor-pointer font-semibold text-slate-900 md:table-cell">
                                         Created
                                     </th>
@@ -259,7 +339,7 @@ const PracticeInterview = () => {
                             {practiceInterviews.length === 0 ? (
                                 <tbody className="[&_tr:last-child]:border-0">
                                     <tr className="border-b transition-colors hover:bg-slate-500/50">
-                                        <td colSpan={4} className="p-8 text-center text-slate-500">
+                                        <td colSpan={6} className="p-8 text-center text-slate-500">
                                             No practice interviews found. Start your first practice interview!
                                         </td>
                                     </tr>
@@ -267,36 +347,55 @@ const PracticeInterview = () => {
                             ) : (
                                 <tbody className="[&_tr:last-child]:border-0">
                                     {practiceInterviews.map((interview) => (
-                                        <tr key={interview.interview_id} className="border-b transition-colors hover:bg-sky-100/50">
+                                        <tr key={interview._id} className="border-b transition-colors hover:bg-sky-100/50">
                                             <td className="p-2 align-middle">
                                                 <span className="inline-block max-w-64 truncate">
-                                                    <div className="font-semibold">{interview.title || 'Untitled Interview'}</div>
-                                                    <div className="text-[11px] text-slate-500">Practice Interview</div>
+                                                    <div className="font-semibold">{interview.session_name || 'Untitled Interview'}</div>
+                                                    <div className="text-[11px] text-slate-500">
+                                                        {interview.description || 'Practice Interview'}
+                                                    </div>
                                                 </span>
                                             </td>
                                             <td className="p-2 align-middle hidden sm:table-cell">
                                                 <span className="inline-flex items-center rounded-xl border border-slate-100 bg-white px-2.5 py-1.5">
                                                     <span className={`inline-block w-2 h-2 rounded-full mr-2 ${getStatusColor(interview.status)}`} />
-                                                    <span className={`text-xs text-slate-700 capitalize ${interview.status.toLowerCase() === 'in_progress' ? 'text-green-500' : 'text-slate-700'}`}>{interview.status}</span>
+                                                    <span className={`text-xs text-slate-700 capitalize ${interview.status.toLowerCase() === 'active' ? 'text-green-500' : 'text-slate-700'}`}>
+                                                        {getStatusText(interview.status)}
+                                                    </span>
+                                                </span>
+                                            </td>
+                                            <td className="p-2 align-middle hidden sm:table-cell">
+                                                <span className="text-xs text-slate-600">
+                                                    {getInterviewTypeText(interview.interview_type)}
+                                                </span>
+                                            </td>
+                                            <td className="p-2 align-middle hidden sm:table-cell">
+                                                <span className="text-xs text-slate-600 capitalize">
+                                                    {interview.specialty || 'General'}
                                                 </span>
                                             </td>
                                             <td className="p-2 align-middle hidden md:table-cell">
                                                 {formatDate(interview.created_at)}
                                             </td>
                                             <td className="p-2 align-middle flex items-center gap-3">
-                                                {interview.status.toLowerCase() === 'in_progress' && (
-                                                    <button onClick={() => handleJoinPracticeInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
+                                                {interview.status.toLowerCase() === 'active' && (
+                                                    <button onClick={() => handleJoinPracticeInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
                                                         Join
                                                     </button>
                                                 )}
-                                                {interview.status.toLowerCase() === 'in_progress' && (
-                                                    <button onClick={() => handleEndPracticeInterview(interview.interview_id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
+                                                {interview.status.toLowerCase() === 'active' && (
+                                                    <button onClick={() => handleEndPracticeInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
                                                         End
                                                     </button>
                                                 )}
                                                 {interview.status.toLowerCase() === 'completed' && (
                                                     <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
                                                         View Results
+                                                    </button>
+                                                )}
+                                                {interview.status.toLowerCase() === 'waiting' && (
+                                                    <button onClick={() => handleJoinPracticeInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-blue-500 text-white px-3 py-1.5 hover:bg-blue-600">
+                                                        Start
                                                     </button>
                                                 )}
                                             </td>
@@ -313,28 +412,36 @@ const PracticeInterview = () => {
                 {!loading && practiceInterviews.length > 0 && (
                     <div className="flex flex-col gap-3 md:hidden">
                         {practiceInterviews.map((interview) => (
-                            <div key={interview.interview_id} className="flex flex-col rounded-lg border border-slate-200">
+                            <div key={interview._id} className="flex flex-col rounded-lg border border-slate-200">
                                 <div className="p-4">
                                     <div className="font-base truncate font-semibold text-slate-900">
-                                        {interview.title || 'Untitled Interview'}
+                                        {interview.session_name || 'Untitled Interview'}
                                     </div>
-                                    <div className="font-base text-slate-400">Practice Interview</div>
+                                    <div className="font-base text-slate-400">
+                                        {interview.description || 'Practice Interview'}
+                                    </div>
                                     <div className="font-base text-slate-400">{formatDate(interview.created_at)}</div>
-                                    <div className="mt-2">
+                                    <div className="mt-2 flex gap-2">
                                         <span className="inline-flex items-center rounded-xl border border-slate-100 bg-white px-2.5 py-1.5">
                                             <span className={`inline-block w-2 h-2 rounded-full mr-2 ${getStatusColor(interview.status)}`} />
-                                            <span className="text-xs text-slate-700 capitalize">{interview.status}</span>
+                                            <span className="text-xs text-slate-700 capitalize">{getStatusText(interview.status)}</span>
                                         </span>
+                                        <span className="inline-flex items-center rounded-xl border border-slate-100 bg-white px-2.5 py-1.5">
+                                            <span className="text-xs text-slate-600">{getInterviewTypeText(interview.interview_type)}</span>
+                                        </span>
+                                    </div>
+                                    <div className="mt-1 text-xs text-slate-500 capitalize">
+                                        Specialty: {interview.specialty || 'General'}
                                     </div>
                                 </div>
                                 <div className="align-items box-content rounded-b-lg bg-slate-50 p-2">
                                     <div className="flex gap-2">
                                         {interview.status.toLowerCase() === 'active' && (
                                             <>
-                                                <button className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
+                                                <button onClick={() => handleJoinPracticeInterview(interview._id)} className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
                                                     Join
                                                 </button>
-                                                <button className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
+                                                <button onClick={() => handleEndPracticeInterview(interview._id)} className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
                                                     End
                                                 </button>
                                             </>
@@ -342,6 +449,11 @@ const PracticeInterview = () => {
                                         {interview.status.toLowerCase() === 'completed' && (
                                             <button className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
                                                 View Results
+                                            </button>
+                                        )}
+                                        {interview.status.toLowerCase() === 'waiting' && (
+                                            <button onClick={() => handleJoinPracticeInterview(interview._id)} className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-blue-500 text-white px-3 py-1.5 hover:bg-blue-600">
+                                                Start
                                             </button>
                                         )}
                                     </div>

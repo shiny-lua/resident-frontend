@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import Icon from "../../../../components/icon";
 import { Rating } from 'react-simple-star-rating'
 import { useNavigate } from "react-router-dom";

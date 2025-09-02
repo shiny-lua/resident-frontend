@@ -309,12 +309,12 @@ const MockInterview = () => {
                                             </td>
                                             <td className="p-2 align-middle flex items-center gap-3">
                                                 {interview.status.toLowerCase() === 'active' && (
-                                                    <button onClick={() => handleJoinMockInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
+                                                    <button onClick={() => handleJoinMockInterview(interview.session_code)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
                                                         Join
                                                     </button>
                                                 )}
                                                 {interview.status.toLowerCase() === 'active' && (
-                                                    <button onClick={() => handleEndMockInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
+                                                    <button onClick={() => handleEndMockInterview(interview.session_code)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
                                                         End
                                                     </button>
                                                 )}

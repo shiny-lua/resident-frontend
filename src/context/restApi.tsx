@@ -185,20 +185,6 @@ const restApi = {
     }
   },
 
-  // Voice Mock Interview APIs
-  getVoiceQuestionAudio: async (sessionId: string, questionIndex: number) => {
-    try {
-      const response = await restApi.postRequest('voice-mock-interview-get-question-audio', {
-        session_id: sessionId,
-        question_index: questionIndex
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error getting voice question audio:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
   // Real-time Mock Interview APIs
   startRealtimeMockInterview: async (sessionCode: string) => {
     try {
@@ -227,8 +213,8 @@ const restApi = {
 
   getPracticeInterviewQuestionAudio: async (sessionCode: string, questionIndex: number) => {
     try {
-      const response = await restApi.postRequest('voice-practice-interview-get-question-audio', {
-        session_code: sessionCode, 
+      const response = await restApi.postRequest('practice-interview-get-question-audio', {
+        session_code: sessionCode,
         question_index: questionIndex
       });
       return response;
@@ -339,13 +325,12 @@ const restApi = {
     }
   },
 
-  leavePracticeInterview: async (interviewId: string, action: string) => {
+  leavePracticeInterview: async (sessionCode: string, action: string) => {
     try {
-      const requestData = {
-        interview_id: interviewId,
+      const response = await restApi.postRequest('leave-practice-interview', {
+        session_code: sessionCode,
         action: action
-      };
-      const response = await restApi.postRequest('leave-practice-interview', requestData);
+      });
       return response;
     } catch (error: any) {
       console.error("Error leaving practice interview:", error);
@@ -396,10 +381,10 @@ const restApi = {
       // Convert audio file to base64 for JSON transmission using a proper binary-safe method
       const arrayBuffer = await audioFile.arrayBuffer();
       const uint8Array = new Uint8Array(arrayBuffer);
-      
+
       // Use a proper base64 encoding function for binary data
       const base64Audio = arrayBufferToBase64(uint8Array);
-      
+
       const response = await restApi.postRequest('realtime-mock-interview-auto-process-silence', {
         session_code: sessionCode,
         audio_file: base64Audio
@@ -424,59 +409,22 @@ const restApi = {
     }
   },
 
-  submitVoiceResponse: async (sessionId: string, questionIndex: number, audioBlob: Blob) => {
+  convertSpeechToText: async (audioFile: File) => {
     try {
-      const formData = new FormData();
-      formData.append('session_id', sessionId);
-      formData.append('question_index', questionIndex.toString());
-      formData.append('audio', audioBlob, 'response.wav');
+      // Convert audio file to base64 for JSON transmission using a proper binary-safe method
+      const arrayBuffer = await audioFile.arrayBuffer();
+      const uint8Array = new Uint8Array(arrayBuffer);
 
-      const response = await restApi.postRequest('voice-mock-interview-submit-voice-response', formData);
-      return response;
-    } catch (error: any) {
-      console.error("Error submitting voice response:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
+      // Use a proper base64 encoding function for binary data
+      const base64Audio = arrayBufferToBase64(uint8Array);
 
-  convertSpeechToText: async (audioBlob: Blob) => {
-    try {
-      const formData = new FormData();
-      formData.append('audio', audioBlob, 'response.wav');
-
-      const response = await restApi.postRequest('voice-mock-interview-speech-to-text', formData);
+      const response = await restApi.postRequest('practice-interview-speech-to-text', { audio_base64: base64Audio });
       return response;
     } catch (error: any) {
       console.error("Error converting speech to text:", error);
       return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
     }
   },
-
-  convertTextToSpeech: async (text: string) => {
-    try {
-      const response = await restApi.postRequest('voice-mock-interview-text-to-speech', {
-        text: text
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error converting text to speech:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  evaluateVoiceResponse: async (sessionId: string, questionIndex: number, responseText: string) => {
-    try {
-      const response = await restApi.postRequest('voice-mock-interview-evaluate-response', {
-        session_id: sessionId,
-        question_index: questionIndex,
-        response_text: responseText
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error evaluating voice response:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  }
 }
 
 export { restApi };

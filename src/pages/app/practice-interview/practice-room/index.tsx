@@ -41,7 +41,7 @@ interface PracticeInterviewSession {
 const PracticeInterviewRoomIndex = () => {
     const { sessionCode } = useParams<{ sessionCode: string }>();
     const navigate = useNavigate();
-    const [state, {dispatch}] = useGlobalContext();
+    const [state, { dispatch }] = useGlobalContext();
     const [session, setSession] = React.useState<PracticeInterviewSession | null>(null);
     const [loading, setLoading] = React.useState(true);
     const [isEndInterview, setEndInterview] = React.useState(false);
@@ -61,7 +61,7 @@ const PracticeInterviewRoomIndex = () => {
 
                 if (!sessionData) {
                     showToast('You are not authorized to join this session', 'error');
-                    localStorage.removeItem('currentPracticeInterview');
+                    localStorage.removeItem('currentInterview');
                     dispatch({
                         type: "isLeaveInterview",
                         payload: {
@@ -106,11 +106,8 @@ const PracticeInterviewRoomIndex = () => {
                         session_started: true
                     });
                 }
-                showToast('Practice interview session started!', 'success');
                 return response.data.data;
-            } else {
-                throw new Error(response.data?.msg || 'Failed to start session');
-            }
+            } 
         } catch (error) {
             console.error('Error starting session:', error);
             showToast('Failed to start session', 'error');
@@ -262,6 +259,20 @@ const PracticeInterviewRoomIndex = () => {
         return <ReviewSection />;
     }
 
+    const leaveInterview = async () => {
+        const response = await restApi.leavePracticeInterview(sessionCode!, 'leave');
+        if (response.status === 200) {
+            dispatch({
+                type: "isLeaveInterview",
+                payload: {
+                    status: false,
+                    link: ""
+                }
+            });
+            localStorage.removeItem('currentInterview');
+            setEndInterview(true)
+        };
+    }
     const currentQuestion = session.questions[session.current_question_index];
     const isLastQuestion = session.current_question_index === session.questions.length - 1;
 
@@ -274,15 +285,14 @@ const PracticeInterviewRoomIndex = () => {
                         Practice Interview
                     </div>
                     <div className="flex items-center space-x-4">
-                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${
-                            session.status === 'active' ? 'bg-green-100 text-green-800' :
+                        <span className={`px-3 py-1 rounded-full text-sm font-medium ${session.status === 'active' ? 'bg-green-100 text-green-800' :
                             session.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                            'bg-yellow-100 text-yellow-800'
-                        }`}>
+                                'bg-yellow-100 text-yellow-800'
+                            }`}>
                             {session.status}
                         </span>
                         <button
-                            onClick={() => setEndInterview(true)}
+                            onClick={leaveInterview}
                             className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
                         >
                             End Interview

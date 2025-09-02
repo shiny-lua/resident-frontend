@@ -145,7 +145,7 @@ const PracticeInterview = () => {
 
             if (response.status === 200) {
                 // Clear practice interview state from localStorage
-                localStorage.removeItem('currentPracticeInterview');
+                localStorage.removeItem('currentInterview');
                 dispatch({
                     type: "isLeaveInterview",
                     payload: {
@@ -165,7 +165,7 @@ const PracticeInterview = () => {
     };
 
     const handleJoinPracticeInterview = (interviewId: string) => {
-        localStorage.setItem('currentPracticeInterview', JSON.stringify({
+        localStorage.setItem('currentInterview', JSON.stringify({
             interviewId: interviewId,
             link: `/app/practice-interview/practice/${interviewId}`,
             status: true,
@@ -379,12 +379,12 @@ const PracticeInterview = () => {
                                             </td>
                                             <td className="p-2 align-middle flex items-center gap-3">
                                                 {interview.status.toLowerCase() === 'active' && (
-                                                    <button onClick={() => handleJoinPracticeInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
+                                                    <button onClick={() => handleJoinPracticeInterview(interview.session_code)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-sky-500 text-white px-3 py-1.5 hover:bg-sky-600">
                                                         Join
                                                     </button>
                                                 )}
                                                 {interview.status.toLowerCase() === 'active' && (
-                                                    <button onClick={() => handleEndPracticeInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
+                                                    <button onClick={() => handleEndPracticeInterview(interview.session_code)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-red-500 text-white px-3 py-1.5 hover:bg-red-600">
                                                         End
                                                     </button>
                                                 )}
@@ -394,7 +394,7 @@ const PracticeInterview = () => {
                                                     </button>
                                                 )}
                                                 {interview.status.toLowerCase() === 'waiting' && (
-                                                    <button onClick={() => handleJoinPracticeInterview(interview._id)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-blue-500 text-white px-3 py-1.5 hover:bg-blue-600">
+                                                    <button onClick={() => handleJoinPracticeInterview(interview.session_code)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-blue-500 text-white px-3 py-1.5 hover:bg-blue-600">
                                                         Start
                                                     </button>
                                                 )}

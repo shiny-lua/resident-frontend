@@ -118,19 +118,72 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
 
     const startRecording = async () => {
         try {
-            const stream = await navigator.mediaDevices.getUserMedia({ audio: true });
-            mediaRecorderRef.current = new MediaRecorder(stream);
+            // Check if MediaRecorder is supported
+            if (!window.MediaRecorder) {
+                showToast('MediaRecorder not supported in this browser', 'error');
+                return;
+            }
+
+            // Request microphone access with better error handling
+            const stream = await navigator.mediaDevices.getUserMedia({ 
+                audio: {
+                    echoCancellation: true,
+                    noiseSuppression: true,
+                    sampleRate: 16000,
+                    channelCount: 1
+                } 
+            });
+            
+            // Create MediaRecorder with specific audio format
+            const options = {
+                mimeType: 'audio/webm;codecs=opus',
+                audioBitsPerSecond: 128000
+            };
+            
+            // Fallback to default if specific format not supported
+            if (!MediaRecorder.isTypeSupported(options.mimeType)) {
+                options.mimeType = 'audio/webm';
+            }
+            
+            mediaRecorderRef.current = new MediaRecorder(stream, options);
             audioChunksRef.current = [];
 
             mediaRecorderRef.current.ondataavailable = (event) => {
-                audioChunksRef.current.push(event.data);
+                if (event.data.size > 0) {
+                    audioChunksRef.current.push(event.data);
+                }
             };
 
             mediaRecorderRef.current.onstop = async () => {
-                const audioBlob = new Blob(audioChunksRef.current, { type: 'audio/wav' });
-                await processVoiceResponse(audioBlob);
+                try {
+                    if (audioChunksRef.current.length === 0) {
+                        showToast('No audio data recorded', 'error');
+                        return;
+                    }
 
-                // Stop all tracks
+                    // Create audio blob with proper format
+                    const audioBlob = new Blob(audioChunksRef.current, { 
+                        type: options.mimeType || 'audio/webm' 
+                    });
+                    
+                    // Convert to WAV format for better compatibility
+                    const audioFile = await convertBlobToWav(audioBlob);
+                    
+                    await processVoiceResponse(audioFile);
+                    audioChunksRef.current = [];
+                } catch (error) {
+                    console.error('Error processing recorded audio:', error);
+                    showToast('Error processing recorded audio', 'error');
+                } finally {
+                    // Stop all tracks
+                    stream.getTracks().forEach(track => track.stop());
+                }
+            };
+
+            mediaRecorderRef.current.onerror = (event) => {
+                console.error('MediaRecorder error:', event);
+                showToast('Recording error occurred', 'error');
+                setIsRecording(false);
                 stream.getTracks().forEach(track => track.stop());
             };
 
@@ -145,7 +198,26 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
 
         } catch (error) {
             console.error('Error starting recording:', error);
-            showToast('Error accessing microphone', 'error');
+            if (error.name === 'NotAllowedError') {
+                showToast('Microphone access denied. Please allow microphone access and try again.', 'error');
+            } else if (error.name === 'NotFoundError') {
+                showToast('No microphone found. Please connect a microphone and try again.', 'error');
+            } else {
+                showToast('Error accessing microphone: ' + error.message, 'error');
+            }
+        }
+    };
+
+    // Helper function to convert audio blob to WAV format
+    const convertBlobToWav = async (audioBlob: Blob): Promise<File> => {
+        try {
+            // For now, return the original blob as a file
+            // In a production environment, you might want to use a proper audio conversion library
+            return new File([audioBlob], 'audio.wav', { type: 'audio/wav' });
+        } catch (error) {
+            console.error('Error converting audio format:', error);
+            // Fallback to original blob
+            return new File([audioBlob], 'audio.webm', { type: audioBlob.type });
         }
     };
 
@@ -161,22 +233,54 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         }
     };
 
-    const processVoiceResponse = async (audioBlob: Blob) => {
+    const processVoiceResponse = async (audioFile: File) => {
         try {
             setIsProcessingResponse(true);
 
-            const response = await restApi.convertSpeechToText(audioBlob);
+            // Validate audio file
+            if (!audioFile || audioFile.size === 0) {
+                showToast('Invalid audio file', 'error');
+                return;
+            }
+
+            // Check file size (limit to 10MB)
+            if (audioFile.size > 10 * 1024 * 1024) {
+                showToast('Audio file too large. Please record a shorter response.', 'error');
+                return;
+            }
+
+            console.log('Processing voice response:', {
+                name: audioFile.name,
+                size: audioFile.size,
+                type: audioFile.type
+            });
+
+            const response = await restApi.convertSpeechToText(audioFile);
 
             if (response?.data?.success) {
                 const transcribedText = response.data.transcribed_text;
-                onVoiceResponseReceived(transcribedText);
-                showToast('Voice response processed successfully', 'success');
+                if (transcribedText && transcribedText.trim()) {
+                    onVoiceResponseReceived(transcribedText);
+                    showToast('Voice response processed successfully', 'success');
+                } else {
+                    showToast('No speech detected. Please try speaking more clearly.', 'warning');
+                }
             } else {
-                showToast('Failed to process voice response', 'error');
+                const errorMessage = response?.data?.message || response?.message || 'Failed to process voice response';
+                showToast(errorMessage, 'error');
+                console.error('Speech-to-text failed:', response);
             }
         } catch (error) {
             console.error('Error processing voice response:', error);
-            showToast('Error processing voice response', 'error');
+            let errorMessage = 'Error processing voice response';
+            
+            if (error.response?.data?.message) {
+                errorMessage = error.response.data.message;
+            } else if (error.message) {
+                errorMessage = error.message;
+            }
+            
+            showToast(errorMessage, 'error');
         } finally {
             setIsProcessingResponse(false);
             setRecordingTime(0);

@@ -176,12 +176,8 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 console.log('🔍 Processing result:', result);
                 
                 if (result.status === 'completed') {
-                    console.log('✅ Interview completed, calling onVoiceResponseReceived');
-                    showToast('Interview completed!', 'success');
                     onVoiceResponseReceived(transcribedText, result);
                 } else if (result.status === 'success') {
-                    console.log('✅ Response processed successfully, calling onVoiceResponseReceived');
-                    showToast('Response processed successfully', 'success');
                     onVoiceResponseReceived(transcribedText, result);
                 } else {
                     console.log('❌ Unexpected response status:', result.status);

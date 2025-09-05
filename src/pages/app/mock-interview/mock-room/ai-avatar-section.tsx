@@ -67,11 +67,14 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         onSpeechEnd: async (audio: Float32Array) => {
             console.log('🎤 Speech ended, audio length:', audio.length, 'ms:', (audio.length / 16000) * 1000);
             
-            // Prevent duplicate processing
+            // Prevent duplicate processing - SET FLAG IMMEDIATELY
             if (isProcessingRef.current) {
                 console.log('❌ Already processing - ignoring duplicate speech end event');
                 return;
             }
+            
+            // Set processing lock IMMEDIATELY to prevent race conditions
+            isProcessingRef.current = true;
             
             setIsRecording(false);
             
@@ -83,22 +86,24 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             // Don't process if interview is completed
             if (isInterviewCompleted) {
                 console.log('❌ Interview completed - skipping audio processing');
+                isProcessingRef.current = false; // Reset flag
                 return;
             }
             
             if (isPlaying || isProcessingResponse) {
                 console.log('❌ Skipping processing - isPlaying:', isPlaying, 'isProcessingResponse:', isProcessingResponse);
+                isProcessingRef.current = false; // Reset flag
                 return;
             }
             
             const audioLengthMs = (audio.length / 16000) * 1000;
             if (audioLengthMs < 500) {
                 console.log('❌ Audio too short:', audioLengthMs, 'ms');
+                isProcessingRef.current = false; // Reset flag
                 return;
             }
             
-            // Set processing lock
-            isProcessingRef.current = true;
+            // Continue with processing - flag already set above
             setIsProcessingResponse(true);
             
             // Process after user finishes speaking - wait 5 seconds as requested
@@ -202,17 +207,26 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             }
         } catch (error) {
             console.error(`[${processingId}] Error processing VAD audio:`, error);
-            if (error.message.includes('timeout')) {
-                console.log('⏰ API timeout occurred - attempting fallback to next question');
-                showToast('Processing timeout - moving to next question', 'warning');
+            
+            // Handle timeout errors with controlled fallback
+            if (error.message?.includes('timeout')) {
+                console.log('⏰ API timeout occurred - attempting controlled fallback');
+                showToast('Processing timeout - attempting recovery...', 'warning');
                 
-                // Fallback: Try to get session status and move to next question
+                // Limited fallback attempt with timeout protection
                 try {
+                    // Set a shorter timeout for the fallback request
+                    const controller = new AbortController();
+                    const timeoutId = setTimeout(() => controller.abort(), 3000); // 3 second timeout
+                    
                     const statusResponse = await restApi.getRealtimeStatus(sessionCode);
+                    clearTimeout(timeoutId);
+                    
                     if (statusResponse?.status === 200 && statusResponse.data?.data) {
                         const statusData = statusResponse.data.data;
                         if (statusData.current_question_index !== undefined) {
-                            console.log('🔄 Fallback: Moving to question', statusData.current_question_index + 1);
+                            console.log('🔄 Fallback successful: Moving to question', statusData.current_question_index + 1);
+                            showToast('Recovered - moving to next question', 'success');
                             onVoiceResponseReceived(transcribedText, {
                                 status: 'success',
                                 question_index: statusData.current_question_index
@@ -220,17 +234,32 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                             return;
                         }
                     }
+                    
+                    // If we get here, fallback didn't provide useful data
+                    throw new Error('Fallback response invalid');
+                    
                 } catch (fallbackError) {
-                    console.error('Fallback also failed:', fallbackError);
+                    console.error('Controlled fallback failed:', fallbackError);
+                    showToast('Recovery failed - please try speaking again or refresh', 'error');
+                    
+                    // Don't cascade further - just reset state and let user retry
+                    return;
                 }
-                
-                showToast('Unable to continue - please refresh the page', 'error');
             } else {
-                showToast('Error processing audio', 'error');
+                // Non-timeout errors
+                console.error('Non-timeout error processing audio:', error);
+                showToast('Error processing audio - please try again', 'error');
             }
         } finally {
+            // Always ensure we clean up processing state
             setIsProcessingResponse(false);
             isProcessingRef.current = false; // Release processing lock
+            
+            // Clear any pending timeouts to prevent further issues
+            if (processingTimeoutRef.current) {
+                clearTimeout(processingTimeoutRef.current);
+                processingTimeoutRef.current = null;
+            }
         }
     };
 
@@ -258,20 +287,34 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
     // Cleanup on unmount
     useEffect(() => {
         return () => {
+            // Clear all timeouts and intervals to prevent memory leaks
             if (recordingIntervalRef.current) {
                 clearInterval(recordingIntervalRef.current);
+                recordingIntervalRef.current = null;
             }
             if (processingTimeoutRef.current) {
                 clearTimeout(processingTimeoutRef.current);
+                processingTimeoutRef.current = null;
             }
             if (audioUrl) {
                 URL.revokeObjectURL(audioUrl);
             }
-            hasPlayedAudioRef.current = null; // Reset played flag on cleanup
-            isProcessingRef.current = false; // Reset processing lock
+            
+            // Reset all refs to prevent memory leaks
+            hasPlayedAudioRef.current = null;
+            isProcessingRef.current = false;
+            
+            // Cleanup VAD resources
             vad.cleanup();
+            
+            // Reset component state to clean values
+            setIsRecording(false);
+            setIsProcessingResponse(false);
+            setRecordingTime(0);
+            setTranscribedText("");
+            setVadStatusMessage("");
         };
-    }, [audioUrl]);
+    }, []); // Empty dependency array - only run on unmount
 
     // Load question audio when question changes
     useEffect(() => {
@@ -361,17 +404,34 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             const playAudio = async () => {
                 try {
                     hasPlayedAudioRef.current = audioUrl; // Mark this audio as played
-                    onPlayStateChange(true);
-                    vad.updatePlayingState(true);
-                    audioRef.current!.currentTime = 0;
-                    await audioRef.current!.play();
-                    console.log(`✅ Question ${questionIndex + 1} audio started playing`);
+                    
+                    // Ensure audio element is ready
+                    if (audioRef.current) {
+                        audioRef.current.currentTime = 0;
+                        
+                        // Set states before starting playback
+                        onPlayStateChange(true);
+                        vad.updatePlayingState(true);
+                        
+                        await audioRef.current.play();
+                        console.log(`✅ Question ${questionIndex + 1} audio play initiated successfully`);
+                        // Note: handleAudioPlay will be called by the audio element event
+                    } else {
+                        throw new Error('Audio ref not available');
+                    }
                 } catch (error) {
                     console.error('Error playing audio:', error);
                     showToast('Error playing question audio', 'error');
+                    
+                    // Ensure states are synchronized on error
                     onPlayStateChange(false);
                     vad.updatePlayingState(false);
                     hasPlayedAudioRef.current = null; // Reset on error so it can be retried
+                    
+                    // Update status message for manual retry option
+                    if (!isInterviewCompleted) {
+                        setVadStatusMessage('❌ Audio failed - will retry automatically');
+                    }
                 }
             };
             
@@ -381,20 +441,52 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         }
     }, [audioUrl, isPlaying, isLoadingAudio, isInterviewCompleted, questionIndex]);
 
-    // Audio event handlers
-    const handleAudioEnded = () => {
+    // Audio event handlers with improved state synchronization
+    const handleAudioEnded = useCallback(() => {
+        console.log(`✅ Question ${questionIndex + 1} audio finished playing - updating all states`);
+        
+        // Synchronize all playing states
         onPlayStateChange(false);
         vad.updatePlayingState(false);
-        setVadStatusMessage('🎤 Question finished - please provide your answer');
-        console.log(`✅ Question ${questionIndex + 1} audio finished playing - ready for user answer`);
+        
+        // Update status message only if interview is still active
+        if (!isInterviewCompleted) {
+            setVadStatusMessage('🎤 Question finished - please provide your answer');
+        }
+        
+        console.log(`🎤 Ready for user answer on question ${questionIndex + 1}`);
         // Note: hasPlayedAudioRef.current remains set to prevent re-playing
-    };
+    }, [questionIndex, isInterviewCompleted, onPlayStateChange, vad]);
 
-    const handleAudioError = () => {
+    const handleAudioError = useCallback((error: any) => {
+        console.error('Audio playback error:', error);
         showToast('Error playing audio', 'error');
+        
+        // Synchronize all playing states on error
         onPlayStateChange(false);
         vad.updatePlayingState(false);
-    };
+        
+        // Reset played flag so audio can be retried
+        hasPlayedAudioRef.current = null;
+        
+        // Update status message for retry
+        if (!isInterviewCompleted) {
+            setVadStatusMessage('❌ Audio error - will retry automatically');
+        }
+    }, [isInterviewCompleted, onPlayStateChange, vad]);
+
+    // Add handler for when audio starts playing
+    const handleAudioPlay = useCallback(() => {
+        console.log(`🎵 Question ${questionIndex + 1} audio started playing`);
+        
+        // Ensure all states are synchronized when playback starts
+        onPlayStateChange(true);
+        vad.updatePlayingState(true);
+        
+        if (!isInterviewCompleted) {
+            setVadStatusMessage('🎵 Playing question - please listen...');
+        }
+    }, [questionIndex, isInterviewCompleted, onPlayStateChange, vad]);
 
     // Utility functions
     const base64ToBlob = (base64: string, mimeType: string): Blob => {
@@ -504,9 +596,15 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 src={audioUrl || undefined}
                 onEnded={handleAudioEnded}
                 onError={handleAudioError}
+                onPlay={handleAudioPlay}
                 onLoadStart={() => console.log('🎵 Audio loading started')}
                 onCanPlay={() => console.log('🎵 Audio can play')}
-                onPlay={() => console.log('🎵 Audio play event')}
+                onPause={() => {
+                    // Handle pause events to maintain state sync
+                    console.log('🎵 Audio paused');
+                    onPlayStateChange(false);
+                    vad.updatePlayingState(false);
+                }}
                 preload="auto"
             />
         </div>

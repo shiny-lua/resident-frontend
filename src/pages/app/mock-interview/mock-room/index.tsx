@@ -178,7 +178,7 @@ const MockInterviewRoomIndex = () => {
             setHasStartedSession(true); // Set flag immediately to prevent duplicate calls
             handleStartSession();
         }
-    }, [session, hasStartedSession, isStartingInterview, handleStartSession]);
+    }, [session, hasStartedSession, isStartingInterview]); // Removed handleStartSession to prevent infinite loops
 
     const handleQuestionAudioReady = (audioUrl: string) => {
         setQuestionAudioUrl(audioUrl);

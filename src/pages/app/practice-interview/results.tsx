@@ -214,7 +214,6 @@ const PracticeInterviewResults = () => {
             <div className="max-w-7xl mx-auto px-6 py-8">
                 <div className="text-center">
                     <h2 className="text-3xl font-bold text-gray-900 mb-2">Overall Performance</h2>
-
                 </div>
 
                 {/* Question-by-Question Results */}

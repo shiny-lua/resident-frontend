@@ -20,9 +20,6 @@ interface PracticeInterview {
     email: string;
     created_at: string;
     updated_at: string;
-    session_started: boolean;
-    session_completed: boolean;
-    responses: any[];
     questions?: any[];
     evaluations?: any[];
     current_question_index?: number;
@@ -66,7 +63,7 @@ const PracticeInterview = () => {
         setStatus({ ...status, [obk]: v });
         setShowStatusDropdown(false)
         // Fetch interviews with new status filter
-        const statusFilter = v === "All Status" ? undefined : v.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled' | 'waiting';
+        const statusFilter = v === "All Status" ? undefined : v.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled';
         fetchPracticeInterviews(1, statusFilter, interviewType.type === "All Types" ? undefined : interviewType.type.toLowerCase() as 'text' | 'voice');
     }
 
@@ -75,7 +72,7 @@ const PracticeInterview = () => {
         setShowTypeDropdown(false)
         // Fetch interviews with new type filter
         const typeFilter = v === "All Types" ? undefined : v.toLowerCase() as 'text' | 'voice';
-        fetchPracticeInterviews(1, status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled' | 'waiting', typeFilter);
+        fetchPracticeInterviews(1, status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled', typeFilter);
     }
 
     const onShowStatusDropdown = (event: MouseEvent) => {
@@ -90,7 +87,7 @@ const PracticeInterview = () => {
         }
     };
 
-    const fetchPracticeInterviews = React.useCallback(async (page: number = 1, statusFilter?: 'active' | 'completed' | 'cancelled' | 'waiting', typeFilter?: 'text' | 'voice') => {
+    const fetchPracticeInterviews = React.useCallback(async (page: number = 1, statusFilter?: 'active' | 'completed' | 'cancelled', typeFilter?: 'text' | 'voice') => {
         setLoading(true);
         try {
             const params: any = {
@@ -127,7 +124,7 @@ const PracticeInterview = () => {
 
     const handlePageChange = (newPage: number) => {
         if (newPage >= 1 && newPage <= pagination.total_pages) {
-            const statusFilter = status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled' | 'waiting';
+            const statusFilter = status.status === "All Status" ? undefined : status.status.toLowerCase().replace(" ", "_") as 'active' | 'completed' | 'cancelled';
             const typeFilter = interviewType.type === "All Types" ? undefined : interviewType.type.toLowerCase() as 'text' | 'voice';
             fetchPracticeInterviews(newPage, statusFilter, typeFilter);
         }
@@ -192,8 +189,6 @@ const PracticeInterview = () => {
         switch (status.toLowerCase()) {
             case 'active':
                 return 'bg-green-500';
-            case 'waiting':
-                return 'bg-yellow-500';
             case 'completed':
                 return 'bg-slate-500';
             case 'cancelled':
@@ -207,8 +202,6 @@ const PracticeInterview = () => {
         switch (status.toLowerCase()) {
             case 'active':
                 return 'Active';
-            case 'waiting':
-                return 'Waiting';
             case 'completed':
                 return 'Completed';
             case 'cancelled':
@@ -271,15 +264,15 @@ const PracticeInterview = () => {
                         </button>
                     </div>
                     <div className="hidden gap-4 md:flex">
-                        <Select
-                            onDropdown={() => setShowStatusDropdown(true)}
-                            showDropdown={showStatusDropdown}
-                            value={status.status}
-                            obk="status"
-                            onHandle={onHandleStatus}
-                            data={["All Status", "Active", "Waiting", "Completed", "Cancelled"]}
-                            dropdownRef={showStatusDropdownRef}
-                        />
+                                <Select
+            onDropdown={() => setShowStatusDropdown(true)}
+            showDropdown={showStatusDropdown}
+            value={status.status}
+            obk="status"
+            onHandle={onHandleStatus}
+            data={["All Status", "Active", "Completed", "Cancelled"]}
+            dropdownRef={showStatusDropdownRef}
+        />
                         <Select
                             onDropdown={() => setShowTypeDropdown(true)}
                             showDropdown={showTypeDropdown}
@@ -389,15 +382,14 @@ const PracticeInterview = () => {
                                                     </button>
                                                 )}
                                                 {interview.status.toLowerCase() === 'completed' && (
-                                                    <button className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
+                                                    <button 
+                                                        onClick={() => navigate(`/app/practice-interview/results/${interview.session_code}`)}
+                                                        className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600"
+                                                    >
                                                         View Results
                                                     </button>
                                                 )}
-                                                {interview.status.toLowerCase() === 'waiting' && (
-                                                    <button onClick={() => handleJoinPracticeInterview(interview.session_code)} className="inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-blue-500 text-white px-3 py-1.5 hover:bg-blue-600">
-                                                        Start
-                                                    </button>
-                                                )}
+
                                             </td>
                                         </tr>
                                     ))}
@@ -447,15 +439,14 @@ const PracticeInterview = () => {
                                             </>
                                         )}
                                         {interview.status.toLowerCase() === 'completed' && (
-                                            <button className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600">
+                                            <button 
+                                                onClick={() => navigate(`/app/practice-interview/results/${interview.session_code}`)}
+                                                className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-green-500 text-white px-3 py-1.5 hover:bg-green-600"
+                                            >
                                                 View Results
                                             </button>
                                         )}
-                                        {interview.status.toLowerCase() === 'waiting' && (
-                                            <button onClick={() => handleJoinPracticeInterview(interview._id)} className="flex-1 inline-flex items-center justify-center whitespace-nowrap rounded-md text-sm font-medium bg-blue-500 text-white px-3 py-1.5 hover:bg-blue-600">
-                                                Start
-                                            </button>
-                                        )}
+
                                     </div>
                                 </div>
                             </div>

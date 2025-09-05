@@ -261,7 +261,6 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 const transcribedText = response.data.transcribed_text;
                 if (transcribedText && transcribedText.trim()) {
                     onVoiceResponseReceived(transcribedText);
-                    showToast('Voice response processed successfully', 'success');
                 } else {
                     showToast('No speech detected. Please try speaking more clearly.', 'warning');
                 }

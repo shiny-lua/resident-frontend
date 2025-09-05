@@ -40,6 +40,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
     const recordingIntervalRef = useRef<number | null>(null);
     const processingTimeoutRef = useRef<number | null>(null);
     const hasPlayedAudioRef = useRef<string | null>(null); // Track which audio has been played
+    const isProcessingRef = useRef<boolean>(false); // Prevent duplicate processing
     
     // VAD callbacks
     const vadCallbacks = {
@@ -65,6 +66,13 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         
         onSpeechEnd: async (audio: Float32Array) => {
             console.log('🎤 Speech ended, audio length:', audio.length, 'ms:', (audio.length / 16000) * 1000);
+            
+            // Prevent duplicate processing
+            if (isProcessingRef.current) {
+                console.log('❌ Already processing - ignoring duplicate speech end event');
+                return;
+            }
+            
             setIsRecording(false);
             
             if (recordingIntervalRef.current) {
@@ -89,6 +97,8 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 return;
             }
             
+            // Set processing lock
+            isProcessingRef.current = true;
             setIsProcessingResponse(true);
             
             // Process after user finishes speaking - wait 5 seconds as requested
@@ -101,6 +111,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 if (isInterviewCompleted) {
                     console.log('❌ Interview completed during wait period - cancelling processing');
                     setIsProcessingResponse(false);
+                    isProcessingRef.current = false;
                     return;
                 }
                 
@@ -146,12 +157,14 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             clearTimeout(processingTimeoutRef.current);
             processingTimeoutRef.current = null;
             setIsProcessingResponse(false);
+            isProcessingRef.current = false; // Release processing lock
         }
     }, [isInterviewCompleted]);
 
     // Process VAD audio
     const processVADAudio = async (vadAudio: Float32Array) => {
-        console.log('🎵 processVADAudio called with audio length:', vadAudio.length);
+        const processingId = Math.random().toString(36).substr(2, 9);
+        console.log(`🎵 [${processingId}] processVADAudio called with audio length:`, vadAudio.length);
         try {
             // Don't process if interview is completed
             if (isInterviewCompleted) {
@@ -166,10 +179,10 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             
             const audioBlob = float32ArrayToWav(vadAudio, 16000);
             const audioFile = new File([audioBlob], 'audio.wav', { type: 'audio/wav' });
-            console.log('🎵 Created audio file:', audioFile.name, 'size:', audioFile.size, 'bytes');
+            console.log(`🎵 [${processingId}] Created audio file:`, audioFile.name, 'size:', audioFile.size, 'bytes');
             
-            const response = await restApi.autoProcessSilence(sessionCode, audioFile);
-            console.log('🔍 Auto-process silence response:', response);
+            const response = await restApi.autoProcessSilence(sessionCode, audioFile);;
+            console.log(`🔍 [${processingId}] Auto-process silence response:`, response);
 
             if (response?.status === 200 && response.data?.data) {
                 const result = response.data.data;
@@ -188,10 +201,36 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 showToast('Failed to process response', 'error');
             }
         } catch (error) {
-            console.error('Error processing VAD audio:', error);
-            showToast('Error processing audio', 'error');
+            console.error(`[${processingId}] Error processing VAD audio:`, error);
+            if (error.message.includes('timeout')) {
+                console.log('⏰ API timeout occurred - attempting fallback to next question');
+                showToast('Processing timeout - moving to next question', 'warning');
+                
+                // Fallback: Try to get session status and move to next question
+                try {
+                    const statusResponse = await restApi.getRealtimeStatus(sessionCode);
+                    if (statusResponse?.status === 200 && statusResponse.data?.data) {
+                        const statusData = statusResponse.data.data;
+                        if (statusData.current_question_index !== undefined) {
+                            console.log('🔄 Fallback: Moving to question', statusData.current_question_index + 1);
+                            onVoiceResponseReceived(transcribedText, {
+                                status: 'success',
+                                question_index: statusData.current_question_index
+                            });
+                            return;
+                        }
+                    }
+                } catch (fallbackError) {
+                    console.error('Fallback also failed:', fallbackError);
+                }
+                
+                showToast('Unable to continue - please refresh the page', 'error');
+            } else {
+                showToast('Error processing audio', 'error');
+            }
         } finally {
             setIsProcessingResponse(false);
+            isProcessingRef.current = false; // Release processing lock
         }
     };
 
@@ -229,22 +268,27 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 URL.revokeObjectURL(audioUrl);
             }
             hasPlayedAudioRef.current = null; // Reset played flag on cleanup
+            isProcessingRef.current = false; // Reset processing lock
             vad.cleanup();
         };
     }, [audioUrl]);
 
     // Load question audio when question changes
     useEffect(() => {
-        if (isInterviewCompleted || !sessionCode || questionIndex < 0 || !currentQuestion?.trim()) return;
+        if (isInterviewCompleted || !sessionCode || questionIndex < 0 || !currentQuestion?.trim()) {
+            console.log(`🚫 Skipping audio load - isInterviewCompleted: ${isInterviewCompleted}, sessionCode: ${!!sessionCode}, questionIndex: ${questionIndex}, currentQuestion: ${!!currentQuestion?.trim()}`);
+            return;
+        }
         
         const loadQuestionAudio = async () => {
             try {
+                console.log(`🎵 Starting audio load for question ${questionIndex + 1}: "${currentQuestion.substring(0, 50)}..."`);
                 setIsLoadingAudio(true);
                 setAudioUrl(null);
                 hasPlayedAudioRef.current = null; // Reset played flag when loading new question
                 
-                console.log(`🎵 Loading voice for question ${questionIndex + 1}: "${currentQuestion.substring(0, 50)}..."`);
                 const response = await restApi.getRealtimeMockInterviewVoice(sessionCode, questionIndex);
+                console.log(`🎵 Audio API response for question ${questionIndex + 1}:`, response);
 
                 if (response?.data?.status === 'success' && response.data.data?.audio_data) {
                     const audioBlob = base64ToBlob(response.data.data.audio_data, 'audio/wav');
@@ -269,7 +313,9 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             }
         };
 
-        loadQuestionAudio();
+        // Add a small delay to ensure state is properly updated
+        const timer = setTimeout(loadQuestionAudio, 100);
+        return () => clearTimeout(timer);
     }, [sessionCode, questionIndex, currentQuestion, isInterviewCompleted]);
     
     // Reset audio state when question index changes
@@ -291,6 +337,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             // Stop recording if active
             setIsRecording(false);
             setIsProcessingResponse(false);
+            isProcessingRef.current = false; // Reset processing lock
             // Clear recording interval
             if (recordingIntervalRef.current) {
                 clearInterval(recordingIntervalRef.current);

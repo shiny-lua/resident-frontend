@@ -66,6 +66,7 @@ export const useMockInterviewVAD = (
                         return;
                     }
                     
+                    console.log(' ================================================🎤 User started speaking in real-time mock interview');
                     processingRef.current = false;
                     updateStatus('speaking', '🎤 User started speaking...');
                     callbacks.onSpeechStart();

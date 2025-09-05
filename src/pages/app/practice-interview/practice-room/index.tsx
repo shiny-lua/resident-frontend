@@ -34,8 +34,6 @@ interface PracticeInterviewSession {
     email: string;
     created_at: string;
     updated_at: string;
-    session_started: boolean;
-    session_completed: boolean;
 }
 
 const PracticeInterviewRoomIndex = () => {
@@ -93,27 +91,7 @@ const PracticeInterviewRoomIndex = () => {
         }
     }, [sessionCode, fetchSessionDetails]);
 
-    const handleStartSession = async () => {
-        try {
-            const response = await restApi.startPracticeInterviewSession(sessionCode!);
 
-            if (response.status === 200 && response.data?.data) {
-                // Update session with new status
-                if (session) {
-                    setSession({
-                        ...session,
-                        status: 'active',
-                        session_started: true
-                    });
-                }
-                return response.data.data;
-            } 
-        } catch (error) {
-            console.error('Error starting session:', error);
-            showToast('Failed to start session', 'error');
-            throw error;
-        }
-    };
 
     const handleNextQuestion = async () => {
         try {
@@ -126,8 +104,7 @@ const PracticeInterviewRoomIndex = () => {
                     setSession({
                         ...session,
                         current_question_index: newData.current_question_index,
-                        status: newData.status,
-                        session_completed: newData.status === 'completed'
+                        status: newData.status
                     });
                 }
                 setTranscribedText("");
@@ -153,11 +130,18 @@ const PracticeInterviewRoomIndex = () => {
                 if (session) {
                     setSession({
                         ...session,
-                        status: 'completed',
-                        session_completed: true
+                        status: 'completed'
                     });
                 }
-                showToast('Practice interview session completed!', 'success');
+                navigate('/app/practice-interview');
+                dispatch({
+                    type: "isLeaveInterview",
+                    payload: {
+                        status: false,
+                        link: ""
+                    }
+                });
+                localStorage.removeItem('currentInterview');
                 return response.data.data;
             } else {
                 throw new Error(response.data?.msg || 'Failed to end session');
@@ -203,7 +187,6 @@ const PracticeInterviewRoomIndex = () => {
                     });
                 }
 
-                showToast('Response evaluated successfully', 'success');
                 return evaluation;
             } else {
                 showToast('Failed to evaluate response', 'error');
@@ -287,16 +270,25 @@ const PracticeInterviewRoomIndex = () => {
                     <div className="flex items-center space-x-4">
                         <span className={`px-3 py-1 rounded-full text-sm font-medium ${session.status === 'active' ? 'bg-green-100 text-green-800' :
                             session.status === 'completed' ? 'bg-blue-100 text-blue-800' :
-                                'bg-yellow-100 text-yellow-800'
+                                'bg-slate-100 text-slate-800'
                             }`}>
                             {session.status}
                         </span>
-                        <button
-                            onClick={leaveInterview}
-                            className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
-                        >
-                            End Interview
-                        </button>
+                        {session.status === 'completed' ? (
+                            <button
+                                onClick={() => navigate(`/app/practice-interview/results/${session.session_code}`)}
+                                className="px-4 py-2 bg-green-600 text-white rounded-md hover:bg-green-700 transition-colors"
+                            >
+                                View Results
+                            </button>
+                        ) : (
+                            <button
+                                onClick={leaveInterview}
+                                className="px-4 py-2 bg-red-600 text-white rounded-md hover:bg-red-700 transition-colors"
+                            >
+                                End Interview
+                            </button>
+                        )}
                     </div>
                 </div>
             </div>
@@ -336,12 +328,11 @@ const PracticeInterviewRoomIndex = () => {
                         currentEvaluation={currentEvaluation}
                         evaluations={session.evaluations}
                         onTranscriptionUpdate={handleTranscriptionUpdate}
-                        onStartSession={handleStartSession}
                         onNextQuestion={handleNextQuestion}
                         onEndSession={handleEndSession}
-                        sessionStarted={session.session_started}
                         isLastQuestion={isLastQuestion}
-                        sessionCompleted={session.session_completed}
+                        sessionCompleted={session.status === 'completed'}
+                        sessionCode={session.session_code}
                     />
                 </div>
             </div>

@@ -77,10 +77,10 @@ const restApi = {
     }
   },
 
-  leaveMockInterview: async (mockInterviewId: string, action: 'leave' | 'in_progress', feedback?: any) => {
+  leaveMockInterview: async (sessionCode: string, action: 'leave' | 'complete', feedback?: any) => {
     try {
       const requestData: any = {
-        interview_id: mockInterviewId,
+        session_code: sessionCode,
         action: action
       };
 
@@ -117,6 +117,19 @@ const restApi = {
     }
   },
 
+  getMockInterviewSession: async (sessionCode: string) => {
+    try {
+      const response = await restApi.postRequest('realtime-mock-interview-get-session', {
+        session_code: sessionCode
+      });
+      return response;
+    } catch (error: any) {
+      console.error("Error getting mock interview session:", error);
+      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
+    }
+  },
+
+  // Real-time Mock Interview APIs
   createMockInterviewSession: async (sessionData: {
     specialty: string;
     question_count: number;
@@ -135,57 +148,6 @@ const restApi = {
     }
   },
 
-  getMockInterviewSession: async (sessionCode: string) => {
-    try {
-      const response = await restApi.postRequest('realtime-mock-interview-get-session', {
-        session_code: sessionCode
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error getting mock interview session:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  nextMockInterviewQuestion: async (sessionCode: string) => {
-    try {
-      const response = await restApi.postRequest('mock-interview-next-question', {
-        session_code: sessionCode
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error getting next question:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  evaluateMockInterviewResponse: async (sessionCode: string, questionIndex: number, response_text: string) => {
-    try {
-      const responseData = await restApi.postRequest('mock-interview-evaluate-response', {
-        session_code: sessionCode,
-        question_index: questionIndex,
-        response_text: response_text
-      });
-      return responseData;
-    } catch (error: any) {
-      console.error("Error evaluating response:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  endMockInterviewSession: async (sessionCode: string) => {
-    try {
-      const response = await restApi.postRequest('mock-interview-end-session', {
-        session_code: sessionCode
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error ending mock interview session:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
-
-  // Real-time Mock Interview APIs
   startRealtimeMockInterview: async (sessionCode: string) => {
     try {
       const response = await restApi.postRequest('realtime-mock-interview-start', {
@@ -226,7 +188,7 @@ const restApi = {
   getPracticeInterviews: async (params?: {
     page?: number;
     per_page?: number;
-    status?: 'active' | 'completed' | 'cancelled' | 'waiting';
+    status?: 'active' | 'completed' | 'cancelled';
     interview_type?: 'text' | 'voice';
   }) => {
     try {
@@ -275,17 +237,7 @@ const restApi = {
     }
   },
 
-  startPracticeInterviewSession: async (sessionCode: string) => {
-    try {
-      const response = await restApi.postRequest('practice-interview-start-session', {
-        session_code: sessionCode
-      });
-      return response;
-    } catch (error: any) {
-      console.error("Error starting practice interview session:", error);
-      return error.response?.data || error.response || { data: { success: false, msg: "Network error" } };
-    }
-  },
+
 
   nextPracticeInterviewQuestion: async (sessionCode: string) => {
     try {

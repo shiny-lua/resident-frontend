@@ -165,17 +165,30 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
 
   const onLaunch = async () => {
     if (state.isLeaveInterview.status) {
-      showToast('You already have an interview in progress. Please complete or leave the current interview first.', 'warning');
+      showToast('You already have an interview in progress', 'error');
+      return;
+    }
+
+    if (!status.domain.value) {
+      showToast('Please select a domain', 'error');
       return;
     }
 
     setIsCreatingMockInterview(true);
 
     try {
-      // Prepare mock interview session data
-      const sessionData: any = {
-        specialty: status.domain.value.toLowerCase().replace(" ", "_"),
-        question_count: 10, // Default question count
+      const sessionData: {
+        specialty: string;
+        question_count: number;
+        session_name: string;
+        description: string;
+        interview_type: string;
+        resume?: string;
+        scheduled_at?: string;
+        timezone?: string;
+      } = {
+        specialty: status.domain.value.toLowerCase(),
+        question_count: 10,
         session_name: `${status.domain.value} Mock Interview`,
         description: `Mock interview session for ${status.domain.value} specialty`,
         interview_type: "voice" // Always voice interview
@@ -196,29 +209,10 @@ const InterviewModal = ({ isOpen, onClose }: { isOpen: boolean; onClose: VoidFun
       }
 
       // Create mock interview session via API
-      const response = await restApi.startRealtimeMockInterview(sessionData);
+      const response = await restApi.createMockInterviewSession(sessionData);
       
       if (response.status === 200 && response.data?.status === "success") {
         const sessionInfo = response.data.data;
-        
-        // Store mock interview state in localStorage
-        localStorage.setItem('currentInterview', JSON.stringify({
-          interviewId: sessionInfo.session_id,
-          sessionCode: sessionInfo.session_code,
-          link: `/app/mock-interview/mock/${sessionInfo.session_code}`,
-          status: true,
-          timestamp: new Date().toISOString(),
-          interviewType: sessionData.interview_type,
-          role: "student"
-        }));
-
-        dispatch({
-          type: "isLeaveInterview",
-          payload: {
-            status: true,
-            link: `/app/mock-interview/mock/${sessionInfo.session_code}`
-          }
-        });
         
         onClose();
         

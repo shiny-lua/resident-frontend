@@ -13,8 +13,6 @@ interface QuestionPanelProps {
     transcribedText: string;
     userRole: 'examiner' | 'student';
     isEvaluating: boolean;
-    onEvaluate: () => void;
-    onNextQuestion: () => void;
 }
 
 const QuestionPanel: React.FC<QuestionPanelProps> = ({
@@ -24,11 +22,9 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
     transcribedText,
     userRole,
     isEvaluating,
-    onEvaluate,
-    onNextQuestion
 }) => {
     const getCategoryColor = (category: string) => {
-        switch (category.toLowerCase()) {
+        switch (category && category.toLowerCase()) {
             case 'behavioral':
                 return 'bg-blue-100 text-blue-800';
             case 'clinical':
@@ -78,16 +74,16 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
                         <div className="bg-gray-50 p-4 rounded-lg">
                             <h4 className="font-medium text-gray-900 mb-2">Question Type: {currentQuestion.category}</h4>
                             <div className="text-sm text-gray-700">
-                                {currentQuestion.category.toLowerCase() === 'behavioral' && (
+                                {currentQuestion.category && currentQuestion.category.toLowerCase() === 'behavioral' && (
                                     <p>This is a behavioral question. Use the STAR method (Situation, Task, Action, Result) to structure your response with specific examples from your experience.</p>
                                 )}
-                                {currentQuestion.category.toLowerCase() === 'clinical' && (
+                                {currentQuestion.category && currentQuestion.category.toLowerCase() === 'clinical' && (
                                     <p>This is a clinical question. Demonstrate your clinical reasoning, systematic thinking, and consideration of patient safety and outcomes.</p>
                                 )}
-                                {currentQuestion.category.toLowerCase() === 'personal' && (
+                                {currentQuestion.category && currentQuestion.category.toLowerCase() === 'personal' && (
                                     <p>This is a personal question. Be authentic and genuine, connecting your experiences to your goals and showing passion for your chosen specialty.</p>
                                 )}
-                                {currentQuestion.category.toLowerCase() === 'ethical' && (
+                                {currentQuestion.category && currentQuestion.category.toLowerCase() === 'ethical' && (
                                     <p>This is an ethical question. Consider multiple perspectives, balance competing values, and show your ethical reasoning process.</p>
                                 )}
                             </div>

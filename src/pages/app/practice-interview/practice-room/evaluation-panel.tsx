@@ -1,4 +1,5 @@
 import React from "react";
+import { useNavigate } from "react-router-dom";
 
 interface Question {
     question: string;
@@ -22,38 +23,27 @@ interface EvaluationPanelProps {
         timestamp: string;
     }>;
     onTranscriptionUpdate: (text: string) => void;
-    onStartSession: () => Promise<void>;
     onNextQuestion: () => Promise<void>;
     onEndSession: () => Promise<void>;
-    sessionStarted: boolean;
     isLastQuestion: boolean;
     sessionCompleted: boolean;
+    sessionCode: string;
 }
 
 const EvaluationPanel: React.FC<EvaluationPanelProps> = ({
     currentEvaluation,
     evaluations,
     onTranscriptionUpdate,
-    onStartSession,
     onNextQuestion,
     onEndSession,
-    sessionStarted,
     isLastQuestion,
-    sessionCompleted
+    sessionCompleted,
+    sessionCode
 }) => {
+    const navigate = useNavigate();
     const [responseText, setResponseText] = React.useState("");
-    const [isStarting, setIsStarting] = React.useState(false);
     const [isMovingNext, setIsMovingNext] = React.useState(false);
     const [isEnding, setIsEnding] = React.useState(false);
-
-    const handleStartSession = async () => {
-        setIsStarting(true);
-        try {
-            await onStartSession();
-        } finally {
-            setIsStarting(false);
-        }
-    };
 
     const handleNextQuestion = async () => {
         setIsMovingNext(true);
@@ -100,22 +90,6 @@ const EvaluationPanel: React.FC<EvaluationPanelProps> = ({
 
             {/* Content */}
             <div className="flex-1 p-4 overflow-y-auto space-y-4">
-                {/* Session Controls */}
-                {!sessionStarted && (
-                    <div className="bg-blue-50 p-4 rounded-lg">
-                        <h4 className="font-medium text-blue-900 mb-2">Start Practice Interview</h4>
-                        <p className="text-sm text-blue-800 mb-3">
-                            Click the button below to begin your practice interview session.
-                        </p>
-                        <button
-                            onClick={handleStartSession}
-                            disabled={isStarting}
-                            className="w-full bg-blue-600 text-white py-2 px-4 rounded-md hover:bg-blue-700 disabled:opacity-50 disabled:cursor-not-allowed"
-                        >
-                            {isStarting ? 'Starting...' : 'Start Practice Interview'}
-                        </button>
-                    </div>
-                )}
 
                 {/* Current Evaluation */}
                 {currentEvaluation && (
@@ -204,6 +178,22 @@ const EvaluationPanel: React.FC<EvaluationPanelProps> = ({
                                 </div>
                             ))}
                         </div>
+                    </div>
+                )}
+
+                {/* View Results Button - Show when session is completed */}
+                {sessionCompleted && evaluations.length > 0 && (
+                    <div className="bg-green-50 p-4 rounded-lg border border-green-200">
+                        <h4 className="font-medium text-green-900 mb-2">Interview Completed!</h4>
+                        <p className="text-sm text-green-800 mb-3">
+                            Review your detailed results and performance analysis.
+                        </p>
+                        <button
+                            onClick={() => navigate(`/app/practice-interview/results/${sessionCode}`)}
+                            className="w-full bg-green-600 text-white py-2 px-4 rounded-md hover:bg-green-700 transition-colors"
+                        >
+                            View Detailed Results
+                        </button>
                     </div>
                 )}
             </div>

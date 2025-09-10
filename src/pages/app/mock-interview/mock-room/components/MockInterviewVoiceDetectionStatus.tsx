@@ -95,11 +95,6 @@ const MockInterviewVoiceDetectionStatus: React.FC<MockInterviewVoiceDetectionSta
                 <div className={`text-sm font-medium ${statusConfig.color}`}>
                     {statusConfig.text}
                 </div>
-                {isRecording && (
-                    <div className="text-xs text-gray-500 mt-1">
-                        Recording time: {Math.floor(recordingTime / 60)}:{(recordingTime % 60).toString().padStart(2, '0')}
-                    </div>
-                )}
                 {status === 'accumulating' && (
                     <div className="text-xs text-purple-600 mt-1 font-medium">
                         Processing in {recordingTime} seconds...

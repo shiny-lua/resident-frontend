@@ -6,6 +6,12 @@ interface Question {
     expected_keywords: string[];
 }
 
+interface TranscriptionError {
+    message: string;
+    success: boolean;
+    suggestions: string[];
+}
+
 interface QuestionPanelProps {
     currentQuestion: Question;
     currentQuestionIndex: number;
@@ -13,6 +19,7 @@ interface QuestionPanelProps {
     transcribedText: string;
     userRole: 'examiner' | 'student';
     isEvaluating: boolean;
+    transcriptionError?: TranscriptionError | null;
     onEvaluate: () => void;
     onNextQuestion: () => void;
 }
@@ -24,6 +31,7 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
     transcribedText,
     userRole,
     isEvaluating,
+    transcriptionError,
     onEvaluate,
     onNextQuestion
 }) => {
@@ -121,6 +129,37 @@ const QuestionPanel: React.FC<QuestionPanelProps> = ({
                                 </button>
                             )}
                         </div>
+
+                        {/* Transcription Error Display */}
+                        {transcriptionError && !transcriptionError.success && (
+                            <div className="bg-red-50 border border-red-200 p-4 rounded-lg">
+                                <div className="flex items-start space-x-3">
+                                    <div className="flex-shrink-0">
+                                        <svg className="w-5 h-5 text-red-600 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
+                                            <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M12 9v2m0 4h.01m-6.938 4h13.856c1.54 0 2.502-1.667 1.732-2.5L13.732 4c-.77-.833-1.964-.833-2.732 0L3.732 16.5c-.77.833.192 2.5 1.732 2.5z" />
+                                        </svg>
+                                    </div>
+                                    <div className="flex-1">
+                                        <h4 className="text-sm font-medium text-red-900 mb-2">
+                                            Transcription Failed
+                                        </h4>
+                                        {transcriptionError.suggestions && transcriptionError.suggestions.length > 0 && (
+                                            <div>
+                                                <h5 className="text-xs font-medium text-red-800 mb-2">Suggestions:</h5>
+                                                <ul className="space-y-1">
+                                                    {transcriptionError.suggestions.map((suggestion, index) => (
+                                                        <li key={index} className="text-xs text-red-600 flex items-start space-x-2">
+                                                            <span className="text-red-500 mt-1">•</span>
+                                                            <span>{suggestion}</span>
+                                                        </li>
+                                                    ))}
+                                                </ul>
+                                            </div>
+                                        )}
+                                    </div>
+                                </div>
+                            </div>
+                        )}
                     </div>
                 ) : (
                     <div className="space-y-4">

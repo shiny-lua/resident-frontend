@@ -48,6 +48,7 @@ const PracticeInterviewRoomIndex = () => {
     const [currentEvaluation, setCurrentEvaluation] = React.useState<any>(null);
     const [isPlaying, setIsPlaying] = React.useState(false);
     const [questionAudioUrl, setQuestionAudioUrl] = React.useState<string | null>(null);
+    const [transcriptionError, setTranscriptionError] = React.useState<any>(null);
 
     const fetchSessionDetails = React.useCallback(async () => {
         try {
@@ -110,6 +111,7 @@ const PracticeInterviewRoomIndex = () => {
                 setTranscribedText("");
                 setCurrentEvaluation(null);
                 setQuestionAudioUrl(null);
+                setTranscriptionError(null);
                 return response.data.data;
             } else {
                 throw new Error(response.data?.msg || 'Failed to move to next question');
@@ -209,8 +211,9 @@ const PracticeInterviewRoomIndex = () => {
         setQuestionAudioUrl(audioUrl);
     };
 
-    const handleVoiceResponseReceived = (transcribedText: string) => {
+    const handleVoiceResponseReceived = (transcribedText: string, error?: any) => {
         setTranscribedText(transcribedText);
+        setTranscriptionError(error || null);
     };
 
     const handlePlayStateChange = (isPlaying: boolean) => {
@@ -317,6 +320,7 @@ const PracticeInterviewRoomIndex = () => {
                         transcribedText={transcribedText}
                         userRole="student"
                         isEvaluating={isEvaluating}
+                        transcriptionError={transcriptionError}
                         onEvaluate={handleEvaluateResponse}
                         onNextQuestion={handleNextQuestion}
                     />

@@ -2,12 +2,18 @@ import React, { useState, useRef, useEffect } from "react";
 import { restApi } from "../../../../context/restApi";
 import { showToast } from "../../../../context/helper";
 
+interface TranscriptionError {
+    message: string;
+    success: boolean;
+    suggestions: string[];
+}
+
 interface AIAvatarSectionProps {
     currentQuestion: string;
     sessionCode: string;
     questionIndex: number;
     onQuestionAudioReady: (audioUrl: string) => void;
-    onVoiceResponseReceived: (transcribedText: string) => void;
+    onVoiceResponseReceived: (transcribedText: string, error?: TranscriptionError) => void;
     isPlaying: boolean;
     onPlayStateChange: (isPlaying: boolean) => void;
 }
@@ -199,11 +205,11 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         } catch (error) {
             console.error('Error starting recording:', error);
             if (error.name === 'NotAllowedError') {
-                showToast('Microphone access denied. Please allow microphone access and try again.', 'error');
+                showToast('Microphone access denied. Please allow microphone access and try again.', 'warning');
             } else if (error.name === 'NotFoundError') {
-                showToast('No microphone found. Please connect a microphone and try again.', 'error');
+                showToast('No microphone found. Please connect a microphone and try again.', 'warning');
             } else {
-                showToast('Error accessing microphone: ' + error.message, 'error');
+                showToast('No microphone found. Please connect a microphone and try again.' + error.message, 'warning');
             }
         }
     };
@@ -262,12 +268,15 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 if (transcribedText && transcribedText.trim()) {
                     onVoiceResponseReceived(transcribedText);
                 } else {
-                    showToast('No speech detected. Please try speaking more clearly.', 'warning');
+                    // No speech detected - create error object with suggestions
+                    console.log('No speech detected - create error object with suggestions', response);
+                    onVoiceResponseReceived('', response);
                 }
             } else {
-                const errorMessage = response?.data?.message || response?.message || 'Failed to process voice response';
-                showToast(errorMessage, 'error');
-                console.error('Speech-to-text failed:', response);
+                // API returned error - create error object with suggestions
+                console.log('API returned error - create error object with suggestions', response);
+                onVoiceResponseReceived('', response);
+
             }
         } catch (error) {
             console.error('Error processing voice response:', error);
@@ -279,6 +288,19 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 errorMessage = error.message;
             }
             
+            // Create error object for catch block
+            const transcriptionError: TranscriptionError = {
+                message: errorMessage,
+                success: false,
+                suggestions: [
+                    'Speak more clearly and slowly',
+                    'Ensure microphone is working properly',
+                    'Try recording in a quieter environment',
+                    'Check if audio file contains speech'
+                ]
+            };
+            console.log('Create error object for catch block', transcriptionError);
+            onVoiceResponseReceived('', transcriptionError);
             showToast(errorMessage, 'error');
         } finally {
             setIsProcessingResponse(false);

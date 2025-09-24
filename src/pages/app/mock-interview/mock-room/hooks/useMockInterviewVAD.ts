@@ -61,8 +61,10 @@ export const useMockInterviewVAD = (
                 preSpeechPadFrames: 3,
                 stream: audioStream,
                 onSpeechStart: () => {
+                    // ✅ ENHANCED: More specific blocking during AI playback
                     if (isPlaying) {
                         updateStatus('listening', '🎵 AI is speaking - please wait...');
+                        console.log('🚫 VAD onSpeechStart blocked - AI is currently playing');
                         return;
                     }
                     
@@ -72,19 +74,30 @@ export const useMockInterviewVAD = (
                     callbacks.onSpeechStart();
                 },
                 onSpeechEnd: (audio: Float32Array) => {
+                    // ✅ ENHANCED: More specific blocking during AI playback
                     if (isPlaying) {
                         updateStatus('listening', '🎵 AI is speaking - please wait...');
+                        console.log('🚫 VAD onSpeechEnd blocked - AI is currently playing');
                         return;
                     }
                     
-                    if (processingRef.current) return;
+                    if (processingRef.current) {
+                        console.log('🚫 VAD onSpeechEnd blocked - already processing');
+                        return;
+                    }
                     
                     const now = Date.now();
                     const timeSinceLastSpeech = now - lastSpeechEndTimeRef.current;
-                    if (timeSinceLastSpeech < 2000) return;
+                    if (timeSinceLastSpeech < 1000) { // Reduced from 2000ms to 1000ms
+                        console.log('🚫 VAD onSpeechEnd blocked - too soon after last speech');
+                        return;
+                    }
                     
                     const audioLengthMs = (audio.length / 16000) * 1000;
-                    if (audioLengthMs < 500) return;
+                    if (audioLengthMs < 500) {
+                        console.log('🚫 VAD onSpeechEnd blocked - audio too short');
+                        return;
+                    }
                     
                     processingRef.current = true;
                     lastSpeechEndTimeRef.current = now;

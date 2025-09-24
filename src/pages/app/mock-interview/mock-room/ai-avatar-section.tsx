@@ -41,6 +41,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
     const processingTimeoutRef = useRef<number | null>(null);
     const hasPlayedAudioRef = useRef<string | null>(null); // Track which audio has been played
     const isProcessingRef = useRef<boolean>(false); // Prevent duplicate processing
+    const noSpeechTimeoutRef = useRef<number | null>(null); // Timeout for no speech detection
     
     // VAD callbacks
     const vadCallbacks = {
@@ -51,17 +52,43 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 return;
             }
             
-            if (isPlaying) return;
+            // ✅ FIXED: Only allow recording AFTER AI voice has completely finished
+            if (isPlaying || hasPlayedAudioRef.current !== audioUrl) {
+                console.log('❌ VAD blocked - AI is playing or audio not yet played');
+                return;
+            }
             
             setIsRecording(true);
             setRecordingTime(0);
             setTranscribedText('');
             setVadStatusMessage('🎤 Recording your answer...');
             
+            // Clear any existing no-speech timeout
+            if (noSpeechTimeoutRef.current) {
+                clearTimeout(noSpeechTimeoutRef.current);
+                noSpeechTimeoutRef.current = null;
+            }
+            
             const interval = setInterval(() => {
                 setRecordingTime(prev => prev + 1);
             }, 1000);
             recordingIntervalRef.current = interval;
+            
+            // ✅ ENHANCED: Set timeout for no speech (30 seconds)
+            const NO_SPEECH_TIMEOUT_MS = 30000; // 30 seconds
+            noSpeechTimeoutRef.current = setTimeout(() => {
+                console.log('⏰ No speech timeout - user may not be responding');
+                if (isRecording) {
+                    setIsRecording(false);
+                    setVadStatusMessage('⏰ No response detected - please try speaking again');
+                    
+                    // Clear recording interval
+                    if (recordingIntervalRef.current) {
+                        clearInterval(recordingIntervalRef.current);
+                        recordingIntervalRef.current = null;
+                    }
+                }
+            }, NO_SPEECH_TIMEOUT_MS);
         },
         
         onSpeechEnd: async (audio: Float32Array) => {
@@ -83,6 +110,12 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 recordingIntervalRef.current = null;
             }
             
+            // Clear no-speech timeout since user did speak
+            if (noSpeechTimeoutRef.current) {
+                clearTimeout(noSpeechTimeoutRef.current);
+                noSpeechTimeoutRef.current = null;
+            }
+            
             // Don't process if interview is completed
             if (isInterviewCompleted) {
                 console.log('❌ Interview completed - skipping audio processing');
@@ -97,34 +130,42 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             }
             
             const audioLengthMs = (audio.length / 16000) * 1000;
-            if (audioLengthMs < 500) {
-                console.log('❌ Audio too short:', audioLengthMs, 'ms');
-                isProcessingRef.current = false; // Reset flag
+            
+            // ✅ ENHANCED: Check minimum speech duration (2 seconds)
+            const MINIMUM_SPEECH_DURATION_MS = 2000; // 2 seconds minimum
+            if (audioLengthMs < MINIMUM_SPEECH_DURATION_MS) {
+                console.log(`❌ Audio too short: ${audioLengthMs}ms (minimum: ${MINIMUM_SPEECH_DURATION_MS}ms)`);
+                setVadStatusMessage('🎤 Please speak for at least 2 seconds to provide a complete answer...');
+                
+                // Reset processing flag and allow user to try again
+                isProcessingRef.current = false;
                 return;
             }
             
-            // Continue with processing - flag already set above
+            // ✅ ENHANCED: Wait 5 seconds after user stops speaking for thinking time
+            const THINKING_TIME_MS = 5000; // 5 seconds
+            setVadStatusMessage(`⏳ Waiting ${THINKING_TIME_MS/1000} seconds for you to continue or finish your answer...`);
+            console.log(`⏳ Waiting ${THINKING_TIME_MS/1000} seconds after user speech for thinking time...`);
+            
+            // Set processing state but don't call API yet
             setIsProcessingResponse(true);
             
-            // Process after user finishes speaking - wait 5 seconds as requested
-            const PROCESSING_DELAY_MS = 5000; // 5 seconds
-            setVadStatusMessage(`⏳ Waiting ${PROCESSING_DELAY_MS/1000} seconds before moving to next question...`);
-            console.log(`⏳ Waiting ${PROCESSING_DELAY_MS/1000} seconds before processing answer...`);
-            
+            // Wait 5 seconds before processing
             processingTimeoutRef.current = setTimeout(async () => {
-                // Double-check if interview is still active before processing
+                // Double-check if interview is still active
                 if (isInterviewCompleted) {
-                    console.log('❌ Interview completed during wait period - cancelling processing');
+                    console.log('❌ Interview completed during thinking period - cancelling processing');
                     setIsProcessingResponse(false);
                     isProcessingRef.current = false;
                     return;
                 }
                 
-                console.log('⏰ Timeout triggered after', PROCESSING_DELAY_MS, 'ms');
+                console.log('⏰ Thinking period completed - now processing answer...');
                 setVadStatusMessage('🔄 Processing your answer and moving to next question...');
-                console.log('🔄 Processing user answer after wait period...');
+                
+                // Now call autoProcessSilence API
                 await processVADAudio(audio);
-            }, PROCESSING_DELAY_MS);
+            }, THINKING_TIME_MS);
         },
         
         onVADMisfire: () => {
@@ -133,6 +174,13 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 recordingIntervalRef.current = null;
             }
             setRecordingTime(0);
+            
+            // ✅ ENHANCED: Handle case where user didn't speak at all
+            if (isRecording) {
+                console.log('🎤 VAD misfire - user may not have spoken, resetting recording state');
+                setIsRecording(false);
+                setVadStatusMessage('🎤 Ready to record your answer - please speak clearly');
+            }
         },
         
         onStatusUpdate: (status: string, message: string) => {
@@ -197,6 +245,12 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                     onVoiceResponseReceived(transcribedText, result);
                 } else if (result.status === 'success') {
                     onVoiceResponseReceived(transcribedText, result);
+                    
+                    // ✅ FIXED: Load next question audio ONLY after autoProcessSilence completes
+                    if (result.question_index !== undefined) {
+                        console.log('🎵 Loading next question audio after autoProcessSilence completion');
+                        await loadNextQuestionAudio(result.question_index);
+                    }
                 } else {
                     console.log('❌ Unexpected response status:', result.status);
                     showToast('Unexpected response from server', 'error');
@@ -263,6 +317,40 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         }
     };
 
+    // ✅ NEW: Function to load next question audio after autoProcessSilence
+    const loadNextQuestionAudio = async (nextQuestionIndex: number) => {
+        try {
+            console.log(`🎵 Loading audio for next question ${nextQuestionIndex + 1}`);
+            setIsLoadingAudio(true);
+            setAudioUrl(null);
+            hasPlayedAudioRef.current = null; // Reset played flag for new question
+            
+            const response = await restApi.getRealtimeMockInterviewVoice(sessionCode, nextQuestionIndex);
+            console.log(`🎵 Next question audio API response:`, response);
+
+            if (response?.data?.status === 'success' && response.data.data?.audio_data) {
+                const audioBlob = base64ToBlob(response.data.data.audio_data, 'audio/wav');
+                const newAudioUrl = URL.createObjectURL(audioBlob);
+                
+                if (audioUrl) {
+                    URL.revokeObjectURL(audioUrl);
+                }
+                
+                setAudioUrl(newAudioUrl);
+                onQuestionAudioReady(newAudioUrl);
+                console.log(`✅ Next question audio loaded and ready to play`);
+            } else {
+                console.error('❌ Failed to load next question audio:', response);
+                showToast('Failed to load next question audio', 'error');
+            }
+        } catch (error) {
+            console.error('Error loading next question audio:', error);
+            showToast('Error loading next question audio', 'error');
+        } finally {
+            setIsLoadingAudio(false);
+        }
+    };
+
     // Initialize VAD
     useEffect(() => {
         const initializeVoiceDetection = async () => {
@@ -296,6 +384,10 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                 clearTimeout(processingTimeoutRef.current);
                 processingTimeoutRef.current = null;
             }
+            if (noSpeechTimeoutRef.current) {
+                clearTimeout(noSpeechTimeoutRef.current);
+                noSpeechTimeoutRef.current = null;
+            }
             if (audioUrl) {
                 URL.revokeObjectURL(audioUrl);
             }
@@ -316,22 +408,23 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         };
     }, []); // Empty dependency array - only run on unmount
 
-    // Load question audio when question changes
+    // ✅ FIXED: Load question audio only for FIRST question (index 0)
+    // Subsequent questions are loaded after autoProcessSilence completes
     useEffect(() => {
-        if (isInterviewCompleted || !sessionCode || questionIndex < 0 || !currentQuestion?.trim()) {
-            console.log(`🚫 Skipping audio load - isInterviewCompleted: ${isInterviewCompleted}, sessionCode: ${!!sessionCode}, questionIndex: ${questionIndex}, currentQuestion: ${!!currentQuestion?.trim()}`);
+        if (isInterviewCompleted || !sessionCode || questionIndex !== 0 || !currentQuestion?.trim()) {
+            console.log(`🚫 Skipping initial audio load - isInterviewCompleted: ${isInterviewCompleted}, sessionCode: ${!!sessionCode}, questionIndex: ${questionIndex}, currentQuestion: ${!!currentQuestion?.trim()}`);
             return;
         }
         
-        const loadQuestionAudio = async () => {
+        const loadFirstQuestionAudio = async () => {
             try {
-                console.log(`🎵 Starting audio load for question ${questionIndex + 1}: "${currentQuestion.substring(0, 50)}..."`);
+                console.log(`🎵 Starting audio load for FIRST question: "${currentQuestion.substring(0, 50)}..."`);
                 setIsLoadingAudio(true);
                 setAudioUrl(null);
                 hasPlayedAudioRef.current = null; // Reset played flag when loading new question
                 
                 const response = await restApi.getRealtimeMockInterviewVoice(sessionCode, questionIndex);
-                console.log(`🎵 Audio API response for question ${questionIndex + 1}:`, response);
+                console.log(`🎵 Audio API response for first question:`, response);
 
                 if (response?.data?.status === 'success' && response.data.data?.audio_data) {
                     const audioBlob = base64ToBlob(response.data.data.audio_data, 'audio/wav');
@@ -343,13 +436,13 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
                     
                     setAudioUrl(newAudioUrl);
                     onQuestionAudioReady(newAudioUrl);
-                    console.log(`✅ Audio loaded for question ${questionIndex + 1}, URL: ${newAudioUrl.substring(0, 50)}...`);
+                    console.log(`✅ First question audio loaded and ready`);
                 } else {
-                    console.error('❌ Failed to generate question audio:', response);
+                    console.error('❌ Failed to generate first question audio:', response);
                     showToast('Failed to generate question audio', 'error');
                 }
             } catch (error) {
-                console.error('Error generating question audio:', error);
+                console.error('Error generating first question audio:', error);
                 showToast('Error generating question audio', 'error');
             } finally {
                 setIsLoadingAudio(false);
@@ -357,7 +450,7 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
         };
 
         // Add a small delay to ensure state is properly updated
-        const timer = setTimeout(loadQuestionAudio, 100);
+        const timer = setTimeout(loadFirstQuestionAudio, 100);
         return () => clearTimeout(timer);
     }, [sessionCode, questionIndex, currentQuestion, isInterviewCompleted]);
     
@@ -376,6 +469,10 @@ const AIAvatarSection: React.FC<AIAvatarSectionProps> = ({
             if (processingTimeoutRef.current) {
                 clearTimeout(processingTimeoutRef.current);
                 processingTimeoutRef.current = null;
+            }
+            if (noSpeechTimeoutRef.current) {
+                clearTimeout(noSpeechTimeoutRef.current);
+                noSpeechTimeoutRef.current = null;
             }
             // Stop recording if active
             setIsRecording(false);
